@@ -1,0 +1,9 @@
+classifier:
+  macro_f1_min: 0.00
+  accuracy_min: 0.00
+rag:
+  grounded_answer_rate_min: 0.00
+  hallucination_rate_max: 1.00
+summarization:
+  factuality_min: 0.00
+

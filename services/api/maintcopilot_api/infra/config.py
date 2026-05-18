@@ -1,0 +1,22 @@
+from __future__ import annotations
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    app_name: str = "maintainers-copilot-api"
+    env: str = "development"
+    log_level: str = "INFO"
+    database_url: str = "sqlite+pysqlite:///:memory:"
+    require_vault: bool = True
+    vault_addr: str = "http://vault:8200"
+    vault_token: str = "dev-root-token"
+    redis_url: str = "redis://redis:6379/0"
+    minio_endpoint: str = "minio:9000"
+    minio_access_key: str = "minioadmin"
+    minio_secret_key: str = "minioadmin"
+    minio_bucket: str = "maintainers-copilot"
+    model_server_url: str = "http://model-server:8001"
+
+    model_config = SettingsConfigDict(env_prefix="API_", env_file=".env", extra="ignore")
+

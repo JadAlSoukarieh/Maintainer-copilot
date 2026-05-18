@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maintainers-copilot-api"
+version = "0.1.0"
+description = "API skeleton for Maintainer's Copilot"
+requires-python = ">=3.12"
+dependencies = [
+  "alembic>=1.13,<2.0",
+  "fastapi>=0.115,<1.0",
+  "httpx>=0.27,<1.0",
+  "psycopg[binary]>=3.1,<4.0",
+  "pydantic-settings>=2.3,<3.0",
+  "sqlalchemy>=2.0,<3.0",
+  "uvicorn[standard]>=0.30,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2,<9.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["maintcopilot_api*"]
