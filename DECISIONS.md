@@ -5,4 +5,5 @@
 3. Structured logging is implemented with request and trace correlation fields plus centralized redaction before emission.
 4. Placeholder model-server outputs are deterministic so downstream integration can start before classifier artifacts exist.
 5. Widget configuration is modeled in SQL from day one because embedding policy and theming are operational data, not frontend constants.
-
+6. The auth foundation uses a minimal in-house JWT and password hashing layer for now instead of `fastapi-users`. This kept churn and new dependencies low in the Week 7 skeleton while preserving clean service and repository boundaries. A future compatibility step is to evaluate replacing or wrapping this with `fastapi-users` once the persistence and user lifecycle surface stabilizes.
+7. JWT secrets are currently loaded from the API config/environment path for local development and tests. Wiring the signing key to a concrete Vault secret path remains a follow-up once Vault paths and policies are defined.

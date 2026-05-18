@@ -32,11 +32,27 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
    `source .venv/bin/activate`
 2. Bootstrap dependencies and editable installs:
    `python scripts/bootstrap_dev.py`
-3. Run the API locally:
+3. Set local API auth config in `.env`:
+   `API_REQUIRE_VAULT=false`
+   `API_JWT_SECRET=dev-only-jwt-secret-change-me`
+4. Run the API locally:
    `cd services/api && ../../.venv/bin/python -m uvicorn maintcopilot_api.main:app --reload`
-4. Run the model server locally:
+5. Run the model server locally:
    `cd services/model-server && ../../.venv/bin/python -m uvicorn maintcopilot_model_server.main:app --reload`
-5. Run both Python test suites:
+6. Run both Python test suites:
    `./.venv/bin/python scripts/run_tests.py`
+
+## Local Dev Service URLs
+
+- API base URL: `http://localhost:8000`
+- API docs: `http://localhost:8000/docs`
+- Model-server base URL: `http://localhost:8001`
+- Model-server docs: `http://localhost:8001/docs`
+- Vault UI: `http://localhost:8200/ui`
+  Vault dev root token comes from `VAULT_DEV_ROOT_TOKEN_ID` in `.env` and `docker-compose.yml`.
+- MinIO console: `http://localhost:9001`
+  MinIO dev credentials come from `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` in `.env` and `docker-compose.yml`.
+
+These are development-only values. App code must read secrets through the configured config and secrets path, not through hardcoded literals in source.
 
 See `ARCH.md`, `DECISIONS.md`, `RUNBOOK.md`, `SECURITY.md`, and `EVALS.md` for the operational skeleton.

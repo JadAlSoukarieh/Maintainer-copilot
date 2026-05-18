@@ -33,3 +33,20 @@ class ValidationDomainError(DomainError):
     message = "The request is not valid for this operation."
     status_code = 422
 
+
+class AuthenticationError(DomainError):
+    code = "authentication_error"
+    message = "Authentication failed."
+    status_code = 401
+
+
+class ForbiddenError(DomainError):
+    code = "forbidden"
+    message = "You are not allowed to perform this action."
+    status_code = 403
+
+
+class ConflictError(DomainError):
+    code = "conflict"
+    message = "The resource already exists or cannot be created."
+    status_code = 409

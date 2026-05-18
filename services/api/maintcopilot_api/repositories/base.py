@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import JSON, Column, DateTime, MetaData, String, Table, Text, func
+from sqlalchemy import JSON, Boolean, Column, DateTime, MetaData, String, Table, Text, func
 
 metadata = MetaData()
 
@@ -11,6 +11,31 @@ audit_logs = Table(
     Column("event_type", String(100), nullable=False),
     Column("actor_id", String(255), nullable=True),
     Column("payload", JSON, nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+users = Table(
+    "users",
+    metadata,
+    Column("id", String(36), primary_key=True),
+    Column("email", String(255), nullable=False, unique=True),
+    Column("hashed_password", Text, nullable=False),
+    Column("role", String(20), nullable=False),
+    Column("is_active", Boolean, nullable=False, default=True, server_default="1"),
+    Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+    Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
+)
+
+user_invites = Table(
+    "user_invites",
+    metadata,
+    Column("id", String(36), primary_key=True),
+    Column("email", String(255), nullable=False),
+    Column("role", String(20), nullable=False),
+    Column("token_hash", String(64), nullable=False, unique=True),
+    Column("invited_by_user_id", String(36), nullable=False),
+    Column("expires_at", DateTime(timezone=True), nullable=False),
+    Column("accepted_at", DateTime(timezone=True), nullable=True),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
 
@@ -45,6 +70,9 @@ widgets = Table(
     Column("theme", JSON, nullable=False),
     Column("greeting", Text, nullable=False),
     Column("enabled_tools", JSON, nullable=False),
+    Column("is_active", Boolean, nullable=False, default=True, server_default="1"),
+    Column("created_by_user_id", String(36), nullable=True),
+    Column("updated_by_user_id", String(36), nullable=True),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
@@ -58,4 +86,3 @@ retrieved_chunk_snapshots = Table(
     Column("chunks", JSON, nullable=False),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
-

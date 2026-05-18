@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     minio_secret_key: str = "minioadmin"
     minio_bucket: str = "maintainers-copilot"
     model_server_url: str = "http://model-server:8001"
+    jwt_secret: str | None = None
+    jwt_exp_minutes: int = 60
+    invite_exp_hours: int = 72
 
     model_config = SettingsConfigDict(env_prefix="API_", env_file=".env", extra="ignore")
-

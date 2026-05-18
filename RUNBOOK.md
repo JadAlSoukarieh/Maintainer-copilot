@@ -8,6 +8,9 @@
 2. Bootstrap Python dependencies:
    `python scripts/bootstrap_dev.py`
 3. Copy `.env.example` to `.env` when you need local environment variables.
+4. For local tests and non-Docker runs, set:
+   `API_REQUIRE_VAULT=false`
+   `API_JWT_SECRET=dev-only-jwt-secret-change-me`
 
 ## Local runs
 
@@ -18,10 +21,26 @@
 - Tests:
   `./.venv/bin/python scripts/run_tests.py`
 
+## Local Dev Service URLs
+
+- API base URL: `http://localhost:8000`
+- API docs: `http://localhost:8000/docs`
+- Model-server base URL: `http://localhost:8001`
+- Model-server docs: `http://localhost:8001/docs`
+- Vault UI: `http://localhost:8200/ui`
+  Vault dev root token comes from `VAULT_DEV_ROOT_TOKEN_ID` in `.env` and `docker-compose.yml`.
+- MinIO console: `http://localhost:9001`
+  MinIO dev credentials come from `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` in `.env` and `docker-compose.yml`.
+
+These URLs and credentials are for development only. Application code must read secrets through config and the eventual Vault secret path, never from hardcoded literals.
+
 ## Core endpoints
 
 - API health: `GET /health`
 - API readiness: `GET /ready`
+- Auth: `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, `POST /auth/invites`, `POST /auth/invites/accept`
+- Widget public config: `GET /widgets/{public_widget_id}/config`
+- Widget admin: `GET /admin/widgets`, `POST /admin/widgets`, `PATCH /admin/widgets/{public_widget_id}`, `DELETE /admin/widgets/{public_widget_id}`
 - Model server health: `GET /health`
 - Model contracts: `POST /classify`, `POST /ner`, `POST /summarize`
 
