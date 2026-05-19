@@ -23,7 +23,8 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
 - Contracts and startup guards are in place.
 - Vault reachability is required by default for the API service.
 - Model-serving responses are deterministic placeholders.
-- No real auth, LLM, RAG, or training logic is implemented yet.
+- Auth foundation, classifier inference, NER, summarization, and the RAG corpus baseline skeleton are implemented.
+- Dense retrieval, reranking, query rewrite, and final chatbot generation are still not implemented.
 
 ## Local development
 
@@ -60,6 +61,16 @@ Golden classifier eval:
 python evals/classification_eval.py
 ```
 
+RAG corpus build and retrieval smoke check:
+
+```bash
+python scripts/build_rag_corpus.py \
+  --issues-path data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl \
+  --docs-dir data/rag/raw/node_docs \
+  --out data/rag/processed/rag_corpus.jsonl \
+  --smoke-query "How do I debug memory leak in https request?"
+```
+
 Model-server NER smoke check:
 
 ```bash
@@ -84,6 +95,13 @@ curl -X POST http://localhost:8001/summarize \
 ```
 
 `/ner` is rule-based and `/summarize` is extractive for now. They are integration tools for the future chatbot workflow, not LLM-backed features yet.
+
+The RAG foundation currently builds a local corpus from:
+
+- Node.js docs placed under `data/rag/raw/node_docs`
+- held-out resolved Node.js issues from the validation, test, and excluded splits
+
+The baseline retriever is sparse TF-IDF only. Dense embeddings, hybrid retrieval, reranking, query rewriting, and generation are still future work.
 
 ## Local Dev Service URLs
 

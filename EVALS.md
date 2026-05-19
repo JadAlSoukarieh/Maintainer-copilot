@@ -35,3 +35,38 @@ The golden set is small, so it is not a replacement for the full held-out test m
 - fail fast when the deployed classifier behavior meaningfully degrades
 
 Because the gate is small and hand-curated, the thresholds are intentionally meaningful but not overly tight.
+
+## RAG foundation
+
+The Week 7 RAG foundation builds a reproducible local corpus from:
+
+- Node.js project docs placed under `data/rag/raw/node_docs`
+- held-out resolved Node.js issues from the validation, test, and excluded splits
+
+Run:
+
+```bash
+python scripts/build_rag_corpus.py --smoke-query "How do I debug memory leak in https request?"
+```
+
+This writes:
+
+- `data/rag/processed/rag_corpus.jsonl`
+- `artifacts/rag/corpus_manifest.json`
+- `artifacts/rag/retrieval_baseline_report.json`
+
+The current chunking strategy is:
+
+- markdown heading-aware chunking for docs, preserving section context
+- structured issue records for resolved issues with title, problem/body, and an explicit limitation note that comments are not fetched yet
+
+The current retrieval baseline is sparse TF-IDF only. It exists to create a measurable baseline for later improvements.
+
+Still missing:
+
+- dense embeddings
+- hybrid retrieval
+- reranker
+- query rewrite
+- a filled 25-example RAG golden set
+- generation evaluation

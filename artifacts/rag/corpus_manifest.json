@@ -1,0 +1,37 @@
+{
+  "built_at_utc": "2026-05-19T15:14:51.590730+00:00",
+  "repo": "nodejs/node",
+  "sources": {
+    "raw_issues_path": "data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl",
+    "val_path": "data/processed/val.jsonl",
+    "test_path": "data/processed/test.jsonl",
+    "excluded_path": "data/processed/excluded_issues.jsonl",
+    "docs_dir": "data/rag/raw/node_docs"
+  },
+  "chunking": {
+    "strategy": "section-aware markdown chunking for docs; structured issue records for resolved issues",
+    "max_chars": 1400,
+    "overlap_chars": 200
+  },
+  "limitations": [
+    "Resolved issue corpus currently uses issue title/body only until comments are fetched.",
+    "Dense embeddings, hybrid retrieval, reranking, and query rewriting are not implemented yet."
+  ],
+  "counts": {
+    "total_chunks": 6506,
+    "by_source_type": {
+      "resolved_issue": 6506
+    },
+    "by_source_split": {
+      "val": 276,
+      "test": 318,
+      "excluded": 5912
+    },
+    "input_issue_records": {
+      "val": 196,
+      "test": 196,
+      "excluded": 2903
+    },
+    "doc_chunks": 0
+  }
+}

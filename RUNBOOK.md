@@ -39,6 +39,16 @@ Golden classifier eval:
 python evals/classification_eval.py
 ```
 
+RAG corpus build and sparse retrieval smoke check:
+
+```bash
+python scripts/build_rag_corpus.py \
+  --issues-path data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl \
+  --docs-dir data/rag/raw/node_docs \
+  --out data/rag/processed/rag_corpus.jsonl \
+  --smoke-query "How do I debug memory leak in https request?"
+```
+
 NER smoke request:
 
 ```bash
@@ -63,6 +73,8 @@ curl -X POST http://localhost:8001/summarize \
 ```
 
 `/ner` is rule-based and `/summarize` is extractive for now. Both are integration tools for the chatbot pipeline, not external LLM-backed features.
+
+The RAG corpus builder currently ingests held-out issues from `data/processed/val.jsonl`, `data/processed/test.jsonl`, and `data/processed/excluded_issues.jsonl`, plus any local docs placed in `data/rag/raw/node_docs`. Retrieval is sparse TF-IDF only at this stage.
 
 ## Local Dev Service URLs
 
