@@ -1,0 +1,19 @@
+{
+  "repo": "nodejs/node",
+  "snapshot_type": "capped_chronological_snapshot",
+  "cap_reason": "Used a fixed 99-page capped snapshot because GitHub may reject deep page-number pagination for large repositories.",
+  "fetched_at_utc": "2026-05-18T16:00:49.253625+00:00",
+  "api_endpoint": "https://api.github.com/repos/nodejs/node/issues",
+  "query": {
+    "state": "closed",
+    "sort": "created",
+    "direction": "asc",
+    "per_page": 100,
+    "max_pages": 99
+  },
+  "total_raw_items": 9900,
+  "total_pull_requests_in_raw": 5691,
+  "total_non_pr_issues_in_raw": 4209,
+  "raw_jsonl_path": "/content/drive/MyDrive/aie_week7_maintainers_copilot_ml/data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl",
+  "raw_jsonl_sha256": "d902d6f689a528ce216cd595ca8d8e75cec6acc9d5b43ca3dffe1ecc023d5ad3"
+}

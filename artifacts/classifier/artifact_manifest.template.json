@@ -1,0 +1,110 @@
+{
+  "manifest_version": 1,
+  "notes": "Template only. Copy to a concrete manifest file after Colab outputs are placed in the repository.",
+  "dataset": {
+    "processed_data_hash_file": {
+      "path": "data/processed/data_hash.txt",
+      "purpose": "Records the dataset hash for the processed split set.",
+      "produced_by": "Colab or preprocessing scripts",
+      "sha256": null
+    },
+    "golden_classification_set": {
+      "path": "data/golden/classification_golden.jsonl",
+      "purpose": "Curated golden evaluation set for classification checks.",
+      "produced_by": "Manual curation or eval prep workflow",
+      "sha256": null
+    }
+  },
+  "classical": {
+    "model_artifact": {
+      "path": "artifacts/classifier/classical/model.joblib",
+      "purpose": "Serialized classical classifier model artifact.",
+      "produced_by": "Colab",
+      "sha256": null
+    },
+    "metrics": {
+      "path": "artifacts/classifier/classical/metrics.json",
+      "purpose": "Evaluation metrics for the classical classifier.",
+      "produced_by": "Colab"
+    },
+    "confusion_matrix": {
+      "path": "artifacts/classifier/classical/confusion_matrix.json",
+      "purpose": "Confusion matrix exported from the classical evaluation run.",
+      "produced_by": "Colab"
+    },
+    "test_predictions": {
+      "path": "artifacts/classifier/classical/test_predictions.jsonl",
+      "purpose": "Per-example test predictions for the classical classifier.",
+      "produced_by": "Colab"
+    }
+  },
+  "transformer": {
+    "model_folder": {
+      "path": "artifacts/classifier/transformer/model",
+      "purpose": "Saved transformer model and tokenizer export.",
+      "produced_by": "Colab"
+    },
+    "metrics": {
+      "path": "artifacts/classifier/transformer/metrics.json",
+      "purpose": "Evaluation metrics for the transformer classifier.",
+      "produced_by": "Colab"
+    },
+    "model_card": {
+      "path": "artifacts/classifier/transformer/model_card.md",
+      "purpose": "Human-readable summary of the transformer training run.",
+      "produced_by": "Colab"
+    },
+    "training_args": {
+      "path": "artifacts/classifier/transformer/training_args.json",
+      "purpose": "Saved training configuration for the transformer run.",
+      "produced_by": "Colab"
+    }
+  },
+  "llm_baseline": {
+    "predictions": {
+      "path": "artifacts/classifier/llm_baseline/predictions.jsonl",
+      "purpose": "Per-example LLM baseline predictions.",
+      "produced_by": "Later baseline evaluation workflow"
+    },
+    "metrics": {
+      "path": "artifacts/classifier/llm_baseline/metrics.json",
+      "purpose": "Evaluation metrics for the LLM baseline.",
+      "produced_by": "Later baseline evaluation workflow"
+    },
+    "cost_report": {
+      "path": "artifacts/classifier/llm_baseline/cost_report.json",
+      "purpose": "Token and cost summary for the LLM baseline run.",
+      "produced_by": "Later baseline evaluation workflow"
+    }
+  },
+  "comparison": {
+    "classification_report": {
+      "path": "artifacts/classifier/comparison/classification_report.json",
+      "purpose": "Cross-model metric comparison summary.",
+      "produced_by": "Later eval scripts"
+    },
+    "confusion_matrix": {
+      "path": "artifacts/classifier/comparison/confusion_matrix.json",
+      "purpose": "Comparison-level confusion matrix summary.",
+      "produced_by": "Later eval scripts"
+    },
+    "model_comparison": {
+      "path": "artifacts/classifier/comparison/model_comparison.md",
+      "purpose": "Human-readable comparison between classifier variants.",
+      "produced_by": "Later eval scripts"
+    }
+  },
+  "reports": {
+    "dataset_validation": {
+      "path": "reports/dataset_validation.md",
+      "purpose": "Dataset validation summary after copying and checking data files.",
+      "produced_by": "Later VS Code validation workflow"
+    },
+    "training_run_summary": {
+      "path": "reports/training_run_summary.md",
+      "purpose": "Narrative summary of training outputs copied from Colab.",
+      "produced_by": "Later reporting workflow"
+    }
+  }
+}
+

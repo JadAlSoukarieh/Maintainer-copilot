@@ -1,0 +1,189 @@
+{
+  "model_type": "tfidf_logistic_regression",
+  "repo": "nodejs/node",
+  "data_hash": "db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27",
+  "train_count": 914,
+  "val_count": 196,
+  "test_count": 196,
+  "train_time_seconds": 6.730697139999847,
+  "val": {
+    "split": "val",
+    "accuracy": 0.673469387755102,
+    "macro_f1": 0.628501596527105,
+    "weighted_f1": 0.6837329227245736,
+    "per_class_f1": {
+      "bug": 0.35555555555555557,
+      "feature": 0.7222222222222222,
+      "docs": 0.7368421052631579,
+      "question": 0.6993865030674846
+    },
+    "classification_report": {
+      "bug": {
+        "precision": 0.2857142857142857,
+        "recall": 0.47058823529411764,
+        "f1-score": 0.35555555555555557,
+        "support": 17.0
+      },
+      "feature": {
+        "precision": 0.75,
+        "recall": 0.6964285714285714,
+        "f1-score": 0.7222222222222222,
+        "support": 56.0
+      },
+      "docs": {
+        "precision": 0.7777777777777778,
+        "recall": 0.7,
+        "f1-score": 0.7368421052631579,
+        "support": 40.0
+      },
+      "question": {
+        "precision": 0.7125,
+        "recall": 0.6867469879518072,
+        "f1-score": 0.6993865030674846,
+        "support": 83.0
+      },
+      "accuracy": 0.673469387755102,
+      "macro avg": {
+        "precision": 0.6314980158730158,
+        "recall": 0.638440948668624,
+        "f1-score": 0.628501596527105,
+        "support": 196.0
+      },
+      "weighted avg": {
+        "precision": 0.6995191528992549,
+        "recall": 0.673469387755102,
+        "f1-score": 0.6837329227245736,
+        "support": 196.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "bug",
+        "feature",
+        "docs",
+        "question"
+      ],
+      "matrix": [
+        [
+          8,
+          1,
+          0,
+          8
+        ],
+        [
+          4,
+          39,
+          2,
+          11
+        ],
+        [
+          5,
+          3,
+          28,
+          4
+        ],
+        [
+          11,
+          9,
+          6,
+          57
+        ]
+      ]
+    },
+    "latency": {
+      "total_seconds": 0.2542797900000551,
+      "avg_ms_per_issue": 1.2973458673472198,
+      "num_examples": 196
+    }
+  },
+  "test": {
+    "split": "test",
+    "accuracy": 0.7040816326530612,
+    "macro_f1": 0.6681268595902742,
+    "weighted_f1": 0.7061445136358028,
+    "per_class_f1": {
+      "bug": 0.4444444444444444,
+      "feature": 0.7073170731707317,
+      "docs": 0.7692307692307693,
+      "question": 0.7515151515151515
+    },
+    "classification_report": {
+      "bug": {
+        "precision": 0.42857142857142855,
+        "recall": 0.46153846153846156,
+        "f1-score": 0.4444444444444444,
+        "support": 26.0
+      },
+      "feature": {
+        "precision": 0.6744186046511628,
+        "recall": 0.7435897435897436,
+        "f1-score": 0.7073170731707317,
+        "support": 39.0
+      },
+      "docs": {
+        "precision": 0.7777777777777778,
+        "recall": 0.7608695652173914,
+        "f1-score": 0.7692307692307693,
+        "support": 46.0
+      },
+      "question": {
+        "precision": 0.775,
+        "recall": 0.7294117647058823,
+        "f1-score": 0.7515151515151515,
+        "support": 85.0
+      },
+      "accuracy": 0.7040816326530612,
+      "macro avg": {
+        "precision": 0.6639419527500923,
+        "recall": 0.6738523837628697,
+        "f1-score": 0.6681268595902742,
+        "support": 196.0
+      },
+      "weighted avg": {
+        "precision": 0.7096834719491341,
+        "recall": 0.7040816326530612,
+        "f1-score": 0.7061445136358028,
+        "support": 196.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "bug",
+        "feature",
+        "docs",
+        "question"
+      ],
+      "matrix": [
+        [
+          12,
+          1,
+          3,
+          10
+        ],
+        [
+          2,
+          29,
+          2,
+          6
+        ],
+        [
+          4,
+          5,
+          35,
+          2
+        ],
+        [
+          10,
+          8,
+          5,
+          62
+        ]
+      ]
+    },
+    "latency": {
+      "total_seconds": 0.1569679270000961,
+      "avg_ms_per_issue": 0.8008567704086536,
+      "num_examples": 196
+    }
+  }
+}

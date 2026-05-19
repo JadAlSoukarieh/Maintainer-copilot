@@ -1,0 +1,73 @@
+{
+  "repo": "nodejs/node",
+  "snapshot_type": "capped_chronological_snapshot",
+  "label_map": {
+    "confirmed-bug": "bug",
+    "feature request": "feature",
+    "doc": "docs",
+    "question": "question"
+  },
+  "class_names": [
+    "bug",
+    "feature",
+    "docs",
+    "question"
+  ],
+  "split_strategy": "global_chronological_70_15_15",
+  "split_strategy_explanation": "Issues were sorted by created_at ascending. The oldest 70% were used for training, the next 15% for validation, and the newest 15% for testing. This simulates training on past issues and evaluating on newer issues.",
+  "raw_snapshot": {
+    "path": "/content/drive/MyDrive/aie_week7_maintainers_copilot_ml/data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl",
+    "sha256": "d902d6f689a528ce216cd595ca8d8e75cec6acc9d5b43ca3dffe1ecc023d5ad3",
+    "total_raw_items": 9900,
+    "pull_requests_removed": 5691,
+    "real_closed_issues": 4209
+  },
+  "filtering": {
+    "usable_single_label_issues": 1306,
+    "excluded_issues": 2903,
+    "excluded_by_reason": {
+      "no_mapped_label": 2859,
+      "multi_mapped_label": 44
+    }
+  },
+  "splits": {
+    "train": {
+      "path": "/content/drive/MyDrive/aie_week7_maintainers_copilot_ml/data/processed/train.jsonl",
+      "count": 914,
+      "min_created_at": "2014-11-29 04:33:13+00:00",
+      "max_created_at": "2016-06-02 00:00:20+00:00",
+      "class_counts": {
+        "bug": 165,
+        "feature": 222,
+        "docs": 208,
+        "question": 319
+      }
+    },
+    "val": {
+      "path": "/content/drive/MyDrive/aie_week7_maintainers_copilot_ml/data/processed/val.jsonl",
+      "count": 196,
+      "min_created_at": "2016-06-02 06:34:23+00:00",
+      "max_created_at": "2016-09-07 19:26:43+00:00",
+      "class_counts": {
+        "bug": 17,
+        "feature": 56,
+        "docs": 40,
+        "question": 83
+      }
+    },
+    "test": {
+      "path": "/content/drive/MyDrive/aie_week7_maintainers_copilot_ml/data/processed/test.jsonl",
+      "count": 196,
+      "min_created_at": "2016-09-07 20:23:15+00:00",
+      "max_created_at": "2016-12-01 09:58:24+00:00",
+      "class_counts": {
+        "bug": 26,
+        "feature": 39,
+        "docs": 46,
+        "question": 85
+      }
+    }
+  },
+  "data_hash": "db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27",
+  "created_at_utc": "2026-05-18T16:06:01.179055+00:00"
+}

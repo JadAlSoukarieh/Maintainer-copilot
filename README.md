@@ -55,4 +55,52 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
 
 These are development-only values. App code must read secrets through the configured config and secrets path, not through hardcoded literals in source.
 
+## ML Artifact Handoff
+
+Copy Colab outputs into these locations:
+
+- Raw dataset files: `data/raw/`
+- Processed splits and manifests: `data/processed/`
+- Golden classification set: `data/golden/`
+- Classical classifier outputs: `artifacts/classifier/classical/`
+- Transformer outputs: `artifacts/classifier/transformer/`
+- Optional LLM baseline outputs: `artifacts/classifier/llm_baseline/`
+- Comparison reports: `artifacts/classifier/comparison/`
+- Validation and training summaries: `reports/`
+
+Verify the handoff after copying:
+
+```bash
+python scripts/verify_ml_artifacts.py --allow-missing-llm
+```
+
+Git LFS setup:
+
+```bash
+git lfs install
+git lfs track "*.safetensors"
+git lfs track "*.joblib"
+git lfs track "*.bin"
+git lfs track "*.pkl"
+git lfs track "*.onnx"
+git lfs track "data/raw/*.jsonl"
+git lfs track "data/processed/*.jsonl"
+git lfs track "data/golden/*.jsonl"
+git lfs track "artifacts/**/*.jsonl"
+```
+
+Safe staging commands:
+
+```bash
+git add .gitattributes
+git add data artifacts reports scripts/verify_ml_artifacts.py
+```
+
+Warnings:
+
+- Do not commit model or dataset artifacts before Git LFS is configured.
+- Do not use `git add .` blindly.
+- Run `git lfs ls-files` before commit to confirm large files are tracked.
+- If artifacts are missing after cloning, run `git lfs pull`.
+
 See `ARCH.md`, `DECISIONS.md`, `RUNBOOK.md`, `SECURITY.md`, and `EVALS.md` for the operational skeleton.

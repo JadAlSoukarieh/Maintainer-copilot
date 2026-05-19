@@ -50,6 +50,54 @@ These URLs and credentials are for development only. Application code must read 
 - Classifier artifacts are expected later under `artifacts/classifier/`.
 - The `migrate` service runs `alembic upgrade head` against the shared Postgres instance.
 
+## ML Artifact Handoff
+
+Copy Colab outputs into:
+
+- `data/raw/`
+- `data/processed/`
+- `data/golden/`
+- `artifacts/classifier/classical/`
+- `artifacts/classifier/transformer/`
+- `artifacts/classifier/llm_baseline/`
+- `artifacts/classifier/comparison/`
+- `reports/`
+
+Verify after copying:
+
+```bash
+python scripts/verify_ml_artifacts.py --allow-missing-llm
+```
+
+Git LFS setup:
+
+```bash
+git lfs install
+git lfs track "*.safetensors"
+git lfs track "*.joblib"
+git lfs track "*.bin"
+git lfs track "*.pkl"
+git lfs track "*.onnx"
+git lfs track "data/raw/*.jsonl"
+git lfs track "data/processed/*.jsonl"
+git lfs track "data/golden/*.jsonl"
+git lfs track "artifacts/**/*.jsonl"
+```
+
+Safe staging:
+
+```bash
+git add .gitattributes
+git add data artifacts reports scripts/verify_ml_artifacts.py
+```
+
+Warnings:
+
+- Do not commit model artifacts before Git LFS is configured.
+- Do not use `git add .` blindly.
+- Run `git lfs ls-files` before commit.
+- If expected artifact files are missing after clone, run `git lfs pull`.
+
 ## Docker bootstrap
 
 1. Run Docker Compose.

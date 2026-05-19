@@ -1,0 +1,213 @@
+{
+  "model_type": "fine_tuned_transformer_encoder",
+  "architecture": "RoBERTa sequence classification",
+  "base_model": "roberta-base",
+  "repo": "nodejs/node",
+  "data_hash": "db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27",
+  "model_sha256": "8ae281cbbec553a84d723f355d1ee298a5c553c0d0d6aca7a4c367ee413b5b7a",
+  "train_count": 914,
+  "val_count": 196,
+  "test_count": 196,
+  "train_time_seconds": 644.0320698300002,
+  "max_length": 512,
+  "class_names": [
+    "bug",
+    "feature",
+    "docs",
+    "question"
+  ],
+  "label2id": {
+    "bug": 0,
+    "feature": 1,
+    "docs": 2,
+    "question": 3
+  },
+  "id2label": {
+    "0": "bug",
+    "1": "feature",
+    "2": "docs",
+    "3": "question"
+  },
+  "freeze_policy": "No freezing; all RoBERTa encoder layers and classification head were fine-tuned.",
+  "class_weights": {
+    "bug": 1.3848484848484848,
+    "feature": 1.0292792792792793,
+    "docs": 1.0985576923076923,
+    "question": 0.7163009404388715
+  },
+  "val": {
+    "split": "val",
+    "accuracy": 0.7397959183673469,
+    "macro_f1": 0.6995210802419041,
+    "weighted_f1": 0.7479278733014781,
+    "per_class_f1": {
+      "bug": 0.4782608695652174,
+      "feature": 0.8034188034188035,
+      "docs": 0.7532467532467533,
+      "question": 0.7631578947368421
+    },
+    "classification_report": {
+      "bug": {
+        "precision": 0.3793103448275862,
+        "recall": 0.6470588235294118,
+        "f1-score": 0.4782608695652174,
+        "support": 17.0
+      },
+      "feature": {
+        "precision": 0.7704918032786885,
+        "recall": 0.8392857142857143,
+        "f1-score": 0.8034188034188035,
+        "support": 56.0
+      },
+      "docs": {
+        "precision": 0.7837837837837838,
+        "recall": 0.725,
+        "f1-score": 0.7532467532467533,
+        "support": 40.0
+      },
+      "question": {
+        "precision": 0.8405797101449275,
+        "recall": 0.6987951807228916,
+        "f1-score": 0.7631578947368421,
+        "support": 83.0
+      },
+      "accuracy": 0.7397959183673469,
+      "macro avg": {
+        "precision": 0.6935414105087465,
+        "recall": 0.7275349296345044,
+        "f1-score": 0.6995210802419041,
+        "support": 196.0
+      },
+      "weighted avg": {
+        "precision": 0.7689555313217136,
+        "recall": 0.7397959183673469,
+        "f1-score": 0.7479278733014781,
+        "support": 196.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "bug",
+        "feature",
+        "docs",
+        "question"
+      ],
+      "matrix": [
+        [
+          11,
+          0,
+          2,
+          4
+        ],
+        [
+          1,
+          47,
+          2,
+          6
+        ],
+        [
+          5,
+          5,
+          29,
+          1
+        ],
+        [
+          12,
+          9,
+          4,
+          58
+        ]
+      ]
+    }
+  },
+  "test": {
+    "split": "test",
+    "accuracy": 0.7244897959183674,
+    "macro_f1": 0.7115728715728715,
+    "weighted_f1": 0.7338525193627234,
+    "per_class_f1": {
+      "bug": 0.5555555555555556,
+      "feature": 0.6933333333333334,
+      "docs": 0.8571428571428571,
+      "question": 0.7402597402597403
+    },
+    "classification_report": {
+      "bug": {
+        "precision": 0.43478260869565216,
+        "recall": 0.7692307692307693,
+        "f1-score": 0.5555555555555556,
+        "support": 26.0
+      },
+      "feature": {
+        "precision": 0.7222222222222222,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.6933333333333334,
+        "support": 39.0
+      },
+      "docs": {
+        "precision": 0.8666666666666667,
+        "recall": 0.8478260869565217,
+        "f1-score": 0.8571428571428571,
+        "support": 46.0
+      },
+      "question": {
+        "precision": 0.8260869565217391,
+        "recall": 0.6705882352941176,
+        "f1-score": 0.7402597402597403,
+        "support": 85.0
+      },
+      "accuracy": 0.7244897959183674,
+      "macro avg": {
+        "precision": 0.71243961352657,
+        "recall": 0.7385779395370188,
+        "f1-score": 0.7115728715728715,
+        "support": 196.0
+      },
+      "weighted avg": {
+        "precision": 0.763036083998817,
+        "recall": 0.7244897959183674,
+        "f1-score": 0.7338525193627234,
+        "support": 196.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "bug",
+        "feature",
+        "docs",
+        "question"
+      ],
+      "matrix": [
+        [
+          20,
+          1,
+          1,
+          4
+        ],
+        [
+          4,
+          26,
+          2,
+          7
+        ],
+        [
+          4,
+          2,
+          39,
+          1
+        ],
+        [
+          18,
+          7,
+          3,
+          57
+        ]
+      ]
+    },
+    "latency": {
+      "total_seconds": 7.16349550599989,
+      "avg_ms_per_issue": 36.54844645918311,
+      "num_examples": 196
+    }
+  }
+}

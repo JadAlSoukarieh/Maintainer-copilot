@@ -1,0 +1,39 @@
+{
+  "repo": "nodejs/node",
+  "data_hash": "db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27",
+  "models": [
+    {
+      "model": "classical_tfidf_logreg",
+      "accuracy": 0.7040816326530612,
+      "macro_f1": 0.6681268595902742,
+      "weighted_f1": 0.7061445136358028,
+      "bug_f1": 0.4444444444444444,
+      "feature_f1": 0.7073170731707317,
+      "docs_f1": 0.7692307692307693,
+      "question_f1": 0.7515151515151515,
+      "avg_latency_ms": 0.8008567704086536
+    },
+    {
+      "model": "transformer_roberta_base",
+      "accuracy": 0.7244897959183674,
+      "macro_f1": 0.7115728715728715,
+      "weighted_f1": 0.7338525193627234,
+      "bug_f1": 0.5555555555555556,
+      "feature_f1": 0.6933333333333334,
+      "docs_f1": 0.8571428571428571,
+      "question_f1": 0.7402597402597403,
+      "avg_latency_ms": 36.54844645918311
+    }
+  ],
+  "best_by_macro_f1": {
+    "model": "transformer_roberta_base",
+    "accuracy": 0.7244897959183674,
+    "macro_f1": 0.7115728715728715,
+    "weighted_f1": 0.7338525193627234,
+    "bug_f1": 0.5555555555555556,
+    "feature_f1": 0.6933333333333334,
+    "docs_f1": 0.8571428571428571,
+    "question_f1": 0.7402597402597403,
+    "avg_latency_ms": 36.54844645918311
+  }
+}
