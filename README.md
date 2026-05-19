@@ -54,6 +54,12 @@ curl -X POST http://localhost:8001/classify \
   }'
 ```
 
+Golden classifier eval:
+
+```bash
+python evals/classification_eval.py
+```
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`

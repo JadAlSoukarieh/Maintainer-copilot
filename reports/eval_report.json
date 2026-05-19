@@ -1,0 +1,240 @@
+{
+  "golden_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/data/golden/classification_golden.jsonl",
+  "thresholds_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/evals/eval_thresholds.yaml",
+  "report_version": "classification-golden-v1",
+  "example_count": 25,
+  "thresholds": {
+    "min_accuracy": 0.6,
+    "min_macro_f1": 0.55,
+    "min_per_class_f1": {
+      "bug": 0.3,
+      "feature": 0.4,
+      "docs": 0.5,
+      "question": 0.5
+    }
+  },
+  "metrics": {
+    "accuracy": 0.96,
+    "macro_f1": 0.9615384615384615,
+    "weighted_f1": 0.96,
+    "per_class_f1": {
+      "bug": 1.0,
+      "feature": 0.923076923076923,
+      "docs": 1.0,
+      "question": 0.923076923076923
+    },
+    "confusion_matrix": {
+      "labels": [
+        "bug",
+        "feature",
+        "docs",
+        "question"
+      ],
+      "matrix": [
+        [
+          6,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          6,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          6,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          6
+        ]
+      ]
+    }
+  },
+  "predictions": [
+    {
+      "golden_id": "clf-golden-001",
+      "issue_number": 8436,
+      "expected_label": "bug",
+      "predicted_label": "bug",
+      "confidence": 0.526127278804779
+    },
+    {
+      "golden_id": "clf-golden-002",
+      "issue_number": 8498,
+      "expected_label": "bug",
+      "predicted_label": "bug",
+      "confidence": 0.889378011226654
+    },
+    {
+      "golden_id": "clf-golden-003",
+      "issue_number": 8571,
+      "expected_label": "bug",
+      "predicted_label": "bug",
+      "confidence": 0.929863452911377
+    },
+    {
+      "golden_id": "clf-golden-004",
+      "issue_number": 8827,
+      "expected_label": "bug",
+      "predicted_label": "bug",
+      "confidence": 0.8107701539993286
+    },
+    {
+      "golden_id": "clf-golden-005",
+      "issue_number": 9084,
+      "expected_label": "bug",
+      "predicted_label": "bug",
+      "confidence": 0.6170762181282043
+    },
+    {
+      "golden_id": "clf-golden-006",
+      "issue_number": 9170,
+      "expected_label": "bug",
+      "predicted_label": "bug",
+      "confidence": 0.7310316562652588
+    },
+    {
+      "golden_id": "clf-golden-007",
+      "issue_number": 8509,
+      "expected_label": "feature",
+      "predicted_label": "feature",
+      "confidence": 0.9423739910125732
+    },
+    {
+      "golden_id": "clf-golden-008",
+      "issue_number": 8653,
+      "expected_label": "feature",
+      "predicted_label": "feature",
+      "confidence": 0.9298803806304932
+    },
+    {
+      "golden_id": "clf-golden-009",
+      "issue_number": 8715,
+      "expected_label": "feature",
+      "predicted_label": "feature",
+      "confidence": 0.9585193991661072
+    },
+    {
+      "golden_id": "clf-golden-010",
+      "issue_number": 8731,
+      "expected_label": "feature",
+      "predicted_label": "feature",
+      "confidence": 0.8541406989097595
+    },
+    {
+      "golden_id": "clf-golden-011",
+      "issue_number": 8732,
+      "expected_label": "feature",
+      "predicted_label": "feature",
+      "confidence": 0.9271661639213562
+    },
+    {
+      "golden_id": "clf-golden-012",
+      "issue_number": 8792,
+      "expected_label": "feature",
+      "predicted_label": "feature",
+      "confidence": 0.9535245299339294
+    },
+    {
+      "golden_id": "clf-golden-013",
+      "issue_number": 8508,
+      "expected_label": "docs",
+      "predicted_label": "docs",
+      "confidence": 0.9621270895004272
+    },
+    {
+      "golden_id": "clf-golden-014",
+      "issue_number": 8638,
+      "expected_label": "docs",
+      "predicted_label": "docs",
+      "confidence": 0.965418815612793
+    },
+    {
+      "golden_id": "clf-golden-015",
+      "issue_number": 8646,
+      "expected_label": "docs",
+      "predicted_label": "docs",
+      "confidence": 0.9684965014457703
+    },
+    {
+      "golden_id": "clf-golden-016",
+      "issue_number": 8798,
+      "expected_label": "docs",
+      "predicted_label": "docs",
+      "confidence": 0.9555636048316956
+    },
+    {
+      "golden_id": "clf-golden-017",
+      "issue_number": 8825,
+      "expected_label": "docs",
+      "predicted_label": "docs",
+      "confidence": 0.9610103964805603
+    },
+    {
+      "golden_id": "clf-golden-018",
+      "issue_number": 8893,
+      "expected_label": "docs",
+      "predicted_label": "docs",
+      "confidence": 0.9371532797813416
+    },
+    {
+      "golden_id": "clf-golden-019",
+      "issue_number": 8439,
+      "expected_label": "question",
+      "predicted_label": "question",
+      "confidence": 0.5342829823493958
+    },
+    {
+      "golden_id": "clf-golden-020",
+      "issue_number": 8461,
+      "expected_label": "question",
+      "predicted_label": "question",
+      "confidence": 0.9214079976081848
+    },
+    {
+      "golden_id": "clf-golden-021",
+      "issue_number": 8464,
+      "expected_label": "question",
+      "predicted_label": "question",
+      "confidence": 0.8874660730361938
+    },
+    {
+      "golden_id": "clf-golden-022",
+      "issue_number": 8671,
+      "expected_label": "question",
+      "predicted_label": "question",
+      "confidence": 0.9186133146286011
+    },
+    {
+      "golden_id": "clf-golden-023",
+      "issue_number": 8690,
+      "expected_label": "question",
+      "predicted_label": "feature",
+      "confidence": 0.6973142623901367
+    },
+    {
+      "golden_id": "clf-golden-024",
+      "issue_number": 8728,
+      "expected_label": "question",
+      "predicted_label": "question",
+      "confidence": 0.7719230055809021
+    },
+    {
+      "golden_id": "clf-golden-025",
+      "issue_number": 8743,
+      "expected_label": "question",
+      "predicted_label": "question",
+      "confidence": 0.8066387176513672
+    }
+  ],
+  "passed": true,
+  "failures": []
+}

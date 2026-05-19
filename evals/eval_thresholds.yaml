@@ -1,9 +1,13 @@
-classifier:
-  macro_f1_min: 0.00
-  accuracy_min: 0.00
+classification:
+  min_accuracy: 0.60
+  min_macro_f1: 0.55
+  min_per_class_f1:
+    bug: 0.30
+    feature: 0.40
+    docs: 0.50
+    question: 0.50
 rag:
   grounded_answer_rate_min: 0.00
   hallucination_rate_max: 1.00
 summarization:
   factuality_min: 0.00
-
