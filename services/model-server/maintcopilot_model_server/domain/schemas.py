@@ -12,14 +12,23 @@ class HealthResponse(BaseModel):
 
 
 class ClassifyRequest(BaseModel):
-    text: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    body: str = Field(default="")
+
+
+class ProbabilityScore(BaseModel):
+    label: str
+    probability: float
 
 
 class ClassifyResponse(BaseModel):
     label: str
     confidence: float
-    scores: dict[str, float]
-    model_version: str
+    top_probabilities: list[ProbabilityScore]
+    model_name: str
+    model_type: str
+    model_hash: str
+    artifact_dir: str
 
 
 class NerRequest(BaseModel):
@@ -47,4 +56,3 @@ class SummarizeResponse(BaseModel):
     summary: str
     sentences_used: int
     metadata: dict[str, Any] = Field(default_factory=dict)
-

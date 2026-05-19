@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from maintcopilot_model_server.domain.schemas import (
     ClassifyRequest,
@@ -25,11 +25,23 @@ def get_settings() -> Settings:
 
 
 def get_artifact_loader(settings: Settings = Depends(get_settings)) -> ArtifactLoader:
-    return ArtifactLoader(settings.artifact_dir)
+    return ArtifactLoader(
+        settings.classifier_artifact_dir,
+        model_dir=settings.classifier_model_dir,
+        require_artifacts=settings.classifier_require_artifacts,
+        max_length=settings.classifier_max_length,
+    )
 
 
-def get_classifier_service(loader: ArtifactLoader = Depends(get_artifact_loader)) -> ClassifierService:
-    return ClassifierService(loader)
+def get_classifier_service(
+    request: Request,
+    loader: ArtifactLoader = Depends(get_artifact_loader),
+) -> ClassifierService:
+    service = getattr(request.app.state, "classifier_service", None)
+    if service is None:
+        service = ClassifierService(loader)
+        request.app.state.classifier_service = service
+    return service
 
 
 def get_ner_service() -> NerService:

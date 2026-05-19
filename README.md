@@ -43,6 +43,17 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
 6. Run both Python test suites:
    `./.venv/bin/python scripts/run_tests.py`
 
+Model-server classifier smoke check:
+
+```bash
+curl -X POST http://localhost:8001/classify \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "dns.lookup blocks filesystem I/O",
+    "body": "On networks with slow DNS response, blocking calls from dns.lookup delay serial and filesystem work."
+  }'
+```
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`
@@ -90,6 +101,8 @@ python scripts/run_llm_baseline.py --model-name claude-haiku-4-5-20251001 --allo
 ```
 
 ## ML Artifact Handoff
+
+The transformer artifacts used by `services/model-server` are tracked with Git LFS. Run `git lfs pull` after cloning if the classifier model files are missing.
 
 Copy Colab outputs into these locations:
 

@@ -22,6 +22,17 @@
 - Tests:
   `./.venv/bin/python scripts/run_tests.py`
 
+Model-server smoke request:
+
+```bash
+curl -X POST http://localhost:8001/classify \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "dns.lookup blocks filesystem I/O",
+    "body": "On networks with slow DNS response, blocking calls from dns.lookup delay serial and filesystem work."
+  }'
+```
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`
@@ -134,6 +145,7 @@ Warnings:
 - Do not use `git add .` blindly.
 - Run `git lfs ls-files` before commit.
 - If expected artifact files are missing after clone, run `git lfs pull`.
+- The model-server classifier artifacts are tracked with Git LFS and must be present locally for real `/classify` inference.
 
 ## Docker bootstrap
 
