@@ -70,3 +70,51 @@ Still missing:
 - query rewrite
 - a filled 25-example RAG golden set
 - generation evaluation
+
+## RAG golden workflow
+
+There are two RAG golden files:
+
+- `data/rag/golden/rag_golden_candidates.jsonl`
+- `data/rag/golden/rag_golden.jsonl`
+
+Candidates are generated from the real corpus and are explicitly marked with `needs_human_review=true`. They are not final evaluation data.
+
+Generate candidates:
+
+```bash
+python scripts/make_rag_golden_candidates.py
+```
+
+Validate candidates:
+
+```bash
+python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden_candidates.jsonl
+```
+
+After manual review, copy and edit:
+
+```bash
+cp data/rag/golden/rag_golden_candidates.jsonl data/rag/golden/rag_golden.jsonl
+```
+
+Then set `needs_human_review=false` on all 25 reviewed rows and validate the final file:
+
+```bash
+python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.jsonl --require-final
+```
+
+The final project needs 25 reviewed `question` / `ideal_answer` / `ground_truth_chunk_ids` triples.
+
+## Retrieval metrics
+
+- `hit@5`: the fraction of questions where at least one correct chunk appears in the top 5 retrieved results.
+- `MRR@10`: mean reciprocal rank over the top 10 results. Earlier correct hits count more than later ones.
+
+Run retrieval eval only after the reviewed final file exists:
+
+```bash
+python evals/rag_retrieval_eval.py
+```
+
+The sparse TF-IDF retriever is the current baseline to beat later with dense retrieval, hybrid retrieval, and reranking.

@@ -123,6 +123,17 @@ python scripts/build_rag_corpus.py \
 
 Local docs are required before advanced RAG eval work. Without them, the corpus is issue-only.
 
+RAG golden candidate workflow:
+
+```bash
+python scripts/make_rag_golden_candidates.py
+python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden_candidates.jsonl
+cp data/rag/golden/rag_golden_candidates.jsonl data/rag/golden/rag_golden.jsonl
+# manually review/edit and set needs_human_review=false
+python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.jsonl --require-final
+python evals/rag_retrieval_eval.py
+```
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`

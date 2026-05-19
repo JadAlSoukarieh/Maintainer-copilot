@@ -9,5 +9,8 @@ classification:
 rag:
   grounded_answer_rate_min: 0.00
   hallucination_rate_max: 1.00
+rag_retrieval:
+  min_hit_at_5: 0.40
+  min_mrr_at_10: 0.20
 summarization:
   factuality_min: 0.00
