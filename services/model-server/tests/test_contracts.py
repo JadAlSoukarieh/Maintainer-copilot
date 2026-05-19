@@ -5,11 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from maintcopilot_model_server.api.routes import classify
+from maintcopilot_model_server.api.routes import classify, ner, summarize
 from maintcopilot_model_server.domain.errors import ConfigurationError
-from maintcopilot_model_server.domain.schemas import ClassifyRequest
+from maintcopilot_model_server.domain.schemas import ClassifyRequest, NerRequest, SummarizeRequest
 from maintcopilot_model_server.infra.artifact_loader import ArtifactLoader
 from maintcopilot_model_server.services.classifier_service import ClassifierService
+from maintcopilot_model_server.services.ner_service import NerService
+from maintcopilot_model_server.services.summarizer_service import SummarizerService
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -67,3 +69,39 @@ def test_classify_returns_schema_valid_output() -> None:
     assert response.model_type == "transformer"
     assert len(response.top_probabilities) == 4
     assert {item.label for item in response.top_probabilities} == {"bug", "feature", "docs", "question"}
+
+
+def test_ner_extracts_expected_entities() -> None:
+    response = ner(
+        NerRequest(
+            title="fs.utimes fails on v6.5.0 with --trace-warnings",
+            body="See /usr/local/lib/node_modules/app/index.js and https://nodejs.org/docs. "
+            "Call crypto.pbkdf2() and require('left-pad') after ERR_STREAM_WRITE_AFTER_END.",
+        ),
+        NerService(),
+    )
+    by_type = {entity.type for entity in response.entities}
+    assert "file_path" in by_type
+    assert "version" in by_type
+    assert "url" in by_type
+    assert "function" in by_type
+    for entity in response.entities:
+        combined = "fs.utimes fails on v6.5.0 with --trace-warnings\n\nSee /usr/local/lib/node_modules/app/index.js and https://nodejs.org/docs. Call crypto.pbkdf2() and require('left-pad') after ERR_STREAM_WRITE_AFTER_END."
+        assert combined[entity.start : entity.end] == entity.text
+
+
+def test_summarize_returns_non_empty_summary_and_respects_max_bullets() -> None:
+    response = summarize(
+        SummarizeRequest(
+            title="Memory leak in https.request",
+            body="Version: v6.8.0. Platform: Ubuntu 16.04. I can reproduce a memory leak after 10000 requests. "
+            "Expected behavior is stable memory usage. Actual behavior is resident memory growth. "
+            "Error logs show ECONNRESET in the request path.",
+            max_bullets=3,
+        ),
+        SummarizerService(),
+    )
+    assert response.summary
+    assert response.method == "extractive"
+    assert len(response.bullets) <= 3
+    assert response.bullets

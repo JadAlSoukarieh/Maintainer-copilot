@@ -39,6 +39,31 @@ Golden classifier eval:
 python evals/classification_eval.py
 ```
 
+NER smoke request:
+
+```bash
+curl -X POST http://localhost:8001/ner \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "fs.utimes fails on v6.5.0",
+    "body": "See /usr/local/lib/node_modules/app/index.js and https://nodejs.org/docs. Call crypto.pbkdf2() with --trace-warnings."
+  }'
+```
+
+Summarizer smoke request:
+
+```bash
+curl -X POST http://localhost:8001/summarize \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "Memory leak in https.request",
+    "body": "Version: v6.8.0. Platform: Ubuntu 16.04. Repro: send many requests. Actual: memory grows after ECONNRESET.",
+    "max_bullets": 3
+  }'
+```
+
+`/ner` is rule-based and `/summarize` is extractive for now. Both are integration tools for the chatbot pipeline, not external LLM-backed features.
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`

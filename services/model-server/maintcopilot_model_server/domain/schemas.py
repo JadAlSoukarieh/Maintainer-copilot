@@ -32,27 +32,28 @@ class ClassifyResponse(BaseModel):
 
 
 class NerRequest(BaseModel):
-    text: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    body: str = Field(default="")
 
 
 class Entity(BaseModel):
     text: str
-    label: str
+    type: str
     start: int
     end: int
 
 
 class NerResponse(BaseModel):
     entities: list[Entity]
-    model_version: str
 
 
 class SummarizeRequest(BaseModel):
-    text: str = Field(min_length=1)
-    max_sentences: int = Field(default=2, ge=1, le=10)
+    title: str = Field(min_length=1)
+    body: str = Field(default="")
+    max_bullets: int = Field(default=5, ge=1, le=10)
 
 
 class SummarizeResponse(BaseModel):
     summary: str
-    sentences_used: int
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    bullets: list[str]
+    method: str
