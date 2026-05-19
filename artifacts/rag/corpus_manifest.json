@@ -1,5 +1,5 @@
 {
-  "built_at_utc": "2026-05-19T15:14:51.590730+00:00",
+  "built_at_utc": "2026-05-19T17:29:59.217420+00:00",
   "repo": "nodejs/node",
   "sources": {
     "raw_issues_path": "data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl",
@@ -18,20 +18,94 @@
     "Dense embeddings, hybrid retrieval, reranking, and query rewriting are not implemented yet."
   ],
   "counts": {
-    "total_chunks": 6506,
+    "total_chunks": 13580,
     "by_source_type": {
-      "resolved_issue": 6506
+      "resolved_issue": 6506,
+      "doc": 7074
     },
     "by_source_split": {
       "val": 276,
       "test": 318,
-      "excluded": 5912
+      "excluded": 5912,
+      "docs": 7074
     },
+    "issue_chunks": 6506,
+    "doc_chunks": 7074,
     "input_issue_records": {
       "val": 196,
       "test": 196,
       "excluded": 2903
     },
-    "doc_chunks": 0
-  }
+    "doc_source_files": 68
+  },
+  "doc_source_paths": [
+    "api/addons.md",
+    "api/assert.md",
+    "api/async_context.md",
+    "api/async_hooks.md",
+    "api/buffer.md",
+    "api/child_process.md",
+    "api/cli.md",
+    "api/cluster.md",
+    "api/console.md",
+    "api/crypto.md",
+    "api/debugger.md",
+    "api/deprecations.md",
+    "api/dgram.md",
+    "api/diagnostics_channel.md",
+    "api/dns.md",
+    "api/documentation.md",
+    "api/domain.md",
+    "api/embedding.md",
+    "api/environment_variables.md",
+    "api/errors.md",
+    "api/esm.md",
+    "api/events.md",
+    "api/ffi.md",
+    "api/fs.md",
+    "api/globals.md",
+    "api/http.md",
+    "api/http2.md",
+    "api/https.md",
+    "api/index.md",
+    "api/inspector.md",
+    "api/intl.md",
+    "api/module.md",
+    "api/modules.md",
+    "api/n-api.md",
+    "api/net.md",
+    "api/os.md",
+    "api/packages.md",
+    "api/path.md",
+    "api/perf_hooks.md",
+    "api/permissions.md",
+    "api/process.md",
+    "api/punycode.md",
+    "api/querystring.md",
+    "api/quic.md",
+    "api/readline.md",
+    "api/repl.md",
+    "api/report.md",
+    "api/single-executable-applications.md",
+    "api/sqlite.md",
+    "api/stream.md",
+    "api/stream_iter.md",
+    "api/string_decoder.md",
+    "api/synopsis.md",
+    "api/test.md",
+    "api/timers.md",
+    "api/tls.md",
+    "api/tracing.md",
+    "api/tty.md",
+    "api/typescript.md",
+    "api/url.md",
+    "api/util.md",
+    "api/v8.md",
+    "api/vm.md",
+    "api/wasi.md",
+    "api/webcrypto.md",
+    "api/webstreams.md",
+    "api/worker_threads.md",
+    "api/zlib.md"
+  ]
 }

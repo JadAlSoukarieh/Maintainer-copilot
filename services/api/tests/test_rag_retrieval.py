@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from maintcopilot_api.services.rag.corpus import validate_corpus_row
+from maintcopilot_api.services.rag.corpus import build_doc_corpus_rows, build_issue_corpus_rows, validate_corpus_row
 from maintcopilot_api.services.rag.retrieval import SparseRetriever
 
 
@@ -44,7 +44,7 @@ def test_tfidf_retrieval_returns_relevant_chunk() -> None:
         },
     ]
     retriever = SparseRetriever(rows)
-    results = retriever.query("How do I debug an http connection leak?", top_k=2)
+    results = retriever.query("Where do the docs explain http request debugging?", top_k=2)
     assert results
     assert results[0]["chunk_id"] == "doc-http-001"
 
@@ -69,3 +69,32 @@ def test_corpus_rows_validate_required_fields() -> None:
         },
     }
     validate_corpus_row(row)
+
+
+def test_docs_and_issues_can_coexist_in_same_corpus(tmp_path) -> None:
+    docs_dir = tmp_path / "node_docs"
+    docs_dir.mkdir()
+    (docs_dir / "api.md").write_text("# API\n\n## Debugging\nUse NODE_DEBUG=http.\n", encoding="utf-8")
+
+    issue_record = {
+        "repo": "nodejs/node",
+        "issue_number": 9001,
+        "url": "https://github.com/nodejs/node/issues/9001",
+        "title": "https.request leaks memory",
+        "body": "Repro: send many requests. Actual: heap keeps growing.",
+        "created_at": "2016-09-01T00:00:00Z",
+        "closed_at": "2016-09-02T00:00:00Z",
+        "label": "bug",
+    }
+
+    doc_rows = build_doc_corpus_rows(docs_dir, max_chars=300)
+    issue_rows = build_issue_corpus_rows([issue_record], source_split="test", max_chars=300)
+    rows = doc_rows + issue_rows
+
+    assert any(row["source_type"] == "doc" for row in rows)
+    assert any(row["source_type"] == "resolved_issue" for row in rows)
+
+    retriever = SparseRetriever(rows)
+    results = retriever.query("How do the docs recommend http debugging?", top_k=3)
+    assert results
+    assert results[0]["source_type"] == "doc"

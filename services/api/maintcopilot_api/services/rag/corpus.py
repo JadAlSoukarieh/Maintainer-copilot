@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 from pathlib import Path
 
 from maintcopilot_api.services.rag.chunking import chunk_issue_record, chunk_markdown_document
@@ -78,9 +80,7 @@ def build_doc_corpus_rows(
         return []
 
     rows: list[dict] = []
-    for path in sorted(docs_dir.rglob("*")):
-        if not path.is_file() or path.suffix.lower() not in {".md", ".mdx", ".txt"}:
-            continue
+    for path in discover_doc_paths(docs_dir):
         text = path.read_text(encoding="utf-8")
         title = path.stem.replace("-", " ").replace("_", " ").strip() or path.name
         for chunk_index, chunk in enumerate(
@@ -94,10 +94,13 @@ def build_doc_corpus_rows(
             start=1,
         ):
             relative_path = path.relative_to(docs_dir).as_posix()
+            section = chunk["metadata"].get("section") or title
+            section_slug = slugify(section)
+            source_id = f"{relative_path}#{section_slug}:{chunk_index:03d}"
             row = {
-                "chunk_id": f"doc-{relative_path.replace('/', '-')}-{chunk_index:03d}",
+                "chunk_id": f"doc-{slugify(relative_path)}-{section_slug}-{chunk_index:03d}",
                 "source_type": "doc",
-                "source_id": relative_path,
+                "source_id": source_id,
                 "title": chunk["title"],
                 "url": "",
                 "text": chunk["text"],
@@ -140,3 +143,51 @@ def validate_corpus_row(row: dict) -> None:
         if key not in metadata:
             raise ValueError(f"Corpus row metadata is missing required field: {key}")
 
+
+def discover_doc_paths(docs_dir: Path) -> list[Path]:
+    if not docs_dir.exists():
+        return []
+    candidates = [
+        path
+        for path in sorted(docs_dir.rglob("*"))
+        if path.is_file() and path.suffix.lower() in {".md", ".mdx", ".txt"}
+    ]
+    by_relative_path = {path.relative_to(docs_dir).as_posix(): path for path in candidates}
+    selected: list[Path] = []
+    for path in candidates:
+        relative_path = path.relative_to(docs_dir).as_posix()
+        collapsed_relative_path = collapse_redundant_leading_segment(relative_path)
+        if (
+            collapsed_relative_path != relative_path
+            and collapsed_relative_path in by_relative_path
+            and _same_file_contents(path, by_relative_path[collapsed_relative_path])
+        ):
+            continue
+        selected.append(path)
+    return selected
+
+
+def slugify(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or "root"
+
+
+def collapse_redundant_leading_segment(relative_path: str) -> str:
+    parts = Path(relative_path).parts
+    while len(parts) >= 2 and parts[0] == parts[1]:
+        parts = parts[1:]
+    return Path(*parts).as_posix()
+
+
+def _same_file_contents(left: Path, right: Path) -> bool:
+    if left.stat().st_size != right.stat().st_size:
+        return False
+    return _sha256(left) == _sha256(right)
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()

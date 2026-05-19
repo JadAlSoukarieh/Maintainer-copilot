@@ -9,6 +9,7 @@ from pathlib import Path
 from maintcopilot_api.services.rag.corpus import (
     build_doc_corpus_rows,
     build_issue_corpus_rows,
+    discover_doc_paths,
     load_jsonl_records,
     write_jsonl_records,
 )
@@ -45,6 +46,8 @@ def main() -> int:
     val_records = load_jsonl_records(ROOT / args.val_path)
     test_records = load_jsonl_records(ROOT / args.test_path)
     excluded_records = load_jsonl_records(ROOT / args.excluded_path)
+    docs_dir = ROOT / args.docs_dir
+    doc_paths = discover_doc_paths(docs_dir)
 
     issue_rows = []
     issue_rows.extend(
@@ -73,7 +76,7 @@ def main() -> int:
     )
 
     doc_rows = build_doc_corpus_rows(
-        ROOT / args.docs_dir,
+        docs_dir,
         max_chars=args.max_chars,
         overlap_chars=args.overlap_chars,
     )
@@ -82,7 +85,16 @@ def main() -> int:
     output_path = ROOT / args.out
     write_jsonl_records(output_path, rows)
 
-    manifest = build_manifest(args, rows, len(val_records), len(test_records), len(excluded_records), len(doc_rows))
+    manifest = build_manifest(
+        args,
+        rows,
+        len(val_records),
+        len(test_records),
+        len(excluded_records),
+        len(issue_rows),
+        len(doc_rows),
+        [path.relative_to(docs_dir).as_posix() for path in doc_paths],
+    )
     write_json(ROOT / args.manifest_path, manifest)
 
     report = build_retrieval_report(rows, args.smoke_query, top_k=args.top_k)
@@ -105,7 +117,9 @@ def build_manifest(
     val_count: int,
     test_count: int,
     excluded_count: int,
+    issue_chunk_count: int,
     doc_chunk_count: int,
+    doc_source_paths: list[str],
 ) -> dict:
     by_source_type = Counter(row["source_type"] for row in rows)
     by_source_split = Counter(row["metadata"]["source_split"] for row in rows)
@@ -132,13 +146,16 @@ def build_manifest(
             "total_chunks": len(rows),
             "by_source_type": dict(by_source_type),
             "by_source_split": dict(by_source_split),
+            "issue_chunks": issue_chunk_count,
+            "doc_chunks": doc_chunk_count,
             "input_issue_records": {
                 "val": val_count,
                 "test": test_count,
                 "excluded": excluded_count,
             },
-            "doc_chunks": doc_chunk_count,
+            "doc_source_files": len(doc_source_paths),
         },
+        "doc_source_paths": doc_source_paths,
     }
 
 
@@ -146,10 +163,14 @@ def build_retrieval_report(rows: list[dict], query: str, top_k: int) -> dict:
     report = {
         "built_at_utc": datetime.now(UTC).isoformat(),
         "baseline": "sparse_tfidf",
-        "query": query,
+        "smoke_query": query,
         "top_k": top_k,
         "result_count": 0,
         "results": [],
+        "top_k_source_type_hits": {
+            "doc": 0,
+            "resolved_issue": 0,
+        },
         "notes": [
             "Baseline uses local sparse TF-IDF retrieval only.",
             "Dense embeddings, hybrid retrieval, reranking, and generation eval are still missing.",
@@ -173,6 +194,10 @@ def build_retrieval_report(rows: list[dict], query: str, top_k: int) -> dict:
         for item in results
     ]
     report["result_count"] = len(results)
+    report["top_k_source_type_hits"] = {
+        "doc": sum(1 for item in results if item["source_type"] == "doc"),
+        "resolved_issue": sum(1 for item in results if item["source_type"] == "resolved_issue"),
+    }
     return report
 
 

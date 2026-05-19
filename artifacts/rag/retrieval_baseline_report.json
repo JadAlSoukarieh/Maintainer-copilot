@@ -1,13 +1,49 @@
 {
-  "built_at_utc": "2026-05-19T15:14:51.591074+00:00",
+  "built_at_utc": "2026-05-19T17:29:59.217803+00:00",
   "baseline": "sparse_tfidf",
-  "query": "How do I debug memory leak in https request?",
+  "smoke_query": "How do I debug memory leak in https request?",
   "top_k": 5,
   "result_count": 5,
   "results": [
     {
+      "chunk_id": "doc-api-http-md-http-001",
+      "score": 0.349981,
+      "source_type": "doc",
+      "title": "http",
+      "url": "",
+      "metadata": {
+        "repo": "nodejs/node",
+        "source_split": "docs",
+        "label": null,
+        "issue_number": null,
+        "created_at": null,
+        "closed_at": null,
+        "path": "api/http.md",
+        "section": "HTTP"
+      },
+      "text_preview": "Document: http\nSection path: HTTP"
+    },
+    {
+      "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-node-memory-debug-124",
+      "score": 0.349398,
+      "source_type": "doc",
+      "title": "cli",
+      "url": "",
+      "metadata": {
+        "repo": "nodejs/node",
+        "source_split": "docs",
+        "label": null,
+        "issue_number": null,
+        "created_at": null,
+        "closed_at": null,
+        "path": "api/cli.md",
+        "section": "Using 75% of available system memory > `--node-memory-debug`"
+      },
+      "text_preview": "Document: cli\nSection path: Using 75% of available system memory > `--node-memory-debug`\n\nEnable extra debug checks for memory leaks in Node.js internals. This is\nusually only useful for developers debugging Node.js itself."
+    },
+    {
       "chunk_id": "issue-8520-excluded-002",
-      "score": 0.313169,
+      "score": 0.344271,
       "source_type": "resolved_issue",
       "title": "\"There was an internal error in Node's debugger. Please report this bug.\"",
       "url": "https://github.com/nodejs/node/issues/8520",
@@ -24,8 +60,26 @@
       "text_preview": "```\n\u2907 node debug --stack-trace-limit=1000 tests/pyret/tests/test-builtin-locator.jarr\ndebug> bt\ndebug> c\ndebug> sb(168435)\ndebug> c\ndebug> bt\ndebug> sb(810304)\ndebug> c\ndebug> cb(\"tests/pyret/tests/test-builtin-locator.jarr\", 168435)\ndebug>"
     },
     {
+      "chunk_id": "doc-api-http-md-http-class-http-server-event-request-088",
+      "score": 0.306406,
+      "source_type": "doc",
+      "title": "http",
+      "url": "",
+      "metadata": {
+        "repo": "nodejs/node",
+        "source_split": "docs",
+        "label": null,
+        "issue_number": null,
+        "created_at": null,
+        "closed_at": null,
+        "path": "api/http.md",
+        "section": "HTTP > Class: `http.Server` > Event: `'request'`"
+      },
+      "text_preview": "Document: http\nSection path: HTTP > Class: `http.Server` > Event: `'request'`\n\n* `request` {http.IncomingMessage}\n* `response` {http.ServerResponse}\nEmitted each time there is a request. There may be multiple requests\nper connection (in the"
+    },
+    {
       "chunk_id": "issue-4333-excluded-001",
-      "score": 0.312425,
+      "score": 0.296238,
       "source_type": "resolved_issue",
       "title": "Sending HTTP Requests to HTTP 2.0 Enabled Websites Return No Response",
       "url": "https://github.com/nodejs/node/issues/4333",
@@ -40,62 +94,12 @@
         "section": "issue_record"
       },
       "text_preview": "Issue: Sending HTTP Requests to HTTP 2.0 Enabled Websites Return No Response\n\nProblem:\nMany websites have started to enable HTTP 2.0 with fallback to HTTP 1.1 (CloudFlare started enabling this too).\n\nAnd, Nodejs' HTTP requests seem to fail "
-    },
-    {
-      "chunk_id": "issue-6632-excluded-001",
-      "score": 0.298704,
-      "source_type": "resolved_issue",
-      "title": "Massive memory leak in HTTP 'upgrade' event",
-      "url": "https://github.com/nodejs/node/issues/6632",
-      "metadata": {
-        "repo": "nodejs/node",
-        "source_split": "excluded",
-        "label": null,
-        "issue_number": 6632,
-        "created_at": "2016-05-07T20:31:04Z",
-        "closed_at": "2016-05-07T22:03:58Z",
-        "path": null,
-        "section": "issue_record"
-      },
-      "text_preview": "Issue: Massive memory leak in HTTP 'upgrade' event\n\nProblem:\n- **Version**: 5.11.0\n- **Platform**: Linux\n- **Subsystem**: HTTP\n\nI'm running this server:\n\n``` javascript\nconst http = require('http');\nconst httpServer = http.createServer((req"
-    },
-    {
-      "chunk_id": "issue-3682-excluded-001",
-      "score": 0.295137,
-      "source_type": "resolved_issue",
-      "title": "Debugging across http requests throws exception",
-      "url": "https://github.com/nodejs/node/issues/3682",
-      "metadata": {
-        "repo": "nodejs/node",
-        "source_split": "excluded",
-        "label": null,
-        "issue_number": 3682,
-        "created_at": "2015-11-05T22:29:51Z",
-        "closed_at": "2016-03-02T16:17:04Z",
-        "path": null,
-        "section": "issue_record"
-      },
-      "text_preview": "Issue: Debugging across http requests throws exception\n\nProblem:\nHi,\n\nI hope this is the right place to post this, but I think I've found an issue with `node debug`.\n\nGiven this code in `test.js`:\n\n``` javascript\nvar http = require('https')"
-    },
-    {
-      "chunk_id": "issue-1316-excluded-001",
-      "score": 0.2679,
-      "source_type": "resolved_issue",
-      "title": "BUILDS okay and iojs v1.6.4 app.js runs OK [64bit win10] but FAILS to return any HTTP",
-      "url": "https://github.com/nodejs/node/issues/1316",
-      "metadata": {
-        "repo": "nodejs/node",
-        "source_split": "excluded",
-        "label": null,
-        "issue_number": 1316,
-        "created_at": "2015-04-01T16:56:30Z",
-        "closed_at": "2015-04-02T03:37:29Z",
-        "path": null,
-        "section": "issue_record"
-      },
-      "text_preview": "Issue: BUILDS okay and iojs v1.6.4 app.js runs OK [64bit win10] but FAILS to return any HTTP\n\nProblem:\ngit clone -b v1.x --single-branch iojs/io.js . && vcbuild.bat nosign \nv1.x BUILDS OK [64bit win10]\n\niojs v1.6.4 app.js runs, \nconsole.log"
     }
   ],
+  "top_k_source_type_hits": {
+    "doc": 3,
+    "resolved_issue": 2
+  },
   "notes": [
     "Baseline uses local sparse TF-IDF retrieval only.",
     "Dense embeddings, hybrid retrieval, reranking, and generation eval are still missing."

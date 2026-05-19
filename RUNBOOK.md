@@ -76,6 +76,26 @@ curl -X POST http://localhost:8001/summarize \
 
 The RAG corpus builder currently ingests held-out issues from `data/processed/val.jsonl`, `data/processed/test.jsonl`, and `data/processed/excluded_issues.jsonl`, plus any local docs placed in `data/rag/raw/node_docs`. Retrieval is sparse TF-IDF only at this stage.
 
+To prepare local Node docs:
+
+```bash
+git clone --depth 1 https://github.com/nodejs/node.git /tmp/node
+mkdir -p data/rag/raw/node_docs
+cp -r /tmp/node/doc/api data/rag/raw/node_docs/api
+```
+
+Rebuild the corpus after copying docs:
+
+```bash
+python scripts/build_rag_corpus.py \
+  --issues-path data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl \
+  --docs-dir data/rag/raw/node_docs \
+  --out data/rag/processed/rag_corpus.jsonl \
+  --smoke-query "How do I debug memory leak in https request?"
+```
+
+Docs are required before advanced RAG eval and doc-grounded retrieval comparison.
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`

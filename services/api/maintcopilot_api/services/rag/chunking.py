@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
-
-
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*\S)\s*$")
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9`])")
 WHITESPACE_RE = re.compile(r"\s+")
+HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
+FRONT_MATTER_RE = re.compile(r"\A---\n.*?\n---\n?", re.DOTALL)
 
 
 def normalize_text(text: str) -> str:
@@ -60,28 +59,46 @@ def chunk_markdown_document(
     max_chars: int = 1400,
     overlap_chars: int = 200,
 ) -> list[dict]:
-    lines = text.splitlines()
+    cleaned_text = _clean_markdown_text(text)
+    lines = cleaned_text.splitlines()
+    heading_stack: list[str] = [title]
     current_heading = title
+    current_level = 1
     current_body: list[str] = []
     sections: list[tuple[str, str]] = []
 
     for line in lines:
         heading_match = HEADING_RE.match(line)
         if heading_match:
-            if current_body:
-                sections.append((current_heading, "\n".join(current_body).strip()))
-            current_heading = heading_match.group(2).strip()
+            body_text = _clean_section_body("\n".join(current_body))
+            if body_text:
+                sections.append((current_heading, body_text))
+            current_level = len(heading_match.group(1))
+            heading_value = heading_match.group(2).strip()
+            heading_stack = heading_stack[:current_level]
+            if len(heading_stack) < current_level:
+                heading_stack.extend([""] * (current_level - len(heading_stack)))
+            if current_level == 1:
+                heading_stack = [heading_value]
+            else:
+                heading_stack[current_level - 1] = heading_value
+            current_heading = " > ".join(part for part in heading_stack if part)
             current_body = []
             continue
         current_body.append(line)
 
-    if current_body or not sections:
-        sections.append((current_heading, "\n".join(current_body).strip()))
+    final_body = _clean_section_body("\n".join(current_body))
+    if final_body:
+        sections.append((current_heading, final_body))
+    elif not sections:
+        fallback = normalize_text(cleaned_text)
+        if fallback:
+            sections.append((title, fallback))
 
     chunks: list[dict] = []
     for heading, body in sections:
         section_body = body or heading
-        section_text = f"Document: {title}\nSection: {heading}\n\n{section_body}".strip()
+        section_text = f"Document: {title}\nSection path: {heading}\n\n{section_body}".strip()
         for index, piece in enumerate(split_long_text(section_text, max_chars=max_chars, overlap_chars=overlap_chars), start=1):
             chunks.append(
                 {
@@ -181,3 +198,22 @@ def _split_hard(text: str, *, max_chars: int, overlap_chars: int) -> list[str]:
         start += step
     return [piece for piece in pieces if piece]
 
+
+def _clean_markdown_text(text: str) -> str:
+    cleaned = FRONT_MATTER_RE.sub("", text.lstrip())
+    cleaned = HTML_COMMENT_RE.sub("", cleaned)
+    lines = [line.rstrip() for line in cleaned.splitlines()]
+    return "\n".join(lines).strip()
+
+
+def _clean_section_body(text: str) -> str:
+    lines = [line.strip() for line in text.splitlines()]
+    cleaned_lines = [
+        line
+        for line in lines
+        if line
+        and line not in {"---", "***"}
+        and not line.startswith("<!--")
+        and line.lower() not in {"stability: 0", "stability: 1", "stability: 2", "stability: 3"}
+    ]
+    return "\n".join(cleaned_lines).strip()

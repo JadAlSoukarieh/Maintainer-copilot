@@ -2,7 +2,10 @@ from maintcopilot_api.services.rag.chunking import chunk_issue_record, chunk_mar
 from maintcopilot_api.services.rag.corpus import (
     build_doc_corpus_rows,
     build_issue_corpus_rows,
+    collapse_redundant_leading_segment,
+    discover_doc_paths,
     load_jsonl_records,
+    slugify,
     validate_corpus_row,
     write_jsonl_records,
 )
@@ -12,9 +15,12 @@ __all__ = [
     "SparseRetriever",
     "build_doc_corpus_rows",
     "build_issue_corpus_rows",
+    "collapse_redundant_leading_segment",
     "chunk_issue_record",
     "chunk_markdown_document",
+    "discover_doc_paths",
     "load_jsonl_records",
+    "slugify",
     "validate_corpus_row",
     "write_jsonl_records",
 ]

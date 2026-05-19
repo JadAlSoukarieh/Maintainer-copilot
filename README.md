@@ -103,6 +103,26 @@ The RAG foundation currently builds a local corpus from:
 
 The baseline retriever is sparse TF-IDF only. Dense embeddings, hybrid retrieval, reranking, query rewriting, and generation are still future work.
 
+To prepare local Node docs for corpus builds:
+
+```bash
+git clone --depth 1 https://github.com/nodejs/node.git /tmp/node
+mkdir -p data/rag/raw/node_docs
+cp -r /tmp/node/doc/api data/rag/raw/node_docs/api
+```
+
+Then rebuild the corpus:
+
+```bash
+python scripts/build_rag_corpus.py \
+  --issues-path data/raw/nodejs_node_closed_issue_items_capped_raw.jsonl \
+  --docs-dir data/rag/raw/node_docs \
+  --out data/rag/processed/rag_corpus.jsonl \
+  --smoke-query "How do I debug memory leak in https request?"
+```
+
+Local docs are required before advanced RAG eval work. Without them, the corpus is issue-only.
+
 ## Local Dev Service URLs
 
 - API base URL: `http://localhost:8000`
