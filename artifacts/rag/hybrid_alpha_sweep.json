@@ -1,0 +1,69 @@
+{
+  "results": [
+    {
+      "alpha": 0.0,
+      "hit_at_5": 0.6,
+      "hit_at_10": 0.68,
+      "mrr_at_10": 0.5584444444444444,
+      "per_source_hit_at_5": {
+        "doc": 0.25,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_hybrid_alpha_0_0.json"
+    },
+    {
+      "alpha": 0.25,
+      "hit_at_5": 0.64,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.604047619047619,
+      "per_source_hit_at_5": {
+        "doc": 0.3333333333333333,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_hybrid_alpha_0_25.json"
+    },
+    {
+      "alpha": 0.5,
+      "hit_at_5": 0.68,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.5646666666666667,
+      "per_source_hit_at_5": {
+        "doc": 0.4166666666666667,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_hybrid_alpha_0_5.json"
+    },
+    {
+      "alpha": 0.75,
+      "hit_at_5": 0.6,
+      "hit_at_10": 0.68,
+      "mrr_at_10": 0.47438095238095235,
+      "per_source_hit_at_5": {
+        "doc": 0.4166666666666667,
+        "resolved_issue": 0.7692307692307693
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_hybrid_alpha_0_75.json"
+    },
+    {
+      "alpha": 1.0,
+      "hit_at_5": 0.56,
+      "hit_at_10": 0.6,
+      "mrr_at_10": 0.3463333333333333,
+      "per_source_hit_at_5": {
+        "doc": 0.4166666666666667,
+        "resolved_issue": 0.6923076923076923
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_hybrid_alpha_1_0.json"
+    }
+  ]
+}

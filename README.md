@@ -101,7 +101,7 @@ The RAG foundation currently builds a local corpus from:
 - Node.js docs placed under `data/rag/raw/node_docs`
 - held-out resolved Node.js issues from the validation, test, and excluded splits
 
-The baseline retriever is sparse TF-IDF only. Dense embeddings, hybrid retrieval, reranking, query rewriting, and generation are still future work.
+The baseline retriever is sparse TF-IDF. Dense retrieval uses local `sentence-transformers/all-MiniLM-L6-v2` embeddings, and hybrid retrieval combines normalized sparse and dense scores. Reranking, query rewriting, and generation are still future work.
 
 To prepare local Node docs for corpus builds:
 
@@ -135,6 +135,20 @@ python evals/rag_retrieval_eval.py
 ```
 
 The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat; dense retrieval, hybrid retrieval, reranking, and query rewrite come later.
+
+Dense and hybrid retrieval workflow:
+
+```bash
+python scripts/build_rag_embeddings.py
+python evals/rag_retrieval_eval.py --retriever sparse
+python evals/rag_retrieval_eval.py --retriever dense
+python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
+python scripts/sweep_rag_hybrid_alpha.py
+```
+
+The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API.
+
+Current RAG retrieval results: sparse hit@5 0.56 / MRR@10 0.3463; dense hit@5 0.60 / MRR@10 0.5584; best hybrid hit@5 is 0.68 at alpha 0.50, and best hybrid MRR@10 is 0.6040 at alpha 0.25.
 
 ## Local Dev Service URLs
 

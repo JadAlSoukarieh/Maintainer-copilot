@@ -80,3 +80,53 @@ def test_retrieval_eval_missing_final_golden_returns_clear_error(tmp_path: Path)
     )
     assert exit_code == 1
     assert "Run python scripts/make_rag_golden_candidates.py" in result["message"]
+
+
+def test_retrieval_eval_report_includes_retriever_type(tmp_path: Path) -> None:
+    corpus_path = tmp_path / "rag_corpus.jsonl"
+    golden_path = tmp_path / "rag_golden.jsonl"
+    thresholds_path = tmp_path / "thresholds.yaml"
+    report_path = tmp_path / "rag_eval_sparse.json"
+
+    corpus_row = {
+        "chunk_id": "doc-http-001",
+        "source_type": "doc",
+        "source_id": "api/http.md#http:001",
+        "title": "http",
+        "url": "",
+        "text": "HTTP request docs explain request debugging.",
+        "metadata": {
+            "repo": "nodejs/node",
+            "source_split": "docs",
+            "label": None,
+            "issue_number": None,
+            "created_at": None,
+            "closed_at": None,
+            "path": "api/http.md",
+            "section": "HTTP > request",
+        },
+    }
+    golden_row = {
+        "golden_id": "rag-golden-001",
+        "question": "What docs explain HTTP request debugging?",
+        "ideal_answer": "Use the HTTP request docs.",
+        "ground_truth_chunk_ids": ["doc-http-001"],
+        "source_type": "doc",
+        "needs_human_review": False,
+        "human_review_status": "ai_assisted_approved",
+    }
+    corpus_path.write_text(f"{__import__('json').dumps(corpus_row)}\n", encoding="utf-8")
+    golden_path.write_text("\n".join(__import__("json").dumps(golden_row) for _ in range(25)) + "\n", encoding="utf-8")
+    thresholds_path.write_text("rag_retrieval:\n  min_hit_at_5: 0.4\n  min_mrr_at_10: 0.2\n", encoding="utf-8")
+
+    exit_code, result = run_rag_retrieval_eval(
+        corpus_path=corpus_path,
+        golden_path=golden_path,
+        thresholds_path=thresholds_path,
+        report_path=report_path,
+        retriever_type="sparse",
+    )
+
+    assert exit_code == 0
+    assert result["retriever"] == "sparse"
+    assert report_path.exists()

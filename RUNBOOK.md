@@ -74,7 +74,7 @@ curl -X POST http://localhost:8001/summarize \
 
 `/ner` is rule-based and `/summarize` is extractive for now. Both are integration tools for the chatbot pipeline, not external LLM-backed features.
 
-The RAG corpus builder currently ingests held-out issues from `data/processed/val.jsonl`, `data/processed/test.jsonl`, and `data/processed/excluded_issues.jsonl`, plus any local docs placed in `data/rag/raw/node_docs`. Retrieval is sparse TF-IDF only at this stage.
+The RAG corpus builder currently ingests held-out issues from `data/processed/val.jsonl`, `data/processed/test.jsonl`, and `data/processed/excluded_issues.jsonl`, plus any local docs placed in `data/rag/raw/node_docs`. Retrieval supports sparse TF-IDF, local MiniLM dense embeddings, and hybrid sparse+dense ranking.
 
 To prepare local Node docs:
 
@@ -108,6 +108,20 @@ python evals/rag_retrieval_eval.py
 ```
 
 The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat before adding dense embeddings, hybrid retrieval, reranking, or query rewrite.
+
+Dense and hybrid retrieval workflow:
+
+```bash
+python scripts/build_rag_embeddings.py
+python evals/rag_retrieval_eval.py --retriever sparse
+python evals/rag_retrieval_eval.py --retriever dense
+python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
+python scripts/sweep_rag_hybrid_alpha.py
+```
+
+The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API.
+
+Current RAG retrieval results: sparse hit@5 0.56 / MRR@10 0.3463; dense hit@5 0.60 / MRR@10 0.5584; best hybrid hit@5 is 0.68 at alpha 0.50, and best hybrid MRR@10 is 0.6040 at alpha 0.25.
 
 ## Local Dev Service URLs
 

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import json
+
+import numpy as np
+
 from maintcopilot_api.services.rag.corpus import build_doc_corpus_rows, build_issue_corpus_rows, validate_corpus_row
-from maintcopilot_api.services.rag.retrieval import SparseRetriever
+from maintcopilot_api.services.rag.retrieval import DenseRetriever, HybridRetriever, SparseRetriever
 
 
 def test_tfidf_retrieval_returns_relevant_chunk() -> None:
@@ -98,3 +102,96 @@ def test_docs_and_issues_can_coexist_in_same_corpus(tmp_path) -> None:
     results = retriever.query("How do the docs recommend http debugging?", top_k=3)
     assert results
     assert results[0]["source_type"] == "doc"
+
+
+def test_dense_retriever_loads_tiny_embedding_index(tmp_path) -> None:
+    rows = [
+        _toy_row("a", "doc", "HTTP request lifecycle debugging"),
+        _toy_row("b", "resolved_issue", "zlib memory leak issue"),
+    ]
+    index_dir = tmp_path / "embeddings"
+    index_dir.mkdir()
+    np.savez_compressed(index_dir / "dense_index.npz", embeddings=np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32))
+    (index_dir / "chunk_ids.json").write_text(json.dumps(["a", "b"]), encoding="utf-8")
+
+    retriever = DenseRetriever(rows, index_dir=index_dir, query_encoder=lambda texts: np.array([[0.0, 1.0]], dtype=np.float32))
+    results = retriever.query("memory leak", top_k=2)
+
+    assert [result["chunk_id"] for result in results] == ["b", "a"]
+
+
+def test_hybrid_alpha_one_behaves_like_sparse_ordering(tmp_path) -> None:
+    rows = [
+        _toy_row("sparse-winner", "doc", "http http http request docs"),
+        _toy_row("dense-winner", "doc", "unrelated semantic result"),
+    ]
+    dense = _toy_dense_retriever(tmp_path, rows, query_vector=np.array([[0.0, 1.0]], dtype=np.float32))
+    sparse = SparseRetriever(rows)
+    hybrid = HybridRetriever(sparse, dense, alpha=1.0)
+
+    assert hybrid.query("http request", top_k=2)[0]["chunk_id"] == sparse.query("http request", top_k=2)[0]["chunk_id"]
+
+
+def test_hybrid_alpha_zero_behaves_like_dense_ordering(tmp_path) -> None:
+    rows = [
+        _toy_row("sparse-winner", "doc", "http http http request docs"),
+        _toy_row("dense-winner", "doc", "unrelated semantic result"),
+    ]
+    dense = _toy_dense_retriever(tmp_path, rows, query_vector=np.array([[0.0, 1.0]], dtype=np.float32))
+    sparse = SparseRetriever(rows)
+    hybrid = HybridRetriever(sparse, dense, alpha=0.0)
+
+    assert hybrid.query("http request", top_k=2)[0]["chunk_id"] == dense.query("http request", top_k=2)[0]["chunk_id"]
+
+
+def test_hybrid_scoring_combines_sparse_and_dense(tmp_path) -> None:
+    rows = [
+        _toy_row("sparse-only", "doc", "http request request request"),
+        _toy_row("dense-only", "doc", "semantic match"),
+        _toy_row("both", "doc", "http request"),
+    ]
+    index_dir = tmp_path / "hybrid_embeddings"
+    index_dir.mkdir()
+    np.savez_compressed(
+        index_dir / "dense_index.npz",
+        embeddings=np.array([[0.0, 0.1], [0.0, 1.0], [0.0, 0.8]], dtype=np.float32),
+    )
+    (index_dir / "chunk_ids.json").write_text(json.dumps(["sparse-only", "dense-only", "both"]), encoding="utf-8")
+
+    sparse = SparseRetriever(rows)
+    dense = DenseRetriever(rows, index_dir=index_dir, query_encoder=lambda texts: np.array([[0.0, 1.0]], dtype=np.float32))
+    hybrid = HybridRetriever(sparse, dense, alpha=0.5)
+    results = hybrid.query("http request", top_k=3)
+
+    assert results[0]["chunk_id"] == "both"
+    assert "sparse_score" in results[0]
+    assert "dense_score" in results[0]
+
+
+def _toy_dense_retriever(tmp_path, rows: list[dict], *, query_vector: np.ndarray) -> DenseRetriever:
+    index_dir = tmp_path / "embeddings"
+    index_dir.mkdir(exist_ok=True)
+    np.savez_compressed(index_dir / "dense_index.npz", embeddings=np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32))
+    (index_dir / "chunk_ids.json").write_text(json.dumps([row["chunk_id"] for row in rows]), encoding="utf-8")
+    return DenseRetriever(rows, index_dir=index_dir, query_encoder=lambda texts: query_vector)
+
+
+def _toy_row(chunk_id: str, source_type: str, text: str) -> dict:
+    return {
+        "chunk_id": chunk_id,
+        "source_type": source_type,
+        "source_id": chunk_id,
+        "title": chunk_id,
+        "url": "",
+        "text": text,
+        "metadata": {
+            "repo": "nodejs/node",
+            "source_split": "docs" if source_type == "doc" else "test",
+            "label": None,
+            "issue_number": None,
+            "created_at": None,
+            "closed_at": None,
+            "path": "api/test.md",
+            "section": "test",
+        },
+    }

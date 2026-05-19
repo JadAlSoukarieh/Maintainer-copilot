@@ -1,0 +1,19 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "corpus_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/data/rag/processed/rag_corpus.jsonl",
+  "corpus_sha256": "17172f929c2858d27cc176cc2e2bdd8b75262a248fcc00b4c0c151ff5c20f557",
+  "corpus_size": 13580,
+  "embedding_dim": 384,
+  "created_at": "2026-05-19T18:30:43.872768+00:00",
+  "text_field_used": "text",
+  "limit": null,
+  "normalized": true,
+  "index_file": "dense_index.npz",
+  "chunk_ids_file": "chunk_ids.json",
+  "count_reconciliation": {
+    "embedded_rows": 13580,
+    "current_corpus_rows": 13580,
+    "previously_reported_corpus_rows": 20654,
+    "reason": "The earlier 20,654 count came from a pre-dedup corpus build that included duplicated Node.js docs under a nested api/api/... directory. The resolved_issue chunk count stayed the same at 6,506, while doc chunks dropped from 14,148 to 7,074 after deduplicating identical nested doc files. The embedding index was built from the current deduplicated corpus on disk, so this is not a stale-manifest or extra-filtering mismatch."
+  }
+}

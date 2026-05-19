@@ -8,7 +8,7 @@ from typing import Any
 import yaml
 
 from maintcopilot_api.services.rag.golden import load_jsonl, validate_rag_golden
-from maintcopilot_api.services.rag.retrieval import SparseRetriever
+from maintcopilot_api.services.rag.retrieval import DenseRetriever, HybridRetriever, SparseRetriever
 
 
 def load_rag_thresholds(path: Path) -> dict[str, float]:
@@ -27,8 +27,9 @@ def compute_retrieval_metrics(
     corpus_rows: list[dict[str, Any]],
     *,
     top_k: int = 10,
+    retriever: Any | None = None,
 ) -> dict[str, Any]:
-    retriever = SparseRetriever(corpus_rows)
+    active_retriever = retriever or SparseRetriever(corpus_rows)
     hits_at_5 = 0
     hits_at_10 = 0
     reciprocal_ranks: list[float] = []
@@ -41,7 +42,7 @@ def compute_retrieval_metrics(
     for row in golden_rows:
         source_type = str(row.get("source_type", "unknown"))
         per_source_examples[source_type] += 1
-        results = retriever.query(str(row["question"]), top_k=top_k)
+        results = active_retriever.query(str(row["question"]), top_k=top_k)
         top_scores.append(results[0]["score"] if results else 0.0)
         ground_truth_ids = set(row["ground_truth_chunk_ids"])
 
@@ -123,6 +124,9 @@ def run_rag_retrieval_eval(
     golden_path: Path,
     thresholds_path: Path,
     report_path: Path,
+    retriever_type: str = "sparse",
+    embedding_index_dir: Path | None = None,
+    alpha: float = 0.5,
 ) -> tuple[int, dict[str, Any]]:
     if not golden_path.exists():
         return 1, {
@@ -148,12 +152,21 @@ def run_rag_retrieval_eval(
             "validation": validation,
         }
     thresholds = load_rag_thresholds(thresholds_path)
-    metrics = compute_retrieval_metrics(golden_rows, corpus_rows)
+    retriever = build_retriever(
+        retriever_type=retriever_type,
+        corpus_rows=corpus_rows,
+        embedding_index_dir=embedding_index_dir,
+        alpha=alpha,
+    )
+    metrics = compute_retrieval_metrics(golden_rows, corpus_rows, retriever=retriever)
     failures = evaluate_retrieval_thresholds(metrics, thresholds)
 
     report = {
+        "retriever": retriever_type,
+        "alpha": alpha if retriever_type == "hybrid" else None,
         "golden_path": str(golden_path),
         "corpus_path": str(corpus_path),
+        "embedding_index_dir": str(embedding_index_dir) if embedding_index_dir is not None else None,
         "thresholds": thresholds,
         "metrics": metrics,
         "passed": not failures,
@@ -162,3 +175,25 @@ def run_rag_retrieval_eval(
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     return (0 if not failures else 1), report
+
+
+def build_retriever(
+    *,
+    retriever_type: str,
+    corpus_rows: list[dict[str, Any]],
+    embedding_index_dir: Path | None,
+    alpha: float,
+) -> Any:
+    if retriever_type == "sparse":
+        return SparseRetriever(corpus_rows)
+    if retriever_type == "dense":
+        if embedding_index_dir is None:
+            raise ValueError("embedding_index_dir is required for dense retrieval.")
+        return DenseRetriever(corpus_rows, index_dir=embedding_index_dir)
+    if retriever_type == "hybrid":
+        if embedding_index_dir is None:
+            raise ValueError("embedding_index_dir is required for hybrid retrieval.")
+        sparse = SparseRetriever(corpus_rows)
+        dense = DenseRetriever(corpus_rows, index_dir=embedding_index_dir)
+        return HybridRetriever(sparse, dense, alpha=alpha)
+    raise ValueError(f"Unsupported retriever type: {retriever_type}")

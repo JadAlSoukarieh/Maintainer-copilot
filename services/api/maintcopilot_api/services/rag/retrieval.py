@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import math
 import re
+from pathlib import Path
 from collections import Counter
+from typing import Callable
+
+import numpy as np
+
+from maintcopilot_api.services.rag.golden import load_jsonl
 
 
 TOKEN_RE = re.compile(r"[A-Za-z0-9_.:/-]+")
@@ -96,6 +102,164 @@ class SparseRetriever:
             token: math.log((1 + doc_count) / (1 + frequency)) + 1.0
             for token, frequency in document_frequency.items()
         }
+
+
+class DenseRetriever:
+    def __init__(
+        self,
+        rows: list[dict],
+        *,
+        index_dir: Path,
+        embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
+        query_encoder: Callable[[list[str]], np.ndarray] | None = None,
+    ) -> None:
+        self.rows_by_id = {row["chunk_id"]: row for row in rows}
+        self.index_dir = Path(index_dir)
+        self.embedding_model = embedding_model
+        self.query_encoder = query_encoder
+        self._model = None
+        self.chunk_ids = self._load_chunk_ids(self.index_dir / "chunk_ids.json")
+        self.embeddings = self._load_embeddings(self.index_dir / "dense_index.npz")
+        if len(self.chunk_ids) != self.embeddings.shape[0]:
+            raise ValueError("Dense index chunk id count does not match embedding row count.")
+
+    def query(self, query_text: str, top_k: int = 5) -> list[dict]:
+        if not query_text.strip():
+            return []
+        query_embedding = self._encode_query(query_text)
+        scores = self.embeddings @ query_embedding
+        if scores.size == 0:
+            return []
+        top_indices = np.argsort(scores)[::-1][:top_k]
+        results: list[dict] = []
+        for index in top_indices:
+            chunk_id = self.chunk_ids[int(index)]
+            row = self.rows_by_id.get(chunk_id)
+            if row is None:
+                continue
+            results.append(_result_from_row(row, float(scores[int(index)])))
+        return results
+
+    def _encode_query(self, query_text: str) -> np.ndarray:
+        if self.query_encoder is not None:
+            encoded = self.query_encoder([query_text])
+        else:
+            if self._model is None:
+                self._model = _load_sentence_transformer(self.embedding_model)
+            encoded = self._model.encode([query_text], normalize_embeddings=True, convert_to_numpy=True)
+        array = np.asarray(encoded, dtype=np.float32)
+        if array.ndim == 2:
+            array = array[0]
+        norm = np.linalg.norm(array)
+        if norm == 0:
+            return array
+        return array / norm
+
+    @staticmethod
+    def _load_chunk_ids(path: Path) -> list[str]:
+        import json
+
+        if not path.exists():
+            raise FileNotFoundError(f"Dense retrieval chunk id file is missing: {path}")
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, list) or not all(isinstance(item, str) for item in payload):
+            raise ValueError("Dense retrieval chunk_ids.json must contain a JSON list of strings.")
+        return payload
+
+    @staticmethod
+    def _load_embeddings(path: Path) -> np.ndarray:
+        if not path.exists():
+            raise FileNotFoundError(f"Dense retrieval index file is missing: {path}")
+        payload = np.load(path)
+        embeddings = np.asarray(payload["embeddings"], dtype=np.float32)
+        if embeddings.ndim != 2:
+            raise ValueError("Dense retrieval embeddings must be a 2D array.")
+        return embeddings
+
+
+class HybridRetriever:
+    def __init__(
+        self,
+        sparse_retriever: SparseRetriever,
+        dense_retriever: DenseRetriever,
+        *,
+        alpha: float = 0.5,
+    ) -> None:
+        if not 0.0 <= alpha <= 1.0:
+            raise ValueError("Hybrid alpha must be between 0.0 and 1.0.")
+        self.sparse_retriever = sparse_retriever
+        self.dense_retriever = dense_retriever
+        self.alpha = alpha
+
+    def query(self, query_text: str, top_k: int = 5) -> list[dict]:
+        if self.alpha == 1.0:
+            return self.sparse_retriever.query(query_text, top_k=top_k)
+        if self.alpha == 0.0:
+            return self.dense_retriever.query(query_text, top_k=top_k)
+
+        fetch_k = max(top_k * 5, 25)
+        sparse_results = self.sparse_retriever.query(query_text, top_k=fetch_k)
+        dense_results = self.dense_retriever.query(query_text, top_k=fetch_k)
+        sparse_scores = _scores_by_chunk_id(sparse_results)
+        dense_scores = _scores_by_chunk_id(dense_results)
+        normalized_sparse = _normalize_scores(sparse_scores)
+        normalized_dense = _normalize_scores(dense_scores)
+        results_by_id = {item["chunk_id"]: item for item in sparse_results + dense_results}
+
+        combined: list[dict] = []
+        for chunk_id, result in results_by_id.items():
+            sparse_score = normalized_sparse.get(chunk_id, 0.0)
+            dense_score = normalized_dense.get(chunk_id, 0.0)
+            score = self.alpha * sparse_score + (1.0 - self.alpha) * dense_score
+            item = dict(result)
+            item["score"] = score
+            item["sparse_score"] = sparse_scores.get(chunk_id, 0.0)
+            item["dense_score"] = dense_scores.get(chunk_id, 0.0)
+            combined.append(item)
+
+        return sorted(combined, key=lambda item: item["score"], reverse=True)[:top_k]
+
+
+def load_corpus_rows(path: Path) -> list[dict]:
+    return load_jsonl(path)
+
+
+def _result_from_row(row: dict, score: float) -> dict:
+    return {
+        "chunk_id": row["chunk_id"],
+        "score": score,
+        "source_type": row["source_type"],
+        "title": row["title"],
+        "url": row["url"],
+        "text": row["text"],
+        "metadata": row["metadata"],
+    }
+
+
+def _scores_by_chunk_id(results: list[dict]) -> dict[str, float]:
+    return {str(result["chunk_id"]): float(result["score"]) for result in results}
+
+
+def _normalize_scores(scores: dict[str, float]) -> dict[str, float]:
+    if not scores:
+        return {}
+    values = list(scores.values())
+    minimum = min(values)
+    maximum = max(values)
+    if maximum == minimum:
+        return {chunk_id: 1.0 for chunk_id in scores}
+    return {chunk_id: (score - minimum) / (maximum - minimum) for chunk_id, score in scores.items()}
+
+
+def _load_sentence_transformer(model_name: str):
+    try:
+        from sentence_transformers import SentenceTransformer
+    except ImportError as exc:
+        raise RuntimeError(
+            "sentence-transformers is required for dense RAG retrieval. "
+            "Run python scripts/bootstrap_dev.py or install the API package dependencies."
+        ) from exc
+    return SentenceTransformer(model_name, local_files_only=True)
 
 
 def _normalize_token(token: str) -> str:

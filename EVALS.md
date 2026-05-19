@@ -60,12 +60,25 @@ The current chunking strategy is:
 - markdown heading-aware chunking for docs, preserving section context
 - structured issue records for resolved issues with title, problem/body, and an explicit limitation note that comments are not fetched yet
 
-The current retrieval baseline is sparse TF-IDF only. It exists to create a measurable baseline for later improvements.
+The first retrieval baseline is sparse TF-IDF. Dense retrieval now uses the local `sentence-transformers/all-MiniLM-L6-v2` model, chosen because it is small, fast on CPU, and a common semantic retrieval baseline. Hybrid retrieval combines normalized sparse and dense scores:
+
+```text
+hybrid_score = alpha * sparse_score + (1 - alpha) * dense_score
+```
+
+Current 25-example golden-set results:
+
+| Retriever | alpha | hit@5 | hit@10 | MRR@10 |
+| --- | ---: | ---: | ---: | ---: |
+| sparse TF-IDF | 1.00 | 0.5600 | 0.6000 | 0.3463 |
+| dense MiniLM | 0.00 | 0.6000 | 0.6800 | 0.5584 |
+| hybrid | 0.25 | 0.6400 | 0.7200 | 0.6040 |
+| hybrid | 0.50 | 0.6800 | 0.7200 | 0.5647 |
+
+Hybrid improves over sparse on this golden set. Alpha `0.50` has the best hit@5, while alpha `0.25` has the best MRR@10.
 
 Still missing:
 
-- dense embeddings
-- hybrid retrieval
 - reranker
 - query rewrite
 - generation evaluation
@@ -120,7 +133,15 @@ The final RAG golden set contains 25 `question` / `ideal_answer` / `ground_truth
 Run retrieval eval only after the final file exists and passes validation:
 
 ```bash
-python evals/rag_retrieval_eval.py
+python evals/rag_retrieval_eval.py --retriever sparse
+python evals/rag_retrieval_eval.py --retriever dense
+python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
 ```
 
-The sparse TF-IDF retriever is the current baseline to beat later with dense retrieval, hybrid retrieval, reranking, and query rewrite.
+Run the hybrid alpha sweep:
+
+```bash
+python scripts/sweep_rag_hybrid_alpha.py
+```
+
+Sparse TF-IDF remains the baseline to beat. Dense and hybrid retrieval currently beat it on the AI-assisted golden set; reranking and query rewrite should be measured against these committed reports rather than adopted by intuition.
