@@ -68,14 +68,14 @@ Still missing:
 - hybrid retrieval
 - reranker
 - query rewrite
-- a filled 25-example RAG golden set
 - generation evaluation
 
 ## RAG golden workflow
 
-There are two RAG golden files:
+There are three working files in the RAG golden workflow:
 
 - `data/rag/golden/rag_golden_candidates.jsonl`
+- `data/rag/golden/rag_golden.draft.jsonl`
 - `data/rag/golden/rag_golden.jsonl`
 
 Candidates are generated from the real corpus and are explicitly marked with `needs_human_review=true`. They are not final evaluation data.
@@ -86,35 +86,41 @@ Generate candidates:
 python scripts/make_rag_golden_candidates.py
 ```
 
-Validate candidates:
+Create the review report:
+
+```bash
+python scripts/review_rag_golden_candidates.py
+```
+
+Create an editable draft:
+
+```bash
+python scripts/create_rag_golden_draft.py
+```
+
+Validate candidates or drafts structurally:
 
 ```bash
 python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden_candidates.jsonl
 ```
 
-After manual review, copy and edit:
-
-```bash
-cp data/rag/golden/rag_golden_candidates.jsonl data/rag/golden/rag_golden.jsonl
-```
-
-Then set `needs_human_review=false` on all 25 reviewed rows and validate the final file:
+The committed final file is `data/rag/golden/rag_golden.jsonl`. It is AI-assisted curated and validated, not a claim of deep manual human review. Final rows use `needs_human_review=false` with `human_review_status="ai_assisted_approved"` so this distinction is explicit. If a human reviewer later performs full manual review, use `human_review_status="approved"` for those rows.
 
 ```bash
 python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.jsonl --require-final
 ```
 
-The final project needs 25 reviewed `question` / `ideal_answer` / `ground_truth_chunk_ids` triples.
+The final RAG golden set contains 25 `question` / `ideal_answer` / `ground_truth_chunk_ids` triples. It is retrieval evaluation data only; it is not a model-training set.
 
 ## Retrieval metrics
 
 - `hit@5`: the fraction of questions where at least one correct chunk appears in the top 5 retrieved results.
 - `MRR@10`: mean reciprocal rank over the top 10 results. Earlier correct hits count more than later ones.
 
-Run retrieval eval only after the reviewed final file exists:
+Run retrieval eval only after the final file exists and passes validation:
 
 ```bash
 python evals/rag_retrieval_eval.py
 ```
 
-The sparse TF-IDF retriever is the current baseline to beat later with dense retrieval, hybrid retrieval, and reranking.
+The sparse TF-IDF retriever is the current baseline to beat later with dense retrieval, hybrid retrieval, reranking, and query rewrite.

@@ -30,12 +30,19 @@ def main() -> int:
 
     print(f"Rows: {result['count']}")
     print(f"Source distribution: {result['source_distribution']}")
+    print(f"Needing review: {result['needs_review_count']}")
+    print(f"Approved: {result['approved_count']}")
     if result["ok"]:
         print("Validation: PASS")
         return 0
     print("Validation: FAIL")
+    for golden_id, errors in result["errors_by_id"].items():
+        print(f"- {golden_id}:")
+        for error in errors:
+            print(f"  - {error}")
     for error in result["errors"]:
-        print(f"- {error}")
+        if ":" not in error:
+            print(f"- {error}")
     return 1
 
 

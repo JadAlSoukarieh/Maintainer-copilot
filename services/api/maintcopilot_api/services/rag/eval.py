@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-from maintcopilot_api.services.rag.golden import load_jsonl
+from maintcopilot_api.services.rag.golden import load_jsonl, validate_rag_golden
 from maintcopilot_api.services.rag.retrieval import SparseRetriever
 
 
@@ -128,14 +128,25 @@ def run_rag_retrieval_eval(
         return 1, {
             "ok": False,
             "message": (
-                "Final RAG golden set is missing. Review data/rag/golden/rag_golden_candidates.jsonl, "
-                "save the reviewed file as data/rag/golden/rag_golden.jsonl, set needs_human_review=false, "
-                "then rerun validation and retrieval eval."
+                "Final RAG golden set is missing.\n"
+                "1. Run python scripts/make_rag_golden_candidates.py\n"
+                "2. Run python scripts/review_rag_golden_candidates.py\n"
+                "3. Manually create/edit data/rag/golden/rag_golden.jsonl from the draft\n"
+                "4. Set needs_human_review=false on every final row\n"
+                "5. Run python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.jsonl --require-final\n"
+                "6. Rerun python evals/rag_retrieval_eval.py"
             ),
         }
 
     corpus_rows = load_jsonl(corpus_path)
     golden_rows = load_jsonl(golden_path)
+    validation = validate_rag_golden(golden_rows=golden_rows, corpus_rows=corpus_rows, require_final=True)
+    if not validation["ok"]:
+        return 1, {
+            "ok": False,
+            "message": "Final RAG golden set failed validation. Run scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.jsonl --require-final and fix the reported rows first.",
+            "validation": validation,
+        }
     thresholds = load_rag_thresholds(thresholds_path)
     metrics = compute_retrieval_metrics(golden_rows, corpus_rows)
     failures = evaluate_retrieval_thresholds(metrics, thresholds)

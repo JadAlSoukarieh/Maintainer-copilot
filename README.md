@@ -127,12 +127,14 @@ RAG golden candidate workflow:
 
 ```bash
 python scripts/make_rag_golden_candidates.py
-python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden_candidates.jsonl
-cp data/rag/golden/rag_golden_candidates.jsonl data/rag/golden/rag_golden.jsonl
-# manually review/edit and set needs_human_review=false
+python scripts/review_rag_golden_candidates.py
+python scripts/create_rag_golden_draft.py
+# candidates are not final eval data
 python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.jsonl --require-final
 python evals/rag_retrieval_eval.py
 ```
+
+The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat; dense retrieval, hybrid retrieval, reranking, and query rewrite come later.
 
 ## Local Dev Service URLs
 

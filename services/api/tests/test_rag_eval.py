@@ -79,4 +79,4 @@ def test_retrieval_eval_missing_final_golden_returns_clear_error(tmp_path: Path)
         report_path=report_path,
     )
     assert exit_code == 1
-    assert "Review data/rag/golden/rag_golden_candidates.jsonl" in result["message"]
+    assert "Run python scripts/make_rag_golden_candidates.py" in result["message"]
