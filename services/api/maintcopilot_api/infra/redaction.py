@@ -7,6 +7,7 @@ REDACTION_TOKEN = "[REDACTED]"
 
 PATTERNS = [
     re.compile(r"\bsk-[A-Za-z0-9_-]+\b"),
+    re.compile(r"\bsk-ant-[A-Za-z0-9_-]+\b"),
     re.compile(r"\bghp_[A-Za-z0-9]+\b"),
     re.compile(r"\bgithub_pat_[A-Za-z0-9_]+\b"),
     re.compile(r"Bearer\s+[A-Za-z0-9\-._~+/]+=*", re.IGNORECASE),
@@ -30,4 +31,3 @@ def redact(value: Any) -> Any:
         redacted = pattern.sub(REDACTION_TOKEN, redacted)
     redacted = PATTERNS[-1].sub(lambda match: f"{match.group(1)}={REDACTION_TOKEN}", redacted)
     return redacted
-

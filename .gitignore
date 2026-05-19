@@ -13,6 +13,6 @@ build/
 node_modules/
 .DS_Store
 .env
+.env.local
 minio-data/
 vault-data/
-

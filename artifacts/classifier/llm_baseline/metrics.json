@@ -1,0 +1,59 @@
+{
+  "model_type": "llm_baseline",
+  "model_name": "claude-haiku-4-5-20251001",
+  "data_hash": "db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27",
+  "test_count": 196,
+  "prompt_version": "llm-baseline-v1",
+  "run_id": "bf3312aef8e34221a34df837dcabc7c2",
+  "dry_run": false,
+  "test": {
+    "accuracy": 0.7040816326530612,
+    "macro_f1": 0.7112246856392234,
+    "weighted_f1": 0.7293972975781283,
+    "per_class_f1": {
+      "bug": 0.5208333333333334,
+      "feature": 0.7692307692307693,
+      "docs": 0.8395061728395062,
+      "question": 0.7153284671532847
+    },
+    "confusion_matrix": {
+      "labels": [
+        "bug",
+        "feature",
+        "docs",
+        "question"
+      ],
+      "matrix": [
+        [
+          25,
+          1,
+          0,
+          0
+        ],
+        [
+          6,
+          30,
+          0,
+          3
+        ],
+        [
+          9,
+          3,
+          34,
+          0
+        ],
+        [
+          30,
+          5,
+          1,
+          49
+        ]
+      ]
+    },
+    "latency": {
+      "total_seconds": 216.87496299999998,
+      "avg_ms_per_issue": 1106.504913265306,
+      "num_examples": 196
+    }
+  }
+}

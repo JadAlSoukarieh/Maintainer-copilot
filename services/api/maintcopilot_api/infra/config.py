@@ -20,5 +20,8 @@ class Settings(BaseSettings):
     jwt_secret: str | None = None
     jwt_exp_minutes: int = 60
     invite_exp_hours: int = 72
+    anthropic_model_name: str = "claude-haiku-4-5-20251001"
+    anthropic_api_key_secret_path: str | None = None
+    require_llm_key: bool = False
 
     model_config = SettingsConfigDict(env_prefix="API_", env_file=".env", extra="ignore")

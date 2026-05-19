@@ -11,7 +11,8 @@
       "feature_f1": 0.7073170731707317,
       "docs_f1": 0.7692307692307693,
       "question_f1": 0.7515151515151515,
-      "avg_latency_ms": 0.8008567704086536
+      "avg_latency_ms": 0.8008567704086536,
+      "cost_for_196_usd": null
     },
     {
       "model": "transformer_roberta_base",
@@ -22,9 +23,24 @@
       "feature_f1": 0.6933333333333334,
       "docs_f1": 0.8571428571428571,
       "question_f1": 0.7402597402597403,
-      "avg_latency_ms": 36.54844645918311
+      "avg_latency_ms": 36.54844645918311,
+      "cost_for_196_usd": null
+    },
+    {
+      "model": "llm_claude_haiku_4_5",
+      "accuracy": 0.7040816326530612,
+      "macro_f1": 0.7112246856392234,
+      "weighted_f1": 0.7293972975781283,
+      "bug_f1": 0.5208333333333334,
+      "feature_f1": 0.7692307692307693,
+      "docs_f1": 0.8395061728395062,
+      "question_f1": 0.7153284671532847,
+      "avg_latency_ms": 1106.504913265306,
+      "cost_for_196_usd": 0.111797
     }
   ],
+  "deployment_choice": "transformer_roberta_base",
+  "rationale": "RoBERTa-base remains the selected primary classifier because it has the highest accuracy, the highest macro-F1 by a narrow margin, the best bug F1, and deterministic local deployment characteristics. Claude Haiku is competitive on macro-F1 but is slower, incurs per-run API cost, and overpredicts bug heavily, including 30 true question issues classified as bug.",
   "best_by_macro_f1": {
     "model": "transformer_roberta_base",
     "accuracy": 0.7244897959183674,
@@ -34,6 +50,7 @@
     "feature_f1": 0.6933333333333334,
     "docs_f1": 0.8571428571428571,
     "question_f1": 0.7402597402597403,
-    "avg_latency_ms": 36.54844645918311
+    "avg_latency_ms": 36.54844645918311,
+    "cost_for_196_usd": null
   }
 }

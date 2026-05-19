@@ -35,6 +35,7 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
 3. Set local API auth config in `.env`:
    `API_REQUIRE_VAULT=false`
    `API_JWT_SECRET=dev-only-jwt-secret-change-me`
+   `API_REQUIRE_LLM_KEY=false`
 4. Run the API locally:
    `cd services/api && ../../.venv/bin/python -m uvicorn maintcopilot_api.main:app --reload`
 5. Run the model server locally:
@@ -54,6 +55,39 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
   MinIO dev credentials come from `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` in `.env` and `docker-compose.yml`.
 
 These are development-only values. App code must read secrets through the configured config and secrets path, not through hardcoded literals in source.
+
+## Claude LLM Baseline
+
+- Production/deployed API path: the Anthropic key lives in Vault at `API_ANTHROPIC_API_KEY_SECRET_PATH`.
+- Local one-off baseline path: `ANTHROPIC_API_KEY` fallback is allowed only for development. Put it in an ignored `.env.local` file or export it in your shell.
+- Do not commit API keys.
+- Do not paste API keys into Codex.
+- Do not use dry-run metrics as final metrics.
+
+Local `.env.local` setup:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Then edit `.env.local` and set:
+
+```bash
+API_REQUIRE_VAULT=false
+ANTHROPIC_API_KEY=your-key-here
+```
+
+Dry-run command:
+
+```bash
+python scripts/run_llm_baseline.py --dry-run --limit 5
+```
+
+Real run command for local development fallback:
+
+```bash
+python scripts/run_llm_baseline.py --model-name claude-haiku-4-5-20251001 --allow-env-key
+```
 
 ## ML Artifact Handoff
 

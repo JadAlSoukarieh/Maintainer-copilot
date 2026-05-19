@@ -6,6 +6,7 @@ from maintcopilot_api.infra.redaction import redact
 def test_redaction_masks_fake_secrets() -> None:
     sample = {
         "openai": "sk-test123456",
+        "anthropic": "sk-ant-test-secret-value",
         "github": "ghp_abcd1234token",
         "fine_grained": "github_pat_123456_token_value",
         "bearer": "Bearer token-value-123",
@@ -17,6 +18,7 @@ def test_redaction_masks_fake_secrets() -> None:
     rendered = str(redacted)
 
     assert "sk-test123456" not in rendered
+    assert "sk-ant-test-secret-value" not in rendered
     assert "ghp_abcd1234token" not in rendered
     assert "github_pat_123456_token_value" not in rendered
     assert "token-value-123" not in rendered

@@ -16,6 +16,7 @@ from maintcopilot_api.infra.model_client import ModelServerClient
 from maintcopilot_api.infra.redis import RedisClient
 from maintcopilot_api.infra.tracing import RequestContextMiddleware
 from maintcopilot_api.infra.vault import VaultClient
+from maintcopilot_api.infra.anthropic_client import resolve_anthropic_api_key
 
 
 @asynccontextmanager
@@ -29,6 +30,8 @@ async def lifespan(app: FastAPI):
     vault_client = VaultClient(addr=settings.vault_addr, token=settings.vault_token)
     if settings.require_vault and not vault_client.check_health():
         raise RuntimeError("Vault is required but unreachable.")
+    if settings.require_vault and settings.require_llm_key:
+        resolve_anthropic_api_key(settings, vault_client, allow_env_fallback=False, for_cli=False)
 
     app.state.settings = settings
     app.state.engine = engine

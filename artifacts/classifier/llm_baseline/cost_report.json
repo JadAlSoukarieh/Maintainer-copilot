@@ -1,0 +1,12 @@
+{
+  "model_name": "claude-haiku-4-5-20251001",
+  "prompt_version": "llm-baseline-v1",
+  "run_id": "bf3312aef8e34221a34df837dcabc7c2",
+  "input_price_per_mtok": 1.0,
+  "output_price_per_mtok": 5.0,
+  "total_input_tokens": 99057,
+  "total_output_tokens": 2548,
+  "total_estimated_cost_usd": 0.111797,
+  "processed_examples": 196,
+  "dry_run": false
+}

@@ -11,6 +11,7 @@
 4. For local tests and non-Docker runs, set:
    `API_REQUIRE_VAULT=false`
    `API_JWT_SECRET=dev-only-jwt-secret-change-me`
+   `API_REQUIRE_LLM_KEY=false`
 
 ## Local runs
 
@@ -33,6 +34,42 @@
   MinIO dev credentials come from `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` in `.env` and `docker-compose.yml`.
 
 These URLs and credentials are for development only. Application code must read secrets through config and the eventual Vault secret path, never from hardcoded literals.
+
+## Claude LLM baseline
+
+- Production/deployed API path: Anthropic key resolution must come from Vault via `API_ANTHROPIC_API_KEY_SECRET_PATH`.
+- Local one-off baseline path: `ANTHROPIC_API_KEY` fallback is allowed only for development. Use an ignored `.env.local` file or export it in your shell.
+
+Local setup:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Edit `.env.local` with:
+
+```bash
+API_REQUIRE_VAULT=false
+ANTHROPIC_API_KEY=your-key-here
+```
+
+Dry-run:
+
+```bash
+python scripts/run_llm_baseline.py --dry-run --limit 5
+```
+
+Real local development run:
+
+```bash
+python scripts/run_llm_baseline.py --model-name claude-haiku-4-5-20251001 --allow-env-key
+```
+
+Warnings:
+
+- Do not commit API keys.
+- Do not paste API keys into Codex.
+- Do not use dry-run metrics as final metrics.
 
 ## Core endpoints
 
