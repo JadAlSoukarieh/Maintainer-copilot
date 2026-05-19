@@ -1,0 +1,1609 @@
+{
+  "retriever": "hybrid",
+  "alpha": 0.75,
+  "golden_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/data/rag/golden/rag_golden.jsonl",
+  "corpus_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/data/rag/processed/rag_corpus.jsonl",
+  "embedding_index_dir": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/artifacts/rag/embeddings",
+  "thresholds": {
+    "min_hit_at_5": 0.4,
+    "min_mrr_at_10": 0.2
+  },
+  "metrics": {
+    "example_count": 25,
+    "hit_at_5": 0.6,
+    "hit_at_10": 0.68,
+    "mrr_at_10": 0.47438095238095235,
+    "mean_top_score": 0.8820250152772745,
+    "per_source_breakdown": {
+      "doc": {
+        "count": 12,
+        "hit_at_5": 0.4166666666666667,
+        "mrr_at_10": 0.273015873015873
+      },
+      "resolved_issue": {
+        "count": 13,
+        "hit_at_5": 0.7692307692307693,
+        "mrr_at_10": 0.6602564102564104
+      }
+    },
+    "details": [
+      {
+        "golden_id": "rag-golden-001",
+        "question": "How does `stream.pipeline()` clean up streams when a pipeline fails?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-146"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-146",
+            "score": 0.9159772649586975,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-144",
+            "score": 0.866136853941698,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-145",
+            "score": 0.6725417098263157,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-types-of-streams-stream-pipeline-source-transforms-destination-options-005",
+            "score": 0.6663778669296406,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-compose-streams-148",
+            "score": 0.5188444565034531,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-stream-premature-close-330",
+            "score": 0.5010858397081092,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-types-of-streams-stream-pipeline-source-transforms-destination-options-006",
+            "score": 0.45414402933323494,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-types-of-streams-stream-pipeline-source-transforms-destination-options-010",
+            "score": 0.44748363838072774,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-iter-md-iterable-streams-pipelines-pull-source-transforms-options-036",
+            "score": 0.32960297281365913,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-iter-md-iterable-streams-pipelines-pipeto-source-transforms-writer-options-032",
+            "score": 0.2581306619787189,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-002",
+        "question": "Where do the Node.js DNS docs list resolver error codes such as `dns.NODATA` and `dns.TIMEOUT`?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-dns-md-dns-error-codes-081"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 3,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-dns-md-dns-class-dns-resolver-005",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-class-dnspromises-resolver-046",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-error-codes-081",
+            "score": 0.5424536826617579,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-001",
+            "score": 0.5331537894994576,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-class-dnspromises-resolver-045",
+            "score": 0.4698328614523595,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-reverse-ip-077",
+            "score": 0.4642556725843304,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-lookup-hostname-options-051",
+            "score": 0.4529943891943288,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-resolveany-hostname-062",
+            "score": 0.42292350166094295,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-reverse-ip-callback-040",
+            "score": 0.4212089707779296,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-044",
+            "score": 0.3791041081963421,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-003",
+        "question": "What does `response.write()` do on an `http.ServerResponse`?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-135"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-134",
+            "score": 0.9428393837125676,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-241",
+            "score": 0.4303571639267786,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writeprocessing-143",
+            "score": 0.338220984288955,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-end-data-encoding-callback-112",
+            "score": 0.3175523580407158,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writableended-132",
+            "score": 0.27847235937036857,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-setheader-name-value-123",
+            "score": 0.2713383240438867,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writehead-statuscode-statusmessage-headers-139",
+            "score": 0.25808565705043024,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writecontinue-137",
+            "score": 0.25467309511872205,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writablefinished-133",
+            "score": 0.21728443879965964,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-uncork-131",
+            "score": 0.2120957874829249,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-004",
+        "question": "How can Node.js integrate with Chrome DevTools for debugging?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-inspector-md-inspector-integration-with-devtools-030"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 5,
+        "top_results": [
+          {
+            "chunk_id": "issue-2546-excluded-002",
+            "score": 0.9550677253898112,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-2546-excluded-001",
+            "score": 0.8699577054528272,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-2546-excluded-004",
+            "score": 0.6735976342096349,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-028",
+            "score": 0.6105759156520514,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-inspector-md-inspector-integration-with-devtools-030",
+            "score": 0.6064664034819524,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-will-result-in-this-is-na-multiline-as-the-value-inspect-host-port-096",
+            "score": 0.5457048551322138,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-029",
+            "score": 0.4058680529070392,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-inspector-md-inspector-promises-api-class-inspector-session-session-post-method-params-010",
+            "score": 0.3958433582880108,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-inspector-md-inspector-callback-api-class-inspector-session-session-post-method-params-callback-021",
+            "score": 0.3833741266578849,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-7623-val-001",
+            "score": 0.31402902629115026,
+            "source_type": "resolved_issue"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-005",
+        "question": "What do the `fs.readFile()` docs recommend when I want to avoid buffering an entire file in memory?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-156"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-154",
+            "score": 0.7833367109518513,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-performance-considerations-158",
+            "score": 0.6589408317939971,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-file-descriptors-157",
+            "score": 0.4656368810272733,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-ffi-md-ffi-ffi-tobuffer-pointer-length-copy-034",
+            "score": 0.4524536174763688,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-1002-excluded-001",
+            "score": 0.40135498975106365,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-buffer-from-buffer-alloc-and-buffer-allocunsafe-183",
+            "score": 0.4004005932564414,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-001",
+            "score": 0.3695644983469115,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-buffers-and-typedarrays-011",
+            "score": 0.32223480110792946,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-class-buffer-new-buffer-buffer-163",
+            "score": 0.28720752369350666,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-2767-excluded-001",
+            "score": 0.24409864536316192,
+            "source_type": "resolved_issue"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-006",
+        "question": "Where do the Node.js error docs explain common system errors like `EADDRINUSE` and `ECONNRESET`?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-errors-md-errors-class-systemerror-common-system-errors-036"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-035",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-class-error-007",
+            "score": 0.4598835852339392,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-common-objects-class-fs-utf8stream-event-error-341",
+            "score": 0.40268800789165815,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-system-error-338",
+            "score": 0.35866263136962107,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-util-md-util-util-getsystemerrormap-028",
+            "score": 0.33252356189134624,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-046",
+            "score": 0.2958124392755359,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-001",
+            "score": 0.26804069849316503,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-unknown-builtin-module-367",
+            "score": 0.26799704479531555,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-common-objects-254",
+            "score": 0.2585303121090404,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-synthetic-337",
+            "score": 0.25,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-007",
+        "question": "How does `response.write()` behave on an `Http2ServerResponse`?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-242"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": true,
+        "rank": 10,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-241",
+            "score": 0.9470015879053588,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-134",
+            "score": 0.8932337707965003,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-core-api-http2-createserver-options-onrequesthandler-151",
+            "score": 0.8001548784706701,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-createpushresponse-headers-callback-223",
+            "score": 0.50542137346399,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-end-data-encoding-callback-224",
+            "score": 0.3474206527748718,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-7606-excluded-002",
+            "score": 0.3350442724885389,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writeinformation-statuscode-headers-246",
+            "score": 0.25,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writecontinue-244",
+            "score": 0.24960298234280792,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writableended-240",
+            "score": 0.24045767529693096,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-242",
+            "score": 0.239544413602693,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-008",
+        "question": "How do TLS session tickets work in Node.js?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-018"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 2,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-017",
+            "score": 0.94888999232409,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-018",
+            "score": 0.9175371026289852,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-server-getticketkeys-048",
+            "score": 0.8834991988274992,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-server-setticketkeys-keys-051",
+            "score": 0.7255096774419987,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-event-session-061",
+            "score": 0.7153435910827833,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-quic-md-quic-diagnostic-channels-channel-quic-session-ticket-288",
+            "score": 0.6830037657244057,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-019",
+            "score": 0.641058730701143,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-tlssocket-gettlsticket-085",
+            "score": 0.6100006358402554,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-event-session-060",
+            "score": 0.5013077194493015,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-tlssocket-getsession-083",
+            "score": 0.4450897953176241,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-009",
+        "question": "Where do the HTTPS docs show how to call `https.request()`?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-https-md-https-https-request-url-options-callback-026"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-023",
+            "score": 1.0,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-9324-test-001",
+            "score": 0.3623201154933753,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-001",
+            "score": 0.3135084129565873,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-http-request-url-options-callback-208",
+            "score": 0.23666441855100673,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-https-createserver-options-requestlistener-018",
+            "score": 0.23278941165015568,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-class-https-agent-003",
+            "score": 0.2024502975832858,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-http-get-url-options-callback-203",
+            "score": 0.17856188220837932,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-7672-val-001",
+            "score": 0.17680660698391298,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-001",
+            "score": 0.17550241437751635,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-025",
+            "score": 0.17436928750706168,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-010",
+        "question": "Where do the zlib docs show HTTP compression examples?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-012"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-095",
+            "score": 0.9051076738680099,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-decompresszstdsync-options-105",
+            "score": 0.6836699615100779,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-007",
+            "score": 0.6134227555089422,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-008",
+            "score": 0.45608915056522725,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-001",
+            "score": 0.412428701704849,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-flushing-018",
+            "score": 0.3071725150958383,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-constants-zlib-constants-022",
+            "score": 0.27646864191739107,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-zlib-creategzip-options-066",
+            "score": 0.27522013980051124,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-002",
+            "score": 0.2699193941535609,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-flushing-019",
+            "score": 0.20824647609886862,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-011",
+        "question": "What does the Node.js Permission Model restrict?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-permissions-md-permissions-process-based-permissions-permission-model-permission-model-constraints-011"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-permission-model-constraints-011",
+            "score": 0.854495974265289,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-002",
+            "score": 0.7956122035451245,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-runtime-api-004",
+            "score": 0.777069268105768,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-file-system-permissions-006",
+            "score": 0.7284183495352623,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-001",
+            "score": 0.7098152086441204,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-access-denied-048",
+            "score": 0.6537750403271171,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-configuration-file-support-009",
+            "score": 0.619596481793798,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-003",
+            "score": 0.6064657596125667,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-process-debugprocess-and-cross-process-inspector-activation-012",
+            "score": 0.5864244404030245,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-child-process-010",
+            "score": 0.5371463628274366,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-012",
+        "question": "How do the Node.js stream docs recommend handling backpressure when using `writable.write()`?",
+        "source_type": "doc",
+        "ground_truth_chunk_ids": [
+          "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-053"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": true,
+        "rank": 7,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-050",
+            "score": 0.7997386084228003,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-iter-md-iterable-streams-concepts-backpressure-011",
+            "score": 0.6524296139829842,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-iter-md-iterable-streams-concepts-backpressure-strict-default-014",
+            "score": 0.5355988200011551,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-writable-039",
+            "score": 0.48160286942210245,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-iter-md-iterable-streams-concepts-backpressure-the-two-buffer-model-012",
+            "score": 0.3788597508904418,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-iter-md-iterable-streams-classic-stream-interop-fromwritable-writable-options-082",
+            "score": 0.2798030598699771,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-053",
+            "score": 0.25,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-types-of-streams-buffering-015",
+            "score": 0.17573117295519297,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-1002-excluded-001",
+            "score": 0.15338638140827665,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-019",
+            "score": 0.14817672881163088,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-013",
+        "question": "What resolved issue describes recurring `ECONNRESET` errors on Node 6 HTTP and HTTPS servers?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-7776-val-001"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-http-md-http-001",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-2481-excluded-001",
+            "score": 0.4725683444292492,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-025",
+            "score": 0.41771623721274687,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-agent-004",
+            "score": 0.3847730300996042,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-121-excluded-001",
+            "score": 0.3605649836733712,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-001",
+            "score": 0.31233160616871186,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-http-request-url-options-callback-208",
+            "score": 0.2777623663995371,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-server-server-listen-096",
+            "score": 0.2676243028699878,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-http-get-url-options-callback-203",
+            "score": 0.2619582864472444,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-023",
+            "score": 0.2545507463419906,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-014",
+        "question": "What resolved Node.js issue reports a memory leak when `https.request()` hits `ECONNRESET`?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-8827-test-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-8827-test-001",
+            "score": 0.7619515551294718,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-023",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-node-memory-debug-124",
+            "score": 0.6373078958536693,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-3595-excluded-001",
+            "score": 0.5385915363175723,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-001",
+            "score": 0.5254533986717174,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-1866-excluded-001",
+            "score": 0.4845664619974822,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-usage-015",
+            "score": 0.46671822634795396,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-3000-excluded-005",
+            "score": 0.44516783274251726,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-buffer-from-buffer-alloc-and-buffer-allocunsafe-what-makes-buffer-allocunsafe-and-buffer-allocunsafeslow-unsafe-189",
+            "score": 0.4363230106947009,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-usage-011",
+            "score": 0.3695134865868145,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-015",
+        "question": "What resolved issue describes `CLOSE_WAIT` sockets and a suspected memory leak while reading HTTP responses?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-7910-excluded-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-7910-excluded-001",
+            "score": 0.8520937747167725,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-test-md-test-runner-describe-and-it-aliases-008",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-event-response-039",
+            "score": 0.6084401195653396,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-6632-excluded-001",
+            "score": 0.5614744765667891,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-001",
+            "score": 0.45205577961874827,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-test-md-test-runner-describe-name-options-fn-086",
+            "score": 0.4426823130029138,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-026",
+            "score": 0.36625727235059213,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-incomingmessage-message-statuscode-160",
+            "score": 0.35427061784490604,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-event-close-107",
+            "score": 0.35173497240267254,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-child-process-md-child-process-class-childprocess-subprocess-send-message-sendhandle-options-callback-example-sending-a-socket-object-085",
+            "score": 0.31027338772303403,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-016",
+        "question": "What resolved issue reports HTTP requests blocking file I/O under certain network conditions?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-7301-excluded-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-7301-excluded-001",
+            "score": 0.9510813626617848,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-packages-md-modules-packages-package-entry-points-community-conditions-definitions-038",
+            "score": 0.5274320175644941,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-common-objects-class-fs-stats-stats-blksize-311",
+            "score": 0.4361932117395326,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-3987-excluded-002",
+            "score": 0.38628565956292743,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-001",
+            "score": 0.3607234887649376,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-server-event-droprequest-087",
+            "score": 0.33644613465825834,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-load-the-generated-snapshot-and-start-the-application-from-index-js-c-condition-conditions-condition-027",
+            "score": 0.3171319740740399,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-packages-md-modules-packages-package-entry-points-resolving-user-conditions-035",
+            "score": 0.3014195938778259,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-packages-md-modules-packages-package-entry-points-community-conditions-definitions-037",
+            "score": 0.2859832437131593,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-packages-md-modules-packages-package-entry-points-nested-conditions-034",
+            "score": 0.262304240642131,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-017",
+        "question": "What resolved issue reports TLS hostname verification expecting trailing dots in certificate alt names?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-8008-excluded-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 4,
+        "top_results": [
+          {
+            "chunk_id": "issue-1256-excluded-002",
+            "score": 0.7608986351207664,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-x509-certificate-error-codes-030",
+            "score": 0.6155553508039844,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-checkserveridentity-hostname-cert-096",
+            "score": 0.572686256816865,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-8008-excluded-001",
+            "score": 0.39667571034469273,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-quic-md-quic-types-type-sessionoptions-sessionoptions-rejectunauthorized-219",
+            "score": 0.38086429341637335,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-tlssocket-getpeercertificate-detailed-certificate-object-074",
+            "score": 0.3738841093102448,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-030",
+            "score": 0.2961016761245766,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-8934-test-001",
+            "score": 0.2818463327888433,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-quic-md-quic-types-type-sessionoptions-sessionoptions-verifyclient-221",
+            "score": 0.23378313349090524,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-setdefaultcacertificates-certs-123",
+            "score": 0.2315426802814143,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-018",
+        "question": "What resolved issue describes `dns.lookup()` blocking other filesystem or serial I/O?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-8436-test-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-8436-test-001",
+            "score": 1.0,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-implementation-considerations-dns-lookup-083",
+            "score": 0.6301887712067138,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-test-md-test-runner-describe-and-it-aliases-008",
+            "score": 0.618354231907724,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0118-dns-lookup-support-for-a-falsy-host-name-120",
+            "score": 0.44027050178574734,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-test-md-test-runner-describe-name-options-fn-086",
+            "score": 0.4319612064984196,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-class-x509certificate-x509-serialnumber-134",
+            "score": 0.42815549177355056,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-implementation-considerations-dns-resolve-dns-resolve-and-dns-reverse-085",
+            "score": 0.36380282823887233,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-736-excluded-001",
+            "score": 0.30591326324288887,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-common-objects-class-fs-stats-stats-blksize-311",
+            "score": 0.3016929213887719,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-lookup-hostname-options-callback-012",
+            "score": 0.29846685755070534,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-019",
+        "question": "What resolved issue reports a memory leak from `zlib.deflate()`?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-8871-test-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-8871-test-001",
+            "score": 1.0,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-deflate-041",
+            "score": 0.7630198571646458,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-convenience-methods-zlib-deflate-buffer-options-callback-077",
+            "score": 0.45295645069866225,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-001",
+            "score": 0.44465071322634375,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-threadpool-usage-and-performance-considerations-006",
+            "score": 0.4066673245957335,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-3000-excluded-005",
+            "score": 0.38282379548377143,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-1866-excluded-001",
+            "score": 0.35560925823233436,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-usage-011",
+            "score": 0.3245633226017398,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-configuration-022",
+            "score": 0.3188402512907304,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-buffer-from-buffer-alloc-and-buffer-allocunsafe-what-makes-buffer-allocunsafe-and-buffer-allocunsafeslow-unsafe-189",
+            "score": 0.285385291480933,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-020",
+        "question": "What resolved issue says `readFileSync()` and `readFile()` returned different buffer sizes?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-9336-test-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-9336-test-001",
+            "score": 1.0,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-9671-test-002",
+            "score": 0.7974143184971964,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-155",
+            "score": 0.5620358540040487,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-156",
+            "score": 0.5152010749502423,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-notes-file-paths-file-url-paths-platform-specific-considerations-396",
+            "score": 0.5059611031427936,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-1352-excluded-001",
+            "score": 0.4882000117004694,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-connect-options-callback-103",
+            "score": 0.4842645489274206,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-promises-api-fspromises-readfile-path-options-073",
+            "score": 0.4671677426930041,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createserver-options-secureconnectionlistener-120",
+            "score": 0.45481911191833657,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-buffer-md-buffer-class-buffer-static-method-buffer-allocunsafe-size-034",
+            "score": 0.4367701931107167,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-021",
+        "question": "What resolved issue asks whether `tls.createServer()` should document `secureOptions` for limiting TLS versions?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-9025-test-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-9025-test-001",
+            "score": 1.0,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createserver-options-secureconnectionlistener-115",
+            "score": 0.7153289095247795,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createsecurecontext-options-107",
+            "score": 0.32996869812904406,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-modifying-the-default-tls-cipher-suite-021",
+            "score": 0.28852198954435904,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-5917-excluded-001",
+            "score": 0.2550497375478928,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-new-tls-tlssocket-socket-options-054",
+            "score": 0.25242468103904026,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-default-ciphers-133",
+            "score": 0.2450118934406313,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createsecurecontext-options-113",
+            "score": 0.18061784554549243,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-connect-options-callback-098",
+            "score": 0.17781462379333382,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-003",
+            "score": 0.17224626002833426,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-022",
+        "question": "What resolved issue reports an extra `readable` event from an HTTP response stream?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-676-excluded-001"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-054",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-readable-067",
+            "score": 0.7220269216227724,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-event-response-039",
+            "score": 0.5215026864306319,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-symbol-for-stream-toasyncstreamable-102",
+            "score": 0.45536699202148784,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-two-reading-modes-055",
+            "score": 0.35724443020020996,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-three-states-058",
+            "score": 0.35080120428554745,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-error-065",
+            "score": 0.3384338546866912,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-readablehighwatermark-090",
+            "score": 0.32538481670613745,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-close-062",
+            "score": 0.29671229684883793,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-026",
+            "score": 0.2905098230239067,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-023",
+        "question": "What resolved issue discusses FIPS test failures and API problems in Node.js crypto?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-3760-excluded-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 3,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-setfips-bool-254",
+            "score": 0.9221451325045902,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-notes-fips-mode-275",
+            "score": 0.8169632689200099,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-3760-excluded-001",
+            "score": 0.8146254030720705,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-fips-184",
+            "score": 0.6701582783698818,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-unavailable-078",
+            "score": 0.560040587650743,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-included-fipsmodule-cnf-276",
+            "score": 0.5177844261873956,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-included-fipsmodule-cnf-277",
+            "score": 0.48572515026310403,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-getfips-205",
+            "score": 0.45206058197932475,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-4200-excluded-001",
+            "score": 0.3119977275205701,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-3077-excluded-001",
+            "score": 0.2998122880620439,
+            "source_type": "resolved_issue"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-024",
+        "question": "Which resolved issue tracks adding version and deprecation history to API docs?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-6578-excluded-002"
+        ],
+        "hit_at_5": false,
+        "hit_at_10": false,
+        "rank": null,
+        "top_results": [
+          {
+            "chunk_id": "doc-api-readline-md-readline-class-interfaceconstructor-event-history-008",
+            "score": 0.75,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-repl-md-repl-class-replserver-replserver-setuphistory-historyconfig-callback-030",
+            "score": 0.5708598683375736,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-revoking-deprecations-004",
+            "score": 0.4166029938357122,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-6336-excluded-002",
+            "score": 0.4031595399500839,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-001",
+            "score": 0.3795104455814041,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-6578-excluded-001",
+            "score": 0.34154616186351605,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-report-version-version-history-version-1-021",
+            "score": 0.3127597084302169,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-readline-md-readline-promises-api-readlinepromises-createinterface-options-037",
+            "score": 0.2994065285492876,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-readline-md-readline-callback-api-readline-createinterface-options-049",
+            "score": 0.2994065285492876,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-report-md-diagnostic-report-report-version-version-history-version-2-020",
+            "score": 0.26824019720686826,
+            "source_type": "doc"
+          }
+        ]
+      },
+      {
+        "golden_id": "rag-golden-025",
+        "question": "What resolved issue reports too many Ubuntu sockets stuck in `CLOSE_WAIT` after HTTP CONNECT traffic?",
+        "source_type": "resolved_issue",
+        "ground_truth_chunk_ids": [
+          "issue-9513-test-001"
+        ],
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 1,
+        "top_results": [
+          {
+            "chunk_id": "issue-9513-test-001",
+            "score": 1.0,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-dgram-md-udp-datagram-sockets-class-dgram-socket-event-connect-004",
+            "score": 0.6276168506193356,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-event-connect-030",
+            "score": 0.5219429905330477,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-7910-excluded-001",
+            "score": 0.5015885708577692,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-7580-val-001",
+            "score": 0.4729484734038063,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-4386-excluded-001",
+            "score": 0.44817982607787193,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-001",
+            "score": 0.3763444517625437,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-7871-val-002",
+            "score": 0.3653007011282288,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-server-event-connect-085",
+            "score": 0.363903509608361,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-server-event-clienterror-082",
+            "score": 0.2451483086860493,
+            "source_type": "doc"
+          }
+        ]
+      }
+    ]
+  },
+  "passed": true,
+  "failures": []
+}

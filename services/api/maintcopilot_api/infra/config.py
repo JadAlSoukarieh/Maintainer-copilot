@@ -23,5 +23,12 @@ class Settings(BaseSettings):
     anthropic_model_name: str = "claude-haiku-4-5-20251001"
     anthropic_api_key_secret_path: str | None = None
     require_llm_key: bool = False
+    rag_corpus_path: str = "data/rag/processed/rag_corpus.jsonl"
+    rag_embedding_index_dir: str = "artifacts/rag/embeddings"
+    chat_llm_enabled: bool = True
+    chat_fallback_enabled: bool = True
+    auth_optional_for_dev: bool = False
+    short_term_memory_ttl_seconds: int = 7200
+    allow_in_memory_memory: bool = False
 
     model_config = SettingsConfigDict(env_prefix="API_", env_file=".env", extra="ignore")

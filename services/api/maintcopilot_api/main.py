@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from maintcopilot_api.api.error_handlers import register_exception_handlers
-from maintcopilot_api.api.routes import auth, chat, health, memory, widgets
+from maintcopilot_api.api.routes import auth, chat, health, memory, rag, widgets
 from maintcopilot_api.infra.config import Settings
 from maintcopilot_api.infra.logging import configure_logging, log_with_context
 from maintcopilot_api.infra.minio import MinioClient
@@ -63,6 +63,7 @@ def create_app() -> FastAPI:
     app.include_router(chat.router)
     app.include_router(memory.router)
     app.include_router(widgets.router)
+    app.include_router(rag.router)
     return app
 
 

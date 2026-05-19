@@ -24,7 +24,7 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
 - Vault reachability is required by default for the API service.
 - Model-serving responses are deterministic placeholders.
 - Auth foundation, classifier inference, NER, summarization, and the RAG corpus baseline skeleton are implemented.
-- Dense retrieval, reranking, query rewrite, and final chatbot generation are still not implemented.
+- Dense retrieval, hybrid retrieval, deterministic query rewrite, metadata-aware boosting, the extractive RAG answer endpoint, and `/chat` tool orchestration are implemented. Local reranking is implemented but requires a cached cross-encoder model before it can be evaluated honestly. Final generative RAG beyond tool-grounded chat is still not implemented.
 
 ## Local development
 
@@ -37,6 +37,8 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
    `API_REQUIRE_VAULT=false`
    `API_JWT_SECRET=dev-only-jwt-secret-change-me`
    `API_REQUIRE_LLM_KEY=false`
+   `API_CHAT_LLM_ENABLED=false`
+   `API_ALLOW_IN_MEMORY_MEMORY=true`
 4. Run the API locally:
    `cd services/api && ../../.venv/bin/python -m uvicorn maintcopilot_api.main:app --reload`
 5. Run the model server locally:
@@ -101,7 +103,7 @@ The RAG foundation currently builds a local corpus from:
 - Node.js docs placed under `data/rag/raw/node_docs`
 - held-out resolved Node.js issues from the validation, test, and excluded splits
 
-The baseline retriever is sparse TF-IDF. Dense retrieval uses local `sentence-transformers/all-MiniLM-L6-v2` embeddings, and hybrid retrieval combines normalized sparse and dense scores. Reranking, query rewriting, and generation are still future work.
+The baseline retriever is sparse TF-IDF. Dense retrieval uses local `sentence-transformers/all-MiniLM-L6-v2` embeddings, hybrid retrieval combines normalized sparse and dense scores, deterministic query rewrite expands Node-specific terms without an LLM, and metadata boosting gives a small explainable score bump for matching source type or module metadata. Reranking uses a local cross-encoder over retrieved candidates. Generation is still future work.
 
 To prepare local Node docs for corpus builds:
 
@@ -134,7 +136,7 @@ python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.j
 python evals/rag_retrieval_eval.py
 ```
 
-The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat; dense retrieval, hybrid retrieval, reranking, and query rewrite come later.
+The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat, dense and hybrid have been measured, and hybrid is the current default retrieval candidate. Reranker evaluation is pending a local model cache.
 
 Dense and hybrid retrieval workflow:
 
@@ -143,12 +145,88 @@ python scripts/build_rag_embeddings.py
 python evals/rag_retrieval_eval.py --retriever sparse
 python evals/rag_retrieval_eval.py --retriever dense
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
+python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5 --query-rewrite --metadata-boost --report-path reports/rag_eval_hybrid_rewrite_boost.json
 python scripts/sweep_rag_hybrid_alpha.py
+python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model cross-encoder/ms-marco-MiniLM-L-6-v2
+python scripts/sweep_rag_reranker.py
 ```
 
-The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API.
+The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API. The reranker also runs locally and requires the `cross-encoder/ms-marco-MiniLM-L-6-v2` model to already be cached; otherwise the eval exits with a cache instruction.
 
-Current RAG retrieval results: sparse hit@5 0.56 / MRR@10 0.3463; dense hit@5 0.60 / MRR@10 0.5584; best hybrid hit@5 is 0.68 at alpha 0.50, and best hybrid MRR@10 is 0.6040 at alpha 0.25.
+Current RAG retrieval results: sparse hit@5 0.56 / MRR@10 0.3463; dense hit@5 0.60 / MRR@10 0.5584; hybrid alpha 0.50 hit@5 0.68 / MRR@10 0.5647; hybrid alpha 0.50 with deterministic query rewrite and metadata boost hit@5 0.76 / MRR@10 0.6080. Rewrite+boost is the selected offline retrieval candidate for now because it improves both hit@5 and MRR@10 over the prior hybrid baseline. The alpha sweep still showed the best unboosted hybrid MRR@10 at alpha 0.25.
+
+API RAG answer smoke check:
+
+```bash
+curl -X POST http://localhost:8000/rag/answer \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "question": "How do I debug a memory leak in https request?",
+    "top_k": 5,
+    "retriever": "hybrid",
+    "alpha": 0.5,
+    "query_rewrite": true,
+    "metadata_boost": true
+  }'
+```
+
+`/rag/answer` returns an extractive fallback answer, rewritten query, citations, and diagnostics. It does not call Claude or external APIs. Optional `source_type` can restrict retrieval to `doc` or `resolved_issue`; by default metadata boosting is a small ranking signal, not a hard filter. The final chatbot RAG tool should require authentication before production use.
+
+## Chat Orchestration
+
+`POST /chat` is the Maintainer's Copilot orchestration endpoint. It uses one Claude tool-calling LLM when configured; this is not a multi-agent workflow. If Claude is disabled or unavailable and fallback is enabled, the deterministic router selects one tool and the response includes `mode="deterministic_fallback"` plus `fallback_reason`.
+
+Available tools:
+
+- `classify_issue`
+- `extract_entities`
+- `summarize_thread`
+- `rag_answer`
+- `write_memory`
+
+Memory behavior:
+
+- Short-term chat memory uses Redis with a 2-hour TTL.
+- In-memory short-term memory is dev/test only and requires `API_ALLOW_IN_MEMORY_MEMORY=true`.
+- Long-term memory is written only through explicit `write_memory`.
+- Memory and logs pass through redaction before storage/emission.
+
+Fallback-only local mode:
+
+```bash
+API_CHAT_LLM_ENABLED=false
+API_ALLOW_IN_MEMORY_MEMORY=true
+```
+
+Claude mode uses `API_ANTHROPIC_API_KEY_SECRET_PATH` through Vault. For local development only, env fallback is available when `API_REQUIRE_VAULT=false`; do not commit API keys.
+
+Chat classify example:
+
+```json
+{
+  "message": "Classify this issue",
+  "context": {
+    "issue_title": "Memory leak in https.request",
+    "issue_body": "Repeated requests increase memory usage..."
+  }
+}
+```
+
+Chat RAG example:
+
+```json
+{
+  "message": "How do I debug a memory leak in https request?"
+}
+```
+
+Chat memory example:
+
+```json
+{
+  "message": "Remember that authentication issues with missing JWT should be treated as bugs."
+}
+```
 
 ## Local Dev Service URLs
 

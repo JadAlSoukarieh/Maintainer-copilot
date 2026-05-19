@@ -8,7 +8,16 @@ from typing import Any
 import yaml
 
 from maintcopilot_api.services.rag.golden import load_jsonl, validate_rag_golden
-from maintcopilot_api.services.rag.retrieval import DenseRetriever, HybridRetriever, SparseRetriever
+from maintcopilot_api.services.rag.query_transform import rewrite_query
+from maintcopilot_api.services.rag.retrieval import (
+    CrossEncoderReranker,
+    DenseRetriever,
+    HybridRetriever,
+    RerankedRetriever,
+    SparseRetriever,
+    apply_metadata_boost,
+    filter_corpus_rows,
+)
 
 
 def load_rag_thresholds(path: Path) -> dict[str, float]:
@@ -28,6 +37,9 @@ def compute_retrieval_metrics(
     *,
     top_k: int = 10,
     retriever: Any | None = None,
+    query_rewrite_enabled: bool = False,
+    metadata_boost_enabled: bool = False,
+    metadata_boost_amount: float = 0.08,
 ) -> dict[str, Any]:
     active_retriever = retriever or SparseRetriever(corpus_rows)
     hits_at_5 = 0
@@ -42,7 +54,11 @@ def compute_retrieval_metrics(
     for row in golden_rows:
         source_type = str(row.get("source_type", "unknown"))
         per_source_examples[source_type] += 1
-        results = active_retriever.query(str(row["question"]), top_k=top_k)
+        rewrite_result = rewrite_query(str(row["question"]))
+        query_text = rewrite_result.rewritten_query if query_rewrite_enabled else str(row["question"])
+        results = active_retriever.query(query_text, top_k=top_k)
+        if metadata_boost_enabled:
+            results = apply_metadata_boost(results, rewrite_result, boost_amount=metadata_boost_amount)[:top_k]
         top_scores.append(results[0]["score"] if results else 0.0)
         ground_truth_ids = set(row["ground_truth_chunk_ids"])
 
@@ -70,6 +86,8 @@ def compute_retrieval_metrics(
             {
                 "golden_id": row["golden_id"],
                 "question": row["question"],
+                "query_text": query_text,
+                "intent": rewrite_result.intent,
                 "source_type": source_type,
                 "ground_truth_chunk_ids": row["ground_truth_chunk_ids"],
                 "hit_at_5": hit_at_5,
@@ -127,6 +145,14 @@ def run_rag_retrieval_eval(
     retriever_type: str = "sparse",
     embedding_index_dir: Path | None = None,
     alpha: float = 0.5,
+    base_retriever_type: str = "hybrid",
+    rerank_top_n: int = 20,
+    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    reranker: CrossEncoderReranker | None = None,
+    query_rewrite_enabled: bool = False,
+    metadata_boost_enabled: bool = False,
+    metadata_boost_amount: float = 0.08,
+    source_type: str | None = None,
 ) -> tuple[int, dict[str, Any]]:
     if not golden_path.exists():
         return 1, {
@@ -152,18 +178,52 @@ def run_rag_retrieval_eval(
             "validation": validation,
         }
     thresholds = load_rag_thresholds(thresholds_path)
+    retrieval_corpus_rows = filter_corpus_rows(corpus_rows, source_type)
     retriever = build_retriever(
         retriever_type=retriever_type,
-        corpus_rows=corpus_rows,
+        corpus_rows=retrieval_corpus_rows,
         embedding_index_dir=embedding_index_dir,
         alpha=alpha,
+        base_retriever_type=base_retriever_type,
+        rerank_top_n=rerank_top_n,
+        reranker_model=reranker_model,
+        reranker=reranker,
     )
-    metrics = compute_retrieval_metrics(golden_rows, corpus_rows, retriever=retriever)
+    try:
+        metrics = compute_retrieval_metrics(
+            golden_rows,
+            retrieval_corpus_rows,
+            retriever=retriever,
+            query_rewrite_enabled=query_rewrite_enabled,
+            metadata_boost_enabled=metadata_boost_enabled,
+            metadata_boost_amount=metadata_boost_amount,
+        )
+    except RuntimeError as exc:
+        return 1, {
+            "ok": False,
+            "retriever": retriever_type,
+            "alpha": alpha if retriever_type in {"hybrid", "reranked"} else None,
+            "base_retriever": base_retriever_type if retriever_type == "reranked" else None,
+            "rerank_top_n": rerank_top_n if retriever_type == "reranked" else None,
+            "reranker_model": reranker_model if retriever_type == "reranked" else None,
+            "query_rewrite_enabled": query_rewrite_enabled,
+            "metadata_boost_enabled": metadata_boost_enabled,
+            "metadata_boost_amount": metadata_boost_amount,
+            "source_type": source_type,
+            "message": str(exc),
+        }
     failures = evaluate_retrieval_thresholds(metrics, thresholds)
 
     report = {
         "retriever": retriever_type,
-        "alpha": alpha if retriever_type == "hybrid" else None,
+        "alpha": alpha if retriever_type in {"hybrid", "reranked"} else None,
+        "base_retriever": base_retriever_type if retriever_type == "reranked" else None,
+        "rerank_top_n": rerank_top_n if retriever_type == "reranked" else None,
+        "reranker_model": reranker_model if retriever_type == "reranked" else None,
+        "query_rewrite_enabled": query_rewrite_enabled,
+        "metadata_boost_enabled": metadata_boost_enabled,
+        "metadata_boost_amount": metadata_boost_amount,
+        "source_type": source_type,
         "golden_path": str(golden_path),
         "corpus_path": str(corpus_path),
         "embedding_index_dir": str(embedding_index_dir) if embedding_index_dir is not None else None,
@@ -183,6 +243,10 @@ def build_retriever(
     corpus_rows: list[dict[str, Any]],
     embedding_index_dir: Path | None,
     alpha: float,
+    base_retriever_type: str,
+    rerank_top_n: int,
+    reranker_model: str,
+    reranker: CrossEncoderReranker | None,
 ) -> Any:
     if retriever_type == "sparse":
         return SparseRetriever(corpus_rows)
@@ -191,9 +255,45 @@ def build_retriever(
             raise ValueError("embedding_index_dir is required for dense retrieval.")
         return DenseRetriever(corpus_rows, index_dir=embedding_index_dir)
     if retriever_type == "hybrid":
-        if embedding_index_dir is None:
-            raise ValueError("embedding_index_dir is required for hybrid retrieval.")
-        sparse = SparseRetriever(corpus_rows)
-        dense = DenseRetriever(corpus_rows, index_dir=embedding_index_dir)
-        return HybridRetriever(sparse, dense, alpha=alpha)
+        return _build_hybrid_retriever(corpus_rows=corpus_rows, embedding_index_dir=embedding_index_dir, alpha=alpha)
+    if retriever_type == "reranked":
+        base = _build_base_retriever_for_rerank(
+            base_retriever_type=base_retriever_type,
+            corpus_rows=corpus_rows,
+            embedding_index_dir=embedding_index_dir,
+            alpha=alpha,
+        )
+        active_reranker = reranker or CrossEncoderReranker(model_name=reranker_model)
+        return RerankedRetriever(base, active_reranker, rerank_top_n=rerank_top_n)
     raise ValueError(f"Unsupported retriever type: {retriever_type}")
+
+
+def _build_base_retriever_for_rerank(
+    *,
+    base_retriever_type: str,
+    corpus_rows: list[dict[str, Any]],
+    embedding_index_dir: Path | None,
+    alpha: float,
+) -> Any:
+    if base_retriever_type == "sparse":
+        return SparseRetriever(corpus_rows)
+    if base_retriever_type == "dense":
+        if embedding_index_dir is None:
+            raise ValueError("embedding_index_dir is required for dense retrieval.")
+        return DenseRetriever(corpus_rows, index_dir=embedding_index_dir)
+    if base_retriever_type == "hybrid":
+        return _build_hybrid_retriever(corpus_rows=corpus_rows, embedding_index_dir=embedding_index_dir, alpha=alpha)
+    raise ValueError(f"Unsupported base retriever for reranking: {base_retriever_type}")
+
+
+def _build_hybrid_retriever(
+    *,
+    corpus_rows: list[dict[str, Any]],
+    embedding_index_dir: Path | None,
+    alpha: float,
+) -> HybridRetriever:
+    if embedding_index_dir is None:
+        raise ValueError("embedding_index_dir is required for hybrid retrieval.")
+    sparse = SparseRetriever(corpus_rows)
+    dense = DenseRetriever(corpus_rows, index_dir=embedding_index_dir)
+    return HybridRetriever(sparse, dense, alpha=alpha)

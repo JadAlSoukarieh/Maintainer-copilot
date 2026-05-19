@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import math
 import re
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 from typing import Callable
 
 import numpy as np
 
+from maintcopilot_api.domain.rag import QueryRewriteResult
 from maintcopilot_api.services.rag.golden import load_jsonl
 
 
@@ -30,6 +31,9 @@ STOPWORDS = {
     "to",
     "use",
 }
+BOOST_MODULES = ("http", "https", "fs", "dns", "stream", "crypto", "tls", "os", "path", "net", "buffer")
+ISSUE_INTENTS = {"issue", "debug", "memory", "network"}
+DOC_INTENTS = {"docs", "api"}
 
 
 def tokenize(text: str) -> list[str]:
@@ -130,14 +134,15 @@ class DenseRetriever:
         scores = self.embeddings @ query_embedding
         if scores.size == 0:
             return []
-        top_indices = np.argsort(scores)[::-1][:top_k]
         results: list[dict] = []
-        for index in top_indices:
+        for index in np.argsort(scores)[::-1]:
             chunk_id = self.chunk_ids[int(index)]
             row = self.rows_by_id.get(chunk_id)
             if row is None:
                 continue
             results.append(_result_from_row(row, float(scores[int(index)])))
+            if len(results) >= top_k:
+                break
         return results
 
     def _encode_query(self, query_text: str) -> np.ndarray:
@@ -220,8 +225,101 @@ class HybridRetriever:
         return sorted(combined, key=lambda item: item["score"], reverse=True)[:top_k]
 
 
+class CrossEncoderReranker:
+    def __init__(
+        self,
+        *,
+        model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        scorer: Callable[[list[tuple[str, str]]], np.ndarray | list[float]] | None = None,
+    ) -> None:
+        self.model_name = model_name
+        self.scorer = scorer
+        self._model = None
+
+    def score(self, query_text: str, candidates: list[dict]) -> list[float]:
+        if not candidates:
+            return []
+        pairs = [(query_text, str(candidate["text"])) for candidate in candidates]
+        if self.scorer is not None:
+            raw_scores = self.scorer(pairs)
+        else:
+            if self._model is None:
+                self._model = _load_cross_encoder(self.model_name)
+            raw_scores = self._model.predict(pairs)
+        scores = np.asarray(raw_scores, dtype=np.float32).reshape(-1)
+        if scores.shape[0] != len(candidates):
+            raise ValueError("Reranker returned a score count that does not match candidate count.")
+        return [float(score) for score in scores]
+
+
+class RerankedRetriever:
+    def __init__(
+        self,
+        base_retriever: SparseRetriever | DenseRetriever | HybridRetriever,
+        reranker: CrossEncoderReranker,
+        *,
+        rerank_top_n: int = 20,
+    ) -> None:
+        if rerank_top_n <= 0:
+            raise ValueError("rerank_top_n must be greater than zero.")
+        self.base_retriever = base_retriever
+        self.reranker = reranker
+        self.rerank_top_n = rerank_top_n
+
+    def query(self, query_text: str, top_k: int = 5) -> list[dict]:
+        candidates = self.base_retriever.query(query_text, top_k=max(top_k, self.rerank_top_n))
+        if not candidates:
+            return []
+
+        reranker_scores = self.reranker.score(query_text, candidates)
+        reranked: list[dict] = []
+        for rank, (candidate, reranker_score) in enumerate(
+            sorted(
+                zip(candidates, reranker_scores, strict=True),
+                key=lambda item: item[1],
+                reverse=True,
+            ),
+            start=1,
+        ):
+            item = dict(candidate)
+            item["original_score"] = float(candidate.get("score", 0.0))
+            item["reranker_score"] = float(reranker_score)
+            item["final_rank"] = rank
+            item["score"] = float(reranker_score)
+            reranked.append(item)
+        return reranked[:top_k]
+
+
 def load_corpus_rows(path: Path) -> list[dict]:
     return load_jsonl(path)
+
+
+def filter_corpus_rows(rows: list[dict], source_type: str | None = None) -> list[dict]:
+    if source_type is None:
+        return list(rows)
+    if source_type not in {"doc", "resolved_issue"}:
+        raise ValueError("source_type must be doc, resolved_issue, or None.")
+    return [row for row in rows if row.get("source_type") == source_type]
+
+
+def apply_metadata_boost(
+    results: list[dict],
+    rewrite_result: QueryRewriteResult,
+    *,
+    boost_amount: float = 0.08,
+) -> list[dict]:
+    boosted: list[dict] = []
+    query_terms = _metadata_query_terms(rewrite_result)
+    for result in results:
+        original_score = float(result.get("score", 0.0))
+        metadata_boost = _metadata_boost_for_result(result, rewrite_result, query_terms, boost_amount)
+        item = dict(result)
+        item["original_score"] = original_score
+        item["metadata_boost"] = metadata_boost
+        item["final_score"] = original_score + metadata_boost
+        item["score"] = item["final_score"]
+        boosted.append(item)
+    return sorted(boosted, key=lambda item: item["final_score"], reverse=True)
 
 
 def _result_from_row(row: dict, score: float) -> dict:
@@ -234,6 +332,45 @@ def _result_from_row(row: dict, score: float) -> dict:
         "text": row["text"],
         "metadata": row["metadata"],
     }
+
+
+def _metadata_boost_for_result(
+    result: dict,
+    rewrite_result: QueryRewriteResult,
+    query_terms: set[str],
+    boost_amount: float,
+) -> float:
+    if boost_amount <= 0:
+        return 0.0
+
+    score_boost = 0.0
+    source_type = result.get("source_type")
+    if rewrite_result.preferred_source_type and source_type == rewrite_result.preferred_source_type:
+        score_boost += boost_amount
+    if rewrite_result.intent in DOC_INTENTS and source_type == "doc":
+        score_boost += boost_amount
+    if rewrite_result.intent in ISSUE_INTENTS and source_type == "resolved_issue":
+        score_boost += boost_amount
+
+    haystack = _metadata_haystack(result)
+    if any(term in query_terms and term in haystack for term in BOOST_MODULES):
+        score_boost += boost_amount
+    return score_boost
+
+
+def _metadata_query_terms(rewrite_result: QueryRewriteResult) -> set[str]:
+    text = f"{rewrite_result.original_query} {rewrite_result.rewritten_query} {' '.join(rewrite_result.added_terms)}"
+    return {tokenize_item for tokenize_item in tokenize(text)}
+
+
+def _metadata_haystack(result: dict) -> str:
+    metadata = result.get("metadata") or {}
+    pieces = [
+        str(result.get("title") or ""),
+        str(metadata.get("path") or ""),
+        str(metadata.get("section") or ""),
+    ]
+    return " ".join(pieces).lower()
 
 
 def _scores_by_chunk_id(results: list[dict]) -> dict[str, float]:
@@ -260,6 +397,24 @@ def _load_sentence_transformer(model_name: str):
             "Run python scripts/bootstrap_dev.py or install the API package dependencies."
         ) from exc
     return SentenceTransformer(model_name, local_files_only=True)
+
+
+def _load_cross_encoder(model_name: str):
+    try:
+        from sentence_transformers import CrossEncoder
+    except ImportError as exc:
+        raise RuntimeError(
+            "sentence-transformers is required for RAG reranking. "
+            "Run python scripts/bootstrap_dev.py or install the API package dependencies."
+        ) from exc
+    try:
+        return CrossEncoder(model_name, local_files_only=True)
+    except OSError as exc:
+        raise RuntimeError(
+            "The reranker model is not cached locally: "
+            f"{model_name}. Pre-download it into the local Hugging Face cache before "
+            f"running reranked retrieval, for example with huggingface-cli download {model_name}."
+        ) from exc
 
 
 def _normalize_token(token: str) -> str:

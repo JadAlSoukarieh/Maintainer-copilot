@@ -74,13 +74,18 @@ Current 25-example golden-set results:
 | dense MiniLM | 0.00 | 0.6000 | 0.6800 | 0.5584 |
 | hybrid | 0.25 | 0.6400 | 0.7200 | 0.6040 |
 | hybrid | 0.50 | 0.6800 | 0.7200 | 0.5647 |
+| hybrid + rewrite + boost | 0.50 | 0.7600 | 0.8000 | 0.6080 |
 
-Hybrid improves over sparse on this golden set. Alpha `0.50` has the best hit@5, while alpha `0.25` has the best MRR@10.
+Hybrid improves over sparse on this golden set. Alpha `0.50` has the best unboosted hit@5, while alpha `0.25` has the best unboosted MRR@10. Deterministic query rewrite plus metadata-aware boosting improves alpha `0.50` to hit@5 `0.7600` and MRR@10 `0.6080`, so it is the selected offline retrieval candidate until reranking is measured honestly.
+
+Query rewrite is deterministic and explainable. It expands common Node.js support phrases such as `https request`, `memory leak`, `dns error`, `stream pipeline`, `fs readFile`, `tls`, `crypto`, and `ECONNRESET` without calling an LLM. Metadata boosting adds a small score adjustment for matching source type and module metadata. It is not a hard filter unless `source_type` is explicitly requested.
+
+Reranking is implemented as a local cross-encoder pass over retrieved candidates. It uses `cross-encoder/ms-marco-MiniLM-L-6-v2` with `local_files_only=True`, so it will only run if that model is already cached locally. Its job is to improve ranking after retrieval, not to change the candidate set.
+
+Reranked metrics are not committed yet because the cross-encoder model was not present in the local cache during verification. Until that model is cached and measured honestly, hybrid remains the selected retrieval candidate.
 
 Still missing:
 
-- reranker
-- query rewrite
 - generation evaluation
 
 ## RAG golden workflow
@@ -136,6 +141,8 @@ Run retrieval eval only after the final file exists and passes validation:
 python evals/rag_retrieval_eval.py --retriever sparse
 python evals/rag_retrieval_eval.py --retriever dense
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
+python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5 --query-rewrite --metadata-boost --report-path reports/rag_eval_hybrid_rewrite_boost.json
+python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model cross-encoder/ms-marco-MiniLM-L-6-v2
 ```
 
 Run the hybrid alpha sweep:
@@ -144,4 +151,12 @@ Run the hybrid alpha sweep:
 python scripts/sweep_rag_hybrid_alpha.py
 ```
 
-Sparse TF-IDF remains the baseline to beat. Dense and hybrid retrieval currently beat it on the AI-assisted golden set; reranking and query rewrite should be measured against these committed reports rather than adopted by intuition.
+Run the reranker sweep after caching the cross-encoder locally:
+
+```bash
+python scripts/sweep_rag_reranker.py
+```
+
+If the cross-encoder is not cached, reranked eval exits with a clear local-cache instruction instead of attempting network access.
+
+Sparse TF-IDF remains the baseline to beat. Dense, hybrid, and hybrid with deterministic rewrite+boost currently beat it on the AI-assisted golden set. Reranking should be measured against these committed reports rather than adopted by intuition.

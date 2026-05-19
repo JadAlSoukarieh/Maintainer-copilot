@@ -3,9 +3,19 @@ from __future__ import annotations
 import json
 
 import numpy as np
+import pytest
 
 from maintcopilot_api.services.rag.corpus import build_doc_corpus_rows, build_issue_corpus_rows, validate_corpus_row
-from maintcopilot_api.services.rag.retrieval import DenseRetriever, HybridRetriever, SparseRetriever
+from maintcopilot_api.services.rag.retrieval import (
+    CrossEncoderReranker,
+    DenseRetriever,
+    HybridRetriever,
+    RerankedRetriever,
+    SparseRetriever,
+    apply_metadata_boost,
+    filter_corpus_rows,
+)
+from maintcopilot_api.services.rag.query_transform import rewrite_query
 
 
 def test_tfidf_retrieval_returns_relevant_chunk() -> None:
@@ -168,12 +178,94 @@ def test_hybrid_scoring_combines_sparse_and_dense(tmp_path) -> None:
     assert "dense_score" in results[0]
 
 
+def test_reranker_preserves_candidate_set_and_reorders_by_score() -> None:
+    candidates = [
+        _result("a", 0.9, "alpha"),
+        _result("b", 0.8, "beta"),
+        _result("c", 0.7, "gamma"),
+    ]
+    base = _StaticRetriever(candidates)
+    reranker = CrossEncoderReranker(scorer=lambda pairs: [0.2, 0.9, 0.5])
+    retriever = RerankedRetriever(base, reranker, rerank_top_n=3)
+
+    results = retriever.query("query", top_k=3)
+
+    assert {item["chunk_id"] for item in results} == {"a", "b", "c"}
+    assert [item["chunk_id"] for item in results] == ["b", "c", "a"]
+    assert results[0]["original_score"] == 0.8
+    assert results[0]["reranker_score"] == pytest.approx(0.9)
+    assert results[0]["final_rank"] == 1
+
+
+def test_reranked_retriever_returns_top_k_after_reranking() -> None:
+    candidates = [
+        _result("a", 0.9, "alpha"),
+        _result("b", 0.8, "beta"),
+        _result("c", 0.7, "gamma"),
+    ]
+    base = _StaticRetriever(candidates)
+    reranker = CrossEncoderReranker(scorer=lambda pairs: [0.2, 0.9, 0.5])
+    retriever = RerankedRetriever(base, reranker, rerank_top_n=3)
+
+    results = retriever.query("query", top_k=2)
+
+    assert [item["chunk_id"] for item in results] == ["b", "c"]
+
+
+def test_metadata_boost_increases_preferred_source_type_score() -> None:
+    rewrite = rewrite_query("How do I debug a memory leak in https request?")
+    results = [
+        _result("doc-http", 0.8, "HTTP request docs"),
+        _result("issue-memory", 0.78, "Memory leak in HTTPS issue"),
+    ]
+    results[0]["source_type"] = "doc"
+    results[1]["source_type"] = "resolved_issue"
+
+    boosted = apply_metadata_boost(results, rewrite, boost_amount=0.08)
+
+    assert boosted[0]["chunk_id"] == "issue-memory"
+    assert boosted[0]["original_score"] == 0.78
+    assert boosted[0]["metadata_boost"] > 0
+    assert boosted[0]["final_score"] == boosted[0]["score"]
+
+
+def test_source_type_filter_returns_only_matching_rows() -> None:
+    rows = [_toy_row("doc-1", "doc", "docs"), _toy_row("issue-1", "resolved_issue", "issue")]
+
+    docs = filter_corpus_rows(rows, "doc")
+    issues = filter_corpus_rows(rows, "resolved_issue")
+
+    assert [row["source_type"] for row in docs] == ["doc"]
+    assert [row["source_type"] for row in issues] == ["resolved_issue"]
+
+
 def _toy_dense_retriever(tmp_path, rows: list[dict], *, query_vector: np.ndarray) -> DenseRetriever:
     index_dir = tmp_path / "embeddings"
     index_dir.mkdir(exist_ok=True)
     np.savez_compressed(index_dir / "dense_index.npz", embeddings=np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32))
     (index_dir / "chunk_ids.json").write_text(json.dumps([row["chunk_id"] for row in rows]), encoding="utf-8")
     return DenseRetriever(rows, index_dir=index_dir, query_encoder=lambda texts: query_vector)
+
+
+def _result(chunk_id: str, score: float, text: str) -> dict:
+    row = _toy_row(chunk_id, "doc", text)
+    return {
+        "chunk_id": row["chunk_id"],
+        "score": score,
+        "source_type": row["source_type"],
+        "title": row["title"],
+        "url": row["url"],
+        "text": row["text"],
+        "metadata": row["metadata"],
+    }
+
+
+class _StaticRetriever:
+    def __init__(self, results: list[dict]) -> None:
+        self.results = results
+
+    def query(self, query_text: str, top_k: int = 5) -> list[dict]:
+        return self.results[:top_k]
 
 
 def _toy_row(chunk_id: str, source_type: str, text: str) -> dict:
