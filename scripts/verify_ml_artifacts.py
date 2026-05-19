@@ -34,9 +34,6 @@ EXPECTED_FILES = {
         "artifacts/classifier/transformer/model/model.safetensors",
         "artifacts/classifier/transformer/model/tokenizer.json",
         "artifacts/classifier/transformer/model/tokenizer_config.json",
-        "artifacts/classifier/transformer/model/special_tokens_map.json",
-        "artifacts/classifier/transformer/model/vocab.json",
-        "artifacts/classifier/transformer/model/merges.txt",
         "artifacts/classifier/transformer/metrics.json",
         "artifacts/classifier/transformer/confusion_matrix.json",
         "artifacts/classifier/transformer/test_predictions.jsonl",
@@ -64,6 +61,14 @@ SHA_TARGETS = {
     "artifacts/classifier/classical/model.joblib",
     "artifacts/classifier/transformer/model/model.safetensors",
 }
+OPTIONAL_FILES = {
+    "transformer": [
+        "artifacts/classifier/transformer/model/special_tokens_map.json",
+        "artifacts/classifier/transformer/model/vocab.json",
+        "artifacts/classifier/transformer/model/merges.txt",
+        "artifacts/classifier/transformer/model/training_args.bin",
+    ]
+}
 
 
 def sha256_for_file(path: Path) -> str:
@@ -90,6 +95,10 @@ def extract_macro_f1(payload: dict | None) -> object:
         return None
     if "macro_f1" in payload:
         return payload["macro_f1"]
+    for split in ("test", "val"):
+        split_payload = payload.get(split)
+        if isinstance(split_payload, dict) and "macro_f1" in split_payload:
+            return split_payload["macro_f1"]
     metrics = payload.get("metrics")
     if isinstance(metrics, dict) and "macro_f1" in metrics:
         return metrics["macro_f1"]
@@ -105,6 +114,15 @@ def print_missing(missing: dict[str, list[str]]) -> None:
                 print(f"  - {path}")
         else:
             print("  - none")
+
+
+def print_optional_status() -> None:
+    print("Optional files:")
+    for category, rel_paths in OPTIONAL_FILES.items():
+        print(f"- {category}:")
+        for rel_path in rel_paths:
+            status = "present" if (ROOT / rel_path).exists() else "missing"
+            print(f"  - {rel_path}: {status}")
 
 
 def main() -> int:
@@ -125,6 +143,8 @@ def main() -> int:
         missing[category] = category_missing
 
     print_missing(missing)
+    print()
+    print_optional_status()
     print()
 
     print("Detected hashes:")

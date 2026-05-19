@@ -109,7 +109,7 @@ Data hash: `db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27`
 
 ## Model Artifact SHA-256
 
-`8ae281cbbec553a84d723f355d1ee298a5c553c0d0d6aca7a4c367ee413b5b7a`
+`2b52851580881cf773af38be1a41df965a7b9c79c98f73ff905d28f92ae35e0b`
 
 ## Runtime Note
 
