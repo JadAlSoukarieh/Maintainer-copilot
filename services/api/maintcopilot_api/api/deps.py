@@ -46,6 +46,8 @@ def get_rag_service(settings: Settings = Depends(get_settings)) -> RagService:
     return RagService(
         corpus_path=_resolve_repo_path(settings.rag_corpus_path),
         embedding_index_dir=_resolve_repo_path(settings.rag_embedding_index_dir),
+        reranker_model_path=_resolve_repo_path(settings.rag_reranker_model_path),
+        rerank_top_n=settings.rag_rerank_top_n,
     )
 
 

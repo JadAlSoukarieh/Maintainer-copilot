@@ -100,10 +100,6 @@ class ToolExecutor:
             RagAnswerRequest(
                 question=question,
                 top_k=5,
-                retriever="hybrid",
-                alpha=0.5,
-                query_rewrite=True,
-                metadata_boost=True,
             )
         )
         return result.model_dump()
