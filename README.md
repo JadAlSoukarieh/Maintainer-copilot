@@ -24,7 +24,7 @@ Week 7 monorepo foundation for an authenticated maintainer assistant. This repos
 - Vault reachability is required by default for the API service.
 - Model-serving responses are deterministic placeholders.
 - Auth foundation, classifier inference, NER, summarization, and the RAG corpus baseline skeleton are implemented.
-- Dense retrieval, hybrid retrieval, deterministic query rewrite, metadata-aware boosting, the extractive RAG answer endpoint, and `/chat` tool orchestration are implemented. Local reranking is implemented but requires a cached cross-encoder model before it can be evaluated honestly. Final generative RAG beyond tool-grounded chat is still not implemented.
+- Dense retrieval, hybrid retrieval, deterministic query rewrite, metadata-aware boosting, local reranking, the extractive RAG answer endpoint, and `/chat` tool orchestration are implemented. Final generative RAG beyond tool-grounded chat is still not implemented.
 
 ## Local development
 
@@ -136,7 +136,7 @@ python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.j
 python evals/rag_retrieval_eval.py
 ```
 
-The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat, dense and hybrid have been measured, and hybrid is the current default retrieval candidate. Reranker evaluation is pending a local model cache.
+The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat, and sparse, dense, hybrid, and reranked retrieval have all been measured against the same golden set.
 
 Dense and hybrid retrieval workflow:
 
@@ -147,13 +147,24 @@ python evals/rag_retrieval_eval.py --retriever dense
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5 --query-rewrite --metadata-boost --report-path reports/rag_eval_hybrid_rewrite_boost.json
 python scripts/sweep_rag_hybrid_alpha.py
-python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model cross-encoder/ms-marco-MiniLM-L-6-v2
-python scripts/sweep_rag_reranker.py
+python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model artifacts/rag/reranker_model --query-rewrite --metadata-boost --report-path reports/rag_eval_reranked.json
+python scripts/sweep_rag_reranker.py --reranker-model artifacts/rag/reranker_model
 ```
 
-The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API. The reranker also runs locally and requires the `cross-encoder/ms-marco-MiniLM-L-6-v2` model to already be cached; otherwise the eval exits with a cache instruction.
+The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API. The reranker runs locally from `artifacts/rag/reranker_model`. If that path is missing, `/rag/answer` falls back to hybrid plus rewrite and boost and exposes the fallback in diagnostics instead of crashing the local demo.
 
-Current RAG retrieval results: sparse hit@5 0.56 / MRR@10 0.3463; dense hit@5 0.60 / MRR@10 0.5584; hybrid alpha 0.50 hit@5 0.68 / MRR@10 0.5647; hybrid alpha 0.50 with deterministic query rewrite and metadata boost hit@5 0.76 / MRR@10 0.6080. Rewrite+boost is the selected offline retrieval candidate for now because it improves both hit@5 and MRR@10 over the prior hybrid baseline. The alpha sweep still showed the best unboosted hybrid MRR@10 at alpha 0.25.
+Current RAG retrieval results:
+
+| Retriever | Alpha | Rewrite+Boost | Rerank Top N | hit@5 | hit@10 | MRR@10 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| sparse TF-IDF | 1.00 | no | - | 0.5600 | 0.6000 | 0.3463 |
+| dense MiniLM | 0.00 | no | - | 0.6000 | 0.6800 | 0.5584 |
+| hybrid | 0.50 | yes | - | 0.7600 | 0.8000 | 0.6080 |
+| reranked hybrid | 0.50 | no | 20 | 0.7200 | 0.7200 | 0.6280 |
+| reranked hybrid | 0.50 | yes | 20 | 0.8000 | 0.8000 | 0.6280 |
+| reranked hybrid, MRR-optimized sweep | 0.25 | no | 10 | 0.7200 | 0.7200 | 0.6533 |
+
+The selected default is reranked hybrid plus deterministic query rewrite and metadata boost with `alpha=0.50` and `rerank_top_n=20`. That variant matches the best measured hit@5 at `0.8000` and still improves MRR@10 over non-reranked hybrid. The `alpha=0.25`, `rerank_top_n=10` variant is the best MRR-only configuration, but it gives up hit@5, so it is not the default for the multi-chunk answer path.
 
 API RAG answer smoke check:
 
@@ -163,14 +174,14 @@ curl -X POST http://localhost:8000/rag/answer \
   -d '{
     "question": "How do I debug a memory leak in https request?",
     "top_k": 5,
-    "retriever": "hybrid",
+    "retriever": "reranked",
     "alpha": 0.5,
     "query_rewrite": true,
     "metadata_boost": true
   }'
 ```
 
-`/rag/answer` returns an extractive fallback answer, rewritten query, citations, and diagnostics. It does not call Claude or external APIs. Optional `source_type` can restrict retrieval to `doc` or `resolved_issue`; by default metadata boosting is a small ranking signal, not a hard filter. The final chatbot RAG tool should require authentication before production use.
+`/rag/answer` returns an extractive fallback answer, rewritten query, citations, and diagnostics. It does not call Claude or external APIs. Optional `source_type` can restrict retrieval to `doc` or `resolved_issue`; by default metadata boosting is a small ranking signal, not a hard filter. When the local reranker model path exists, the service prefers reranked retrieval. Otherwise it falls back to hybrid plus rewrite and boost and reports that fallback in diagnostics. The final chatbot RAG tool should require authentication before production use.
 
 ## Chat Orchestration
 
@@ -226,6 +237,66 @@ Chat memory example:
 {
   "message": "Remember that authentication issues with missing JWT should be treated as bugs."
 }
+```
+
+## Widget Demo
+
+The React widget reads `widget_id` and `api_base_url` from the iframe URL, loads `GET /widgets/{widget_id}/config`, applies the configured greeting/theme/tools, then sends chat messages to `POST /chat` with `use_llm=false` by default. That keeps the demo deterministic and independent of Claude/internet.
+
+The demo expects a public widget config row with `public_widget_id="demo-widget"`. Create it through the admin widget API before opening the host page.
+
+For an unauthenticated local widget demo, run the API with:
+
+```bash
+API_REQUIRE_VAULT=false
+API_AUTH_OPTIONAL_FOR_DEV=true
+API_CHAT_LLM_ENABLED=false
+API_ALLOW_IN_MEMORY_MEMORY=true
+API_ENABLE_DEMO_WIDGET_FALLBACK=true
+```
+
+Start the API:
+
+```bash
+cd services/api
+../../.venv/bin/uvicorn maintcopilot_api.main:app --reload --port 8000
+```
+
+Start the widget:
+
+```bash
+cd services/widget
+npm install
+npm run dev -- --host 0.0.0.0 --port 5173
+```
+
+Open `demo/host/index.html` directly in a browser, or serve `demo/host` with any static file server. If you serve the host on a port, use `http://localhost:8090` to match the dev fallback allowed origins. The demo host embeds:
+
+```html
+<script
+  src="http://localhost:8000/widget.js"
+  data-widget-id="demo-widget"
+  data-api-base-url="http://localhost:8000"
+  data-widget-url="http://localhost:5173">
+</script>
+```
+
+Production should keep auth enabled, enforce widget origin allowlisting, and serve the widget frontend from a trusted built asset URL.
+
+Build the widget under WSL2/Linux Node:
+
+```bash
+cd services/widget
+npm install
+npm run build
+```
+
+Run local smoke checks while the API is running:
+
+```bash
+python scripts/smoke_chat.py --widget-config
+python scripts/smoke_chat.py --chat-rag
+python scripts/smoke_chat.py --chat-classify
 ```
 
 ## Local Dev Service URLs

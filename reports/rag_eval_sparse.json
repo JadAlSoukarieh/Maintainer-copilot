@@ -1,6 +1,13 @@
 {
   "retriever": "sparse",
   "alpha": null,
+  "base_retriever": null,
+  "rerank_top_n": null,
+  "reranker_model": null,
+  "query_rewrite_enabled": false,
+  "metadata_boost_enabled": false,
+  "metadata_boost_amount": 0.08,
+  "source_type": null,
   "golden_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/data/rag/golden/rag_golden.jsonl",
   "corpus_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/data/rag/processed/rag_corpus.jsonl",
   "embedding_index_dir": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/artifacts/rag/embeddings",
@@ -30,6 +37,8 @@
       {
         "golden_id": "rag-golden-001",
         "question": "How does `stream.pipeline()` clean up streams when a pipeline fails?",
+        "query_text": "How does `stream.pipeline()` clean up streams when a pipeline fails?",
+        "intent": "stream",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-146"
@@ -93,6 +102,8 @@
       {
         "golden_id": "rag-golden-002",
         "question": "Where do the Node.js DNS docs list resolver error codes such as `dns.NODATA` and `dns.TIMEOUT`?",
+        "query_text": "Where do the Node.js DNS docs list resolver error codes such as `dns.NODATA` and `dns.TIMEOUT`?",
+        "intent": "debug",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-dns-md-dns-error-codes-081"
@@ -156,6 +167,8 @@
       {
         "golden_id": "rag-golden-003",
         "question": "What does `response.write()` do on an `http.ServerResponse`?",
+        "query_text": "What does `response.write()` do on an `http.ServerResponse`?",
+        "intent": "unknown",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-135"
@@ -219,6 +232,8 @@
       {
         "golden_id": "rag-golden-004",
         "question": "How can Node.js integrate with Chrome DevTools for debugging?",
+        "query_text": "How can Node.js integrate with Chrome DevTools for debugging?",
+        "intent": "unknown",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-inspector-md-inspector-integration-with-devtools-030"
@@ -282,6 +297,8 @@
       {
         "golden_id": "rag-golden-005",
         "question": "What do the `fs.readFile()` docs recommend when I want to avoid buffering an entire file in memory?",
+        "query_text": "What do the `fs.readFile()` docs recommend when I want to avoid buffering an entire file in memory?",
+        "intent": "docs",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-156"
@@ -345,6 +362,8 @@
       {
         "golden_id": "rag-golden-006",
         "question": "Where do the Node.js error docs explain common system errors like `EADDRINUSE` and `ECONNRESET`?",
+        "query_text": "Where do the Node.js error docs explain common system errors like `EADDRINUSE` and `ECONNRESET`?",
+        "intent": "debug",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-errors-md-errors-class-systemerror-common-system-errors-036"
@@ -408,6 +427,8 @@
       {
         "golden_id": "rag-golden-007",
         "question": "How does `response.write()` behave on an `Http2ServerResponse`?",
+        "query_text": "How does `response.write()` behave on an `Http2ServerResponse`?",
+        "intent": "unknown",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-242"
@@ -471,6 +492,8 @@
       {
         "golden_id": "rag-golden-008",
         "question": "How do TLS session tickets work in Node.js?",
+        "query_text": "How do TLS session tickets work in Node.js?",
+        "intent": "network",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-018"
@@ -534,6 +557,8 @@
       {
         "golden_id": "rag-golden-009",
         "question": "Where do the HTTPS docs show how to call `https.request()`?",
+        "query_text": "Where do the HTTPS docs show how to call `https.request()`?",
+        "intent": "docs",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-https-md-https-https-request-url-options-callback-026"
@@ -597,6 +622,8 @@
       {
         "golden_id": "rag-golden-010",
         "question": "Where do the zlib docs show HTTP compression examples?",
+        "query_text": "Where do the zlib docs show HTTP compression examples?",
+        "intent": "docs",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-012"
@@ -660,6 +687,8 @@
       {
         "golden_id": "rag-golden-011",
         "question": "What does the Node.js Permission Model restrict?",
+        "query_text": "What does the Node.js Permission Model restrict?",
+        "intent": "unknown",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-permissions-md-permissions-process-based-permissions-permission-model-permission-model-constraints-011"
@@ -723,6 +752,8 @@
       {
         "golden_id": "rag-golden-012",
         "question": "How do the Node.js stream docs recommend handling backpressure when using `writable.write()`?",
+        "query_text": "How do the Node.js stream docs recommend handling backpressure when using `writable.write()`?",
+        "intent": "docs",
         "source_type": "doc",
         "ground_truth_chunk_ids": [
           "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-053"
@@ -786,6 +817,8 @@
       {
         "golden_id": "rag-golden-013",
         "question": "What resolved issue describes recurring `ECONNRESET` errors on Node 6 HTTP and HTTPS servers?",
+        "query_text": "What resolved issue describes recurring `ECONNRESET` errors on Node 6 HTTP and HTTPS servers?",
+        "intent": "network",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-7776-val-001"
@@ -849,6 +882,8 @@
       {
         "golden_id": "rag-golden-014",
         "question": "What resolved Node.js issue reports a memory leak when `https.request()` hits `ECONNRESET`?",
+        "query_text": "What resolved Node.js issue reports a memory leak when `https.request()` hits `ECONNRESET`?",
+        "intent": "memory",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-8827-test-001"
@@ -912,6 +947,8 @@
       {
         "golden_id": "rag-golden-015",
         "question": "What resolved issue describes `CLOSE_WAIT` sockets and a suspected memory leak while reading HTTP responses?",
+        "query_text": "What resolved issue describes `CLOSE_WAIT` sockets and a suspected memory leak while reading HTTP responses?",
+        "intent": "memory",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-7910-excluded-001"
@@ -975,6 +1012,8 @@
       {
         "golden_id": "rag-golden-016",
         "question": "What resolved issue reports HTTP requests blocking file I/O under certain network conditions?",
+        "query_text": "What resolved issue reports HTTP requests blocking file I/O under certain network conditions?",
+        "intent": "network",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-7301-excluded-001"
@@ -1038,6 +1077,8 @@
       {
         "golden_id": "rag-golden-017",
         "question": "What resolved issue reports TLS hostname verification expecting trailing dots in certificate alt names?",
+        "query_text": "What resolved issue reports TLS hostname verification expecting trailing dots in certificate alt names?",
+        "intent": "network",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-8008-excluded-001"
@@ -1101,6 +1142,8 @@
       {
         "golden_id": "rag-golden-018",
         "question": "What resolved issue describes `dns.lookup()` blocking other filesystem or serial I/O?",
+        "query_text": "What resolved issue describes `dns.lookup()` blocking other filesystem or serial I/O?",
+        "intent": "debug",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-8436-test-001"
@@ -1164,6 +1207,8 @@
       {
         "golden_id": "rag-golden-019",
         "question": "What resolved issue reports a memory leak from `zlib.deflate()`?",
+        "query_text": "What resolved issue reports a memory leak from `zlib.deflate()`?",
+        "intent": "memory",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-8871-test-001"
@@ -1227,6 +1272,8 @@
       {
         "golden_id": "rag-golden-020",
         "question": "What resolved issue says `readFileSync()` and `readFile()` returned different buffer sizes?",
+        "query_text": "What resolved issue says `readFileSync()` and `readFile()` returned different buffer sizes?",
+        "intent": "debug",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-9336-test-001"
@@ -1290,6 +1337,8 @@
       {
         "golden_id": "rag-golden-021",
         "question": "What resolved issue asks whether `tls.createServer()` should document `secureOptions` for limiting TLS versions?",
+        "query_text": "What resolved issue asks whether `tls.createServer()` should document `secureOptions` for limiting TLS versions?",
+        "intent": "network",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-9025-test-001"
@@ -1353,6 +1402,8 @@
       {
         "golden_id": "rag-golden-022",
         "question": "What resolved issue reports an extra `readable` event from an HTTP response stream?",
+        "query_text": "What resolved issue reports an extra `readable` event from an HTTP response stream?",
+        "intent": "network",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-676-excluded-001"
@@ -1416,6 +1467,8 @@
       {
         "golden_id": "rag-golden-023",
         "question": "What resolved issue discusses FIPS test failures and API problems in Node.js crypto?",
+        "query_text": "What resolved issue discusses FIPS test failures and API problems in Node.js crypto?",
+        "intent": "debug",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-3760-excluded-001"
@@ -1479,6 +1532,8 @@
       {
         "golden_id": "rag-golden-024",
         "question": "Which resolved issue tracks adding version and deprecation history to API docs?",
+        "query_text": "Which resolved issue tracks adding version and deprecation history to API docs?",
+        "intent": "debug",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-6578-excluded-002"
@@ -1542,6 +1597,8 @@
       {
         "golden_id": "rag-golden-025",
         "question": "What resolved issue reports too many Ubuntu sockets stuck in `CLOSE_WAIT` after HTTP CONNECT traffic?",
+        "query_text": "What resolved issue reports too many Ubuntu sockets stuck in `CLOSE_WAIT` after HTTP CONNECT traffic?",
+        "intent": "network",
         "source_type": "resolved_issue",
         "ground_truth_chunk_ids": [
           "issue-9513-test-001"

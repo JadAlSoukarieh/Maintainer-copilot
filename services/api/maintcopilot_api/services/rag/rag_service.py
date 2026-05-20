@@ -9,11 +9,14 @@ from maintcopilot_api.domain.rag import (
     RagAnswerRequest,
     RagAnswerResponse,
     RagCitation,
+    RagRetriever,
 )
 from maintcopilot_api.services.rag.query_transform import rewrite_query
 from maintcopilot_api.services.rag.retrieval import (
+    CrossEncoderReranker,
     DenseRetriever,
     HybridRetriever,
+    RerankedRetriever,
     SparseRetriever,
     apply_metadata_boost,
     filter_corpus_rows,
@@ -25,9 +28,18 @@ SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
 
 
 class RagService:
-    def __init__(self, *, corpus_path: Path, embedding_index_dir: Path) -> None:
+    def __init__(
+        self,
+        *,
+        corpus_path: Path,
+        embedding_index_dir: Path,
+        reranker_model_path: Path | None = None,
+        rerank_top_n: int = 20,
+    ) -> None:
         self.corpus_path = Path(corpus_path)
         self.embedding_index_dir = Path(embedding_index_dir)
+        self.reranker_model_path = Path(reranker_model_path) if reranker_model_path is not None else None
+        self.rerank_top_n = rerank_top_n
         self._corpus_rows: list[dict] | None = None
 
     def answer_rag_question(self, request: RagAnswerRequest) -> RagAnswerResponse:
@@ -43,8 +55,20 @@ class RagService:
             )
         )
         rows = filter_corpus_rows(self._load_rows(), request.source_type)
-        retriever = self._build_retriever(request.retriever, rows, alpha=request.alpha)
-        results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
+        requested_retriever = request.retriever
+        retriever, effective_retriever, fallback_reason = self._build_retriever(
+            request.retriever,
+            rows,
+            alpha=request.alpha,
+        )
+        try:
+            results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
+        except RuntimeError:
+            if effective_retriever != "reranked":
+                raise
+            retriever, effective_retriever = self._build_hybrid_retriever(rows, alpha=request.alpha), "hybrid"
+            fallback_reason = "reranker_unavailable"
+            results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
         if request.metadata_boost:
             results = apply_metadata_boost(results, rewrite_result)
         citations = [_citation_from_result(result) for result in results[: request.top_k]]
@@ -54,7 +78,7 @@ class RagService:
             question=request.question,
             rewritten_query=rewrite_result.rewritten_query,
             intent=rewrite_result.intent,
-            retriever=request.retriever,
+            retriever=effective_retriever,
             alpha=request.alpha,
             citations=citations,
             diagnostics=RagAnswerDiagnostics(
@@ -62,6 +86,9 @@ class RagService:
                 metadata_boost_enabled=request.metadata_boost,
                 preferred_source_type=rewrite_result.preferred_source_type,
                 candidate_count=len(citations),
+                requested_retriever=requested_retriever,
+                effective_retriever=effective_retriever,
+                fallback_reason=fallback_reason,
             ),
         )
 
@@ -70,16 +97,31 @@ class RagService:
             self._corpus_rows = load_corpus_rows(self.corpus_path)
         return self._corpus_rows
 
-    def _build_retriever(self, retriever_type: str, rows: list[dict], *, alpha: float):
+    def _build_retriever(
+        self,
+        retriever_type: RagRetriever,
+        rows: list[dict],
+        *,
+        alpha: float,
+    ) -> tuple[SparseRetriever | DenseRetriever | HybridRetriever | RerankedRetriever, RagRetriever, str | None]:
         if retriever_type == "sparse":
-            return SparseRetriever(rows)
+            return SparseRetriever(rows), "sparse", None
         if retriever_type == "dense":
-            return DenseRetriever(rows, index_dir=self.embedding_index_dir)
+            return DenseRetriever(rows, index_dir=self.embedding_index_dir), "dense", None
         if retriever_type == "hybrid":
-            sparse = SparseRetriever(rows)
-            dense = DenseRetriever(rows, index_dir=self.embedding_index_dir)
-            return HybridRetriever(sparse, dense, alpha=alpha)
+            return self._build_hybrid_retriever(rows, alpha=alpha), "hybrid", None
+        if retriever_type == "reranked":
+            if self.reranker_model_path is None or not self.reranker_model_path.exists():
+                return self._build_hybrid_retriever(rows, alpha=alpha), "hybrid", "reranker_model_missing"
+            base = self._build_hybrid_retriever(rows, alpha=alpha)
+            reranker = CrossEncoderReranker(model_name=str(self.reranker_model_path))
+            return RerankedRetriever(base, reranker, rerank_top_n=self.rerank_top_n), "reranked", None
         raise ValueError(f"Unsupported RAG retriever: {retriever_type}")
+
+    def _build_hybrid_retriever(self, rows: list[dict], *, alpha: float) -> HybridRetriever:
+        sparse = SparseRetriever(rows)
+        dense = DenseRetriever(rows, index_dir=self.embedding_index_dir)
+        return HybridRetriever(sparse, dense, alpha=alpha)
 
 
 def _citation_from_result(result: dict) -> RagCitation:

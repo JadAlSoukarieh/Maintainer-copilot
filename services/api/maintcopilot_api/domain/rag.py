@@ -5,7 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 
-RagRetriever = Literal["sparse", "dense", "hybrid"]
+RagRetriever = Literal["sparse", "dense", "hybrid", "reranked"]
 RagSourceType = Literal["doc", "resolved_issue"]
 RagIntent = Literal["docs", "issue", "debug", "api", "memory", "network", "crypto", "stream", "fs", "dns", "unknown"]
 
@@ -21,7 +21,7 @@ class QueryRewriteResult(BaseModel):
 class RagAnswerRequest(BaseModel):
     question: str = Field(min_length=1)
     top_k: int = Field(default=5, ge=1, le=20)
-    retriever: RagRetriever = "hybrid"
+    retriever: RagRetriever = "reranked"
     alpha: float = Field(default=0.5, ge=0.0, le=1.0)
     query_rewrite: bool = True
     metadata_boost: bool = True
@@ -42,6 +42,9 @@ class RagAnswerDiagnostics(BaseModel):
     metadata_boost_enabled: bool
     preferred_source_type: RagSourceType | None = None
     candidate_count: int
+    requested_retriever: RagRetriever
+    effective_retriever: RagRetriever
+    fallback_reason: str | None = None
 
 
 class RagAnswerResponse(BaseModel):

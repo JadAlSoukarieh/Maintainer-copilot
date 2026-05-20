@@ -12,11 +12,22 @@
 10. Dense retrieval uses `sentence-transformers/all-MiniLM-L6-v2` because it is small, local, CPU-friendly, and a common semantic retrieval baseline. The embedding index is generated under `artifacts/rag/embeddings/`.
 11. Hybrid retrieval linearly combines per-query normalized sparse and dense scores. Against the current 25-example AI-assisted RAG golden set, sparse reaches hit@5 0.56 and MRR@10 0.3463; dense reaches hit@5 0.60 and MRR@10 0.5584; hybrid alpha 0.50 reaches the best hit@5 at 0.68, while hybrid alpha 0.25 reaches the best MRR@10 at 0.6040.
 12. The RAG golden set is AI-assisted curated and validated, not a claim of deep manual human review. Dense, hybrid, and reranked retrieval must beat the sparse TF-IDF baseline against that set rather than replacing it by intuition.
-13. Reranking is implemented as a local cross-encoder pass over retrieved candidates, using `cross-encoder/ms-marco-MiniLM-L-6-v2` in offline-only mode. It should only be adopted if measured reports improve on the dense and hybrid baselines.
-14. During verification, the reranker model was not cached locally, so no honest reranked metrics were produced. Hybrid therefore remains the default retrieval candidate until reranked evaluation is run and documented.
+13. Reranking is implemented as a local cross-encoder pass over retrieved candidates, using `cross-encoder/ms-marco-MiniLM-L-6-v2` in offline-only mode from the local path `artifacts/rag/reranker_model`. The service now prefers reranked retrieval when that path exists and falls back to hybrid with an explicit diagnostic if the local reranker model is missing or unavailable.
 15. The earlier 20,654-chunk RAG corpus count was from a pre-dedup docs import, not from the current corpus used by dense retrieval. The duplicate Node docs lived under a nested `api/api/...` path, which nearly doubled doc chunks from 7,074 to 14,148 while leaving resolved_issue chunks unchanged at 6,506. After deduplicating identical nested doc files during corpus discovery, the real corpus size is 13,580, and the embedding manifest matches that current corpus exactly.
 16. RAG query rewrite is deterministic and offline. It expands common Node.js terms and predicts a preferred source type, but it does not call Claude or any external API.
 17. Metadata-aware boosting is a small explainable ranking adjustment after retrieval, not a default hard filter. Explicit `source_type` filtering is available for docs-only or resolved-issue-only queries.
-18. Hybrid alpha 0.50 plus deterministic query rewrite and metadata boost improves the current golden eval to hit@5 0.76 and MRR@10 0.6080. That path is the selected offline retrieval candidate until reranking is measured with a fully cached local cross-encoder.
-19. `/chat` uses a single Claude tool-calling LLM when enabled, not a multi-agent workflow. The deterministic router is the fallback for dev, tests, and Claude outages.
-20. Long-term memory is explicit-only through `write_memory`; short-term memory is redacted and TTL-bound. In-memory short-term memory is restricted to dev/test via `API_ALLOW_IN_MEMORY_MEMORY=true`.
+18. The measured 25-example RAG retrieval results are:
+
+| Retriever | Alpha | Rewrite+Boost | Rerank Top N | hit@5 | hit@10 | MRR@10 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| sparse TF-IDF | 1.00 | no | - | 0.5600 | 0.6000 | 0.3463 |
+| dense MiniLM | 0.00 | no | - | 0.6000 | 0.6800 | 0.5584 |
+| hybrid | 0.50 | yes | - | 0.7600 | 0.8000 | 0.6080 |
+| reranked hybrid | 0.50 | no | 20 | 0.7200 | 0.7200 | 0.6280 |
+| reranked hybrid | 0.50 | yes | 20 | 0.8000 | 0.8000 | 0.6280 |
+| reranked hybrid, MRR-optimized sweep | 0.25 | no | 10 | 0.7200 | 0.7200 | 0.6533 |
+
+19. The selected default RAG pipeline is reranked hybrid retrieval plus deterministic query rewrite and metadata boost with `alpha=0.50` and `rerank_top_n=20`. This is the best default for the current `/rag/answer` endpoint because it raises hit@5 to `0.8000` while still improving MRR@10 over the non-reranked hybrid baseline.
+20. The MRR-optimized variant is reranked hybrid with `alpha=0.25` and `rerank_top_n=10`, which reaches MRR@10 `0.6533` but lowers hit@5 to `0.7200`. Because the current RAG answer path uses multiple retrieved chunks, hit@5 is the better default optimization target than MRR alone.
+21. `/chat` uses a single Claude tool-calling LLM when enabled, not a multi-agent workflow. The deterministic router is the fallback for dev, tests, and Claude outages.
+22. Long-term memory is explicit-only through `write_memory`; short-term memory is redacted and TTL-bound. In-memory short-term memory is restricted to dev/test via `API_ALLOW_IN_MEMORY_MEMORY=true`.

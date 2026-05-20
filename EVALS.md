@@ -72,17 +72,24 @@ Current 25-example golden-set results:
 | --- | ---: | ---: | ---: | ---: |
 | sparse TF-IDF | 1.00 | 0.5600 | 0.6000 | 0.3463 |
 | dense MiniLM | 0.00 | 0.6000 | 0.6800 | 0.5584 |
-| hybrid | 0.25 | 0.6400 | 0.7200 | 0.6040 |
 | hybrid | 0.50 | 0.6800 | 0.7200 | 0.5647 |
 | hybrid + rewrite + boost | 0.50 | 0.7600 | 0.8000 | 0.6080 |
+| reranked hybrid | 0.50 | 0.7200 | 0.7200 | 0.6280 |
+| reranked hybrid + rewrite + boost | 0.50 | 0.8000 | 0.8000 | 0.6280 |
+| reranked hybrid, MRR-optimized sweep | 0.25 | 0.7200 | 0.7200 | 0.6533 |
 
-Hybrid improves over sparse on this golden set. Alpha `0.50` has the best unboosted hit@5, while alpha `0.25` has the best unboosted MRR@10. Deterministic query rewrite plus metadata-aware boosting improves alpha `0.50` to hit@5 `0.7600` and MRR@10 `0.6080`, so it is the selected offline retrieval candidate until reranking is measured honestly.
+Sparse is still the baseline to beat, but it is no longer the selected pipeline. Dense beats sparse, hybrid plus rewrite and boost beats dense, and reranked hybrid plus rewrite and boost is now the selected default because it reaches the best measured hit@5 at `0.8000` while also improving MRR@10 over the non-reranked hybrid baseline.
+
+There is still a tradeoff:
+
+- Default answer-path configuration: reranked hybrid + rewrite + boost with `alpha=0.50`, `rerank_top_n=20`, hit@5 `0.8000`, MRR@10 `0.6280`
+- MRR-optimized variant: reranked hybrid with `alpha=0.25`, `rerank_top_n=10`, hit@5 `0.7200`, MRR@10 `0.6533`
+
+Because `/rag/answer` sends multiple retrieved chunks into the extractive answer path, hit@5 matters more than pure MRR for the default production-like behavior. That is why the default favors `alpha=0.50`, `rerank_top_n=20` instead of the MRR-only winner.
 
 Query rewrite is deterministic and explainable. It expands common Node.js support phrases such as `https request`, `memory leak`, `dns error`, `stream pipeline`, `fs readFile`, `tls`, `crypto`, and `ECONNRESET` without calling an LLM. Metadata boosting adds a small score adjustment for matching source type and module metadata. It is not a hard filter unless `source_type` is explicitly requested.
 
-Reranking is implemented as a local cross-encoder pass over retrieved candidates. It uses `cross-encoder/ms-marco-MiniLM-L-6-v2` with `local_files_only=True`, so it will only run if that model is already cached locally. Its job is to improve ranking after retrieval, not to change the candidate set.
-
-Reranked metrics are not committed yet because the cross-encoder model was not present in the local cache during verification. Until that model is cached and measured honestly, hybrid remains the selected retrieval candidate.
+Reranking is implemented as a local cross-encoder pass over retrieved candidates. It uses `cross-encoder/ms-marco-MiniLM-L-6-v2` with `local_files_only=True`, and the current local install path is `artifacts/rag/reranker_model`. Its job is to improve ranking after retrieval, not to change the candidate set.
 
 Still missing:
 
@@ -142,7 +149,7 @@ python evals/rag_retrieval_eval.py --retriever sparse
 python evals/rag_retrieval_eval.py --retriever dense
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5 --query-rewrite --metadata-boost --report-path reports/rag_eval_hybrid_rewrite_boost.json
-python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model cross-encoder/ms-marco-MiniLM-L-6-v2
+python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model artifacts/rag/reranker_model --query-rewrite --metadata-boost --report-path reports/rag_eval_reranked.json
 ```
 
 Run the hybrid alpha sweep:
@@ -154,9 +161,7 @@ python scripts/sweep_rag_hybrid_alpha.py
 Run the reranker sweep after caching the cross-encoder locally:
 
 ```bash
-python scripts/sweep_rag_reranker.py
+python scripts/sweep_rag_reranker.py --reranker-model artifacts/rag/reranker_model
 ```
 
-If the cross-encoder is not cached, reranked eval exits with a clear local-cache instruction instead of attempting network access.
-
-Sparse TF-IDF remains the baseline to beat. Dense, hybrid, and hybrid with deterministic rewrite+boost currently beat it on the AI-assisted golden set. Reranking should be measured against these committed reports rather than adopted by intuition.
+If the local reranker path is missing, reranked eval exits with a clear local-cache instruction instead of attempting network access. The API service also falls back to hybrid plus rewrite and boost and reports that fallback in diagnostics instead of crashing the local demo.

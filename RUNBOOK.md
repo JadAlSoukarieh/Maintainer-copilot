@@ -109,7 +109,7 @@ python scripts/validate_rag_golden.py --golden-path data/rag/golden/rag_golden.j
 python evals/rag_retrieval_eval.py
 ```
 
-The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat, dense and hybrid have been measured, and hybrid is the current default retrieval candidate. Reranker evaluation is pending a local model cache.
+The current final RAG golden set is AI-assisted curated and validated with `human_review_status=ai_assisted_approved`; it should be spot-checked before submission. Sparse TF-IDF is the baseline to beat, and sparse, dense, hybrid, and reranked retrieval have all been measured against it.
 
 Dense and hybrid retrieval workflow:
 
@@ -120,13 +120,24 @@ python evals/rag_retrieval_eval.py --retriever dense
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5
 python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5 --query-rewrite --metadata-boost --report-path reports/rag_eval_hybrid_rewrite_boost.json
 python scripts/sweep_rag_hybrid_alpha.py
-python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model cross-encoder/ms-marco-MiniLM-L-6-v2
-python scripts/sweep_rag_reranker.py
+python evals/rag_retrieval_eval.py --retriever reranked --base-retriever hybrid --alpha 0.5 --rerank-top-n 20 --reranker-model artifacts/rag/reranker_model --query-rewrite --metadata-boost --report-path reports/rag_eval_reranked.json
+python scripts/sweep_rag_reranker.py --reranker-model artifacts/rag/reranker_model
 ```
 
-The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API. The reranker also runs locally and requires the `cross-encoder/ms-marco-MiniLM-L-6-v2` model to already be cached; otherwise the eval exits with a cache instruction.
+The embedding builder uses the local `sentence-transformers/all-MiniLM-L6-v2` model cache. It does not call an external embedding API. The reranker runs locally from `artifacts/rag/reranker_model`. If that path is missing, the API falls back to hybrid plus rewrite and boost and reports the fallback in RAG diagnostics instead of crashing the local demo.
 
-Current RAG retrieval results: sparse hit@5 0.56 / MRR@10 0.3463; dense hit@5 0.60 / MRR@10 0.5584; hybrid alpha 0.50 hit@5 0.68 / MRR@10 0.5647; hybrid alpha 0.50 with deterministic query rewrite and metadata boost hit@5 0.76 / MRR@10 0.6080. Rewrite+boost is the selected offline retrieval candidate for now because it improves both hit@5 and MRR@10 over the prior hybrid baseline.
+Current RAG retrieval results:
+
+| Retriever | Alpha | Rewrite+Boost | Rerank Top N | hit@5 | hit@10 | MRR@10 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: |
+| sparse TF-IDF | 1.00 | no | - | 0.5600 | 0.6000 | 0.3463 |
+| dense MiniLM | 0.00 | no | - | 0.6000 | 0.6800 | 0.5584 |
+| hybrid | 0.50 | yes | - | 0.7600 | 0.8000 | 0.6080 |
+| reranked hybrid | 0.50 | no | 20 | 0.7200 | 0.7200 | 0.6280 |
+| reranked hybrid | 0.50 | yes | 20 | 0.8000 | 0.8000 | 0.6280 |
+| reranked hybrid, MRR-optimized sweep | 0.25 | no | 10 | 0.7200 | 0.7200 | 0.6533 |
+
+The selected default is reranked hybrid plus deterministic query rewrite and metadata boost with `alpha=0.50` and `rerank_top_n=20`. The MRR-optimized variant is `alpha=0.25` with `rerank_top_n=10`, but it gives up hit@5. Because `/rag/answer` uses multiple returned chunks, hit@5 is the better default optimization target.
 
 API RAG answer smoke request:
 
@@ -136,14 +147,14 @@ curl -X POST http://localhost:8000/rag/answer \
   -d '{
     "question": "How do I debug a memory leak in https request?",
     "top_k": 5,
-    "retriever": "hybrid",
+    "retriever": "reranked",
     "alpha": 0.5,
     "query_rewrite": true,
     "metadata_boost": true
   }'
 ```
 
-`/rag/answer` is an extractive fallback over retrieved local corpus chunks. It returns citations, rewritten query, intent, and diagnostics for future chatbot tool use. It does not call Claude or external APIs. Optional `source_type` can restrict retrieval to `doc` or `resolved_issue`; otherwise metadata boost is only a small ranking signal. Production chatbot RAG should require authenticated user access.
+`/rag/answer` is an extractive fallback over retrieved local corpus chunks. It returns citations, rewritten query, intent, and diagnostics for future chatbot tool use. It does not call Claude or external APIs. Optional `source_type` can restrict retrieval to `doc` or `resolved_issue`; otherwise metadata boost is only a small ranking signal. When the local reranker model exists, the API prefers reranked retrieval. Otherwise it falls back to hybrid plus rewrite and boost and exposes the fallback in diagnostics. Production chatbot RAG should require authenticated user access.
 
 Chat orchestration smoke examples:
 
@@ -178,6 +189,53 @@ curl -X POST http://localhost:8000/chat \
 `/chat` uses one Claude tool-calling LLM when enabled; it is not a multi-agent workflow. If Claude is disabled or unavailable and fallback is enabled, the deterministic router selects one tool and the response includes `mode="deterministic_fallback"` plus `fallback_reason` when applicable.
 
 Available chat tools are `classify_issue`, `extract_entities`, `summarize_thread`, `rag_answer`, and `write_memory`. Short-term memory uses Redis with a 2-hour TTL. In-memory memory is dev/test only and requires `API_ALLOW_IN_MEMORY_MEMORY=true`. Long-term memory is only written through explicit `write_memory`, and all memory/logging paths use redaction.
+
+Widget demo workflow:
+
+Create a public widget config row with `public_widget_id="demo-widget"` through the admin widget API before opening the host page.
+
+```bash
+API_REQUIRE_VAULT=false
+API_AUTH_OPTIONAL_FOR_DEV=true
+API_CHAT_LLM_ENABLED=false
+API_ALLOW_IN_MEMORY_MEMORY=true
+API_ENABLE_DEMO_WIDGET_FALLBACK=true
+cd services/api
+../../.venv/bin/uvicorn maintcopilot_api.main:app --reload --port 8000
+```
+
+```bash
+cd services/widget
+npm install
+npm run dev -- --host 0.0.0.0 --port 5173
+```
+
+Open `demo/host/index.html` directly in a browser, or serve `demo/host` statically. Use `http://localhost:8090` if serving it on a port so the dev fallback allowed origins match. The host uses the API loader:
+
+```html
+<script
+  src="http://localhost:8000/widget.js"
+  data-widget-id="demo-widget"
+  data-api-base-url="http://localhost:8000"
+  data-widget-url="http://localhost:5173">
+</script>
+```
+
+The widget loads backend config from `/widgets/{widget_id}/config`, uses `theme.primaryColor`, `theme.position`, `greeting`, and `enabled_tools`, then calls `/chat` with `use_llm=false`. Production should keep auth enabled and enforce origin allowlisting.
+
+Build and smoke-check:
+
+```bash
+cd services/widget
+npm install
+npm run build
+```
+
+```bash
+python scripts/smoke_chat.py --widget-config
+python scripts/smoke_chat.py --chat-rag
+python scripts/smoke_chat.py --chat-classify
+```
 
 ## Local Dev Service URLs
 

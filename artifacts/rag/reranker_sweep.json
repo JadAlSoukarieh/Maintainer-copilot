@@ -1,0 +1,88 @@
+{
+  "results": [
+    {
+      "alpha": 0.25,
+      "rerank_top_n": 10,
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.6533333333333333,
+      "per_source_hit_at_5": {
+        "doc": 0.5,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_reranked_alpha_0_25_top_10.json"
+    },
+    {
+      "alpha": 0.25,
+      "rerank_top_n": 20,
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.648,
+      "per_source_hit_at_5": {
+        "doc": 0.5,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_reranked_alpha_0_25_top_20.json"
+    },
+    {
+      "alpha": 0.25,
+      "rerank_top_n": 30,
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.6213333333333333,
+      "per_source_hit_at_5": {
+        "doc": 0.5,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_reranked_alpha_0_25_top_30.json"
+    },
+    {
+      "alpha": 0.5,
+      "rerank_top_n": 10,
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.6533333333333333,
+      "per_source_hit_at_5": {
+        "doc": 0.5,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_reranked_alpha_0_5_top_10.json"
+    },
+    {
+      "alpha": 0.5,
+      "rerank_top_n": 20,
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.628,
+      "per_source_hit_at_5": {
+        "doc": 0.5,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_reranked_alpha_0_5_top_20.json"
+    },
+    {
+      "alpha": 0.5,
+      "rerank_top_n": 30,
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.628,
+      "per_source_hit_at_5": {
+        "doc": 0.5,
+        "resolved_issue": 0.9230769230769231
+      },
+      "passed": true,
+      "failures": [],
+      "report_path": "/home/jad/AIE-bootcamp/week7-maintainers-copilot/reports/rag_eval_reranked_alpha_0_5_top_30.json"
+    }
+  ]
+}

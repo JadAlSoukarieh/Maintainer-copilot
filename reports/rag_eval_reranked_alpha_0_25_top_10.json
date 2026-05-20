@@ -1,9 +1,9 @@
 {
-  "retriever": "dense",
-  "alpha": null,
-  "base_retriever": null,
-  "rerank_top_n": null,
-  "reranker_model": null,
+  "retriever": "reranked",
+  "alpha": 0.25,
+  "base_retriever": "hybrid",
+  "rerank_top_n": 10,
+  "reranker_model": "artifacts/rag/reranker_model",
   "query_rewrite_enabled": false,
   "metadata_boost_enabled": false,
   "metadata_boost_amount": 0.08,
@@ -17,20 +17,20 @@
   },
   "metrics": {
     "example_count": 25,
-    "hit_at_5": 0.6,
-    "hit_at_10": 0.68,
-    "mrr_at_10": 0.5584444444444444,
-    "mean_top_score": 0.7453346586227417,
+    "hit_at_5": 0.72,
+    "hit_at_10": 0.72,
+    "mrr_at_10": 0.6533333333333333,
+    "mean_top_score": 5.591997604370118,
     "per_source_breakdown": {
       "doc": {
         "count": 12,
-        "hit_at_5": 0.25,
-        "mrr_at_10": 0.2675925925925926
+        "hit_at_5": 0.5,
+        "mrr_at_10": 0.3611111111111111
       },
       "resolved_issue": {
         "count": 13,
         "hit_at_5": 0.9230769230769231,
-        "mrr_at_10": 0.8269230769230769
+        "mrr_at_10": 0.9230769230769231
       }
     },
     "details": [
@@ -49,52 +49,52 @@
         "top_results": [
           {
             "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-146",
-            "score": 0.7502744197845459,
+            "score": 6.5713887214660645,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-compose-streams-148",
-            "score": 0.6921684741973877,
+            "score": 4.2240495681762695,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-readable-069",
-            "score": 0.669451892375946,
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-145",
+            "score": 4.032087326049805,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-stream-premature-close-330",
+            "score": 3.4230806827545166,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-types-of-streams-stream-pipeline-source-transforms-destination-options-006",
+            "score": 2.011538505554199,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-144",
-            "score": 0.652694046497345,
+            "score": 0.9333869814872742,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-types-of-streams-stream-pipeline-source-transforms-destination-options-005",
+            "score": 0.5585653185844421,
             "source_type": "doc"
           },
           {
             "chunk_id": "issue-9170-test-001",
-            "score": 0.6441808342933655,
+            "score": -0.8174030780792236,
             "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-readable-069",
+            "score": -1.0835790634155273,
+            "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-data-063",
-            "score": 0.6384161114692688,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-duplex-and-transform-streams-class-stream-transform-transform-destroy-error-139",
-            "score": 0.6341219544410706,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-4401-excluded-001",
-            "score": 0.6275169849395752,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-stream-iter-md-iterable-streams-pipelines-pipeto-source-transforms-writer-options-033",
-            "score": 0.6266101598739624,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-two-reading-modes-057",
-            "score": 0.6235790252685547,
+            "score": -3.243159770965576,
             "source_type": "doc"
           }
         ]
@@ -108,58 +108,58 @@
         "ground_truth_chunk_ids": [
           "doc-api-dns-md-dns-error-codes-081"
         ],
-        "hit_at_5": false,
-        "hit_at_10": false,
-        "rank": null,
+        "hit_at_5": true,
+        "hit_at_10": true,
+        "rank": 2,
         "top_results": [
           {
-            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0118-dns-lookup-support-for-a-falsy-host-name-120",
-            "score": 0.6763769388198853,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-dns-md-dns-dns-lookup-hostname-options-callback-015",
-            "score": 0.6672770977020264,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-dns-set-servers-failed-116",
-            "score": 0.6629015803337097,
+            "score": 2.7705698013305664,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-error-codes-081",
+            "score": 2.330852508544922,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-setservers-servers-080",
+            "score": 1.3728970289230347,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-dns-md-dns-dns-resolvens-hostname-callback-034",
-            "score": 0.6613720655441284,
+            "score": 1.2185328006744385,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-044",
-            "score": 0.6555726528167725,
+            "chunk_id": "doc-api-dns-md-dns-dns-lookup-hostname-options-callback-015",
+            "score": 0.0257551372051239,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-map-fn-options-111",
-            "score": 0.6382865309715271,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-resolvens-hostname-071",
-            "score": 0.6375294923782349,
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0118-dns-lookup-support-for-a-falsy-host-name-120",
+            "score": -0.017187409102916718,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-dns-md-dns-dns-resolve-hostname-rrtype-callback-020",
-            "score": 0.6309645175933838,
+            "score": -0.149007186293602,
             "source_type": "doc"
           },
           {
-            "chunk_id": "issue-8436-test-002",
-            "score": 0.6299920082092285,
-            "source_type": "resolved_issue"
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-resolvens-hostname-071",
+            "score": -0.37029534578323364,
+            "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-dnspromises-setservers-servers-080",
-            "score": 0.6280950903892517,
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-map-fn-options-111",
+            "score": -0.8479341268539429,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-dns-promises-api-044",
+            "score": -2.344870090484619,
             "source_type": "doc"
           }
         ]
@@ -178,53 +178,53 @@
         "rank": null,
         "top_results": [
           {
-            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writeprocessing-143",
-            "score": 0.7395309209823608,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-134",
-            "score": 0.692062497138977,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writecontinue-137",
-            "score": 0.6802258491516113,
+            "score": 7.59834098815918,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writeprocessing-143",
+            "score": 7.274568557739258,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-end-data-encoding-callback-112",
-            "score": 0.6798986196517944,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-request-end-data-encoding-callback-050",
-            "score": 0.6600573062896729,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-242",
-            "score": 0.6582122445106506,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writableended-132",
-            "score": 0.6488850116729736,
+            "score": 6.911497116088867,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writeinformation-statuscode-headers-callback-142",
-            "score": 0.6366403102874756,
+            "score": 6.373166084289551,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-134",
+            "score": 5.83522891998291,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writableended-132",
+            "score": 5.831370830535889,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writablefinished-133",
+            "score": 5.345186233520508,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-242",
+            "score": 3.1902122497558594,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http-md-http-class-http-clientrequest-request-write-chunk-encoding-callback-077",
-            "score": 0.6350905895233154,
+            "score": 1.9522356986999512,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-statuscode-128",
-            "score": 0.629275381565094,
+            "chunk_id": "doc-api-http-md-http-class-http-clientrequest-request-end-data-encoding-callback-050",
+            "score": 1.2552087306976318,
             "source_type": "doc"
           }
         ]
@@ -238,58 +238,58 @@
         "ground_truth_chunk_ids": [
           "doc-api-inspector-md-inspector-integration-with-devtools-030"
         ],
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
-        "rank": 10,
+        "rank": 2,
         "top_results": [
           {
-            "chunk_id": "issue-2546-excluded-001",
-            "score": 0.7853931784629822,
-            "source_type": "resolved_issue"
-          },
-          {
             "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-028",
-            "score": 0.7713722586631775,
+            "score": 8.362066268920898,
             "source_type": "doc"
           },
           {
-            "chunk_id": "issue-2546-excluded-002",
-            "score": 0.7404468059539795,
+            "chunk_id": "doc-api-inspector-md-inspector-integration-with-devtools-030",
+            "score": 8.334772109985352,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-2546-excluded-001",
+            "score": 6.9619340896606445,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-029",
-            "score": 0.728080153465271,
+            "chunk_id": "issue-2546-excluded-002",
+            "score": 6.447629928588867,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-will-result-in-this-is-na-multiline-as-the-value-inspect-host-port-096",
+            "score": 6.011159420013428,
             "source_type": "doc"
           },
           {
             "chunk_id": "issue-2546-excluded-004",
-            "score": 0.7274383306503296,
+            "score": 5.822138786315918,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-027",
-            "score": 0.7006733417510986,
-            "source_type": "doc"
+            "chunk_id": "issue-8208-val-001",
+            "score": 3.4281301498413086,
+            "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-cli-md-will-result-in-this-is-na-multiline-as-the-value-inspect-host-port-096",
-            "score": 0.6862931251525879,
+            "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-029",
+            "score": 3.4244675636291504,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-debugger-md-debugger-001",
-            "score": 0.6666387915611267,
+            "score": 2.4953131675720215,
             "source_type": "doc"
           },
           {
-            "chunk_id": "issue-8208-val-001",
-            "score": 0.6636918187141418,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-inspector-md-inspector-integration-with-devtools-030",
-            "score": 0.6629114151000977,
+            "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-027",
+            "score": -0.07944471389055252,
             "source_type": "doc"
           }
         ]
@@ -308,53 +308,53 @@
         "rank": null,
         "top_results": [
           {
-            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-performance-considerations-158",
-            "score": 0.7024547457695007,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-read-fd-buffer-offset-length-position-callback-150",
-            "score": 0.6476410031318665,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-file-descriptors-157",
-            "score": 0.6395395398139954,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-fs-md-file-system-promises-api-class-filehandle-filehandle-readfile-options-028",
-            "score": 0.634945273399353,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readv-fd-buffers-position-callback-160",
-            "score": 0.6343294382095337,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "issue-6078-excluded-002",
-            "score": 0.6288149952888489,
+            "score": 3.440337657928467,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-fs-md-file-system-common-objects-class-fs-readstream-readstream-bytesread-290",
-            "score": 0.6133249402046204,
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-performance-considerations-158",
+            "score": 1.5544253587722778,
             "source_type": "doc"
           },
           {
             "chunk_id": "issue-9671-test-001",
-            "score": 0.6123151779174805,
+            "score": 1.2754383087158203,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-155",
-            "score": 0.6106303930282593,
+            "chunk_id": "doc-api-fs-md-file-system-promises-api-class-filehandle-filehandle-readfile-options-028",
+            "score": 0.2754002511501312,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-read-fd-buffer-options-callback-152",
-            "score": 0.6104350090026855,
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-155",
+            "score": -0.593166708946228,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-file-descriptors-157",
+            "score": -0.7904102802276611,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readv-fd-buffers-position-callback-160",
+            "score": -0.7999813556671143,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-read-fd-buffer-offset-length-position-callback-150",
+            "score": -1.3787651062011719,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-154",
+            "score": -2.0224180221557617,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-fs-md-file-system-common-objects-class-fs-readstream-readstream-bytesread-290",
+            "score": -3.551790952682495,
             "source_type": "doc"
           }
         ]
@@ -373,53 +373,53 @@
         "rank": null,
         "top_results": [
           {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-synthetic-337",
-            "score": 0.6897960901260376,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-invalid-state-239",
-            "score": 0.6854283809661865,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "doc-api-errors-md-errors-001",
-            "score": 0.6853830814361572,
+            "score": 3.864116668701172,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-util-md-util-util-getsystemerrormap-028",
-            "score": 0.6794292330741882,
+            "score": 3.75089955329895,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-system-error-338",
-            "score": 0.676032543182373,
+            "score": 3.526808023452759,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-errors-md-errors-class-error-007",
-            "score": 0.6751084327697754,
+            "score": 2.394909143447876,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-unknown-builtin-module-367",
-            "score": 0.671302080154419,
+            "score": 2.248260498046875,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-errors-md-errors-legacy-node-js-error-codes-err-no-longer-supported-443",
-            "score": 0.6667361259460449,
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-invalid-state-239",
+            "score": 2.1176393032073975,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-feature-unavailable-on-platform-126",
-            "score": 0.6631197929382324,
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-synthetic-337",
+            "score": 1.7111892700195312,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-tty-init-failed-362",
-            "score": 0.6614227294921875,
+            "score": 1.6524853706359863,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-feature-unavailable-on-platform-126",
+            "score": 1.592725157737732,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-legacy-node-js-error-codes-err-no-longer-supported-443",
+            "score": 1.3400084972381592,
             "source_type": "doc"
           }
         ]
@@ -438,53 +438,53 @@
         "rank": null,
         "top_results": [
           {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writeinformation-statuscode-headers-246",
-            "score": 0.7148712873458862,
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-end-data-encoding-callback-224",
+            "score": 5.966484069824219,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writecontinue-244",
-            "score": 0.7146040201187134,
+            "score": 5.9641876220703125,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-241",
-            "score": 0.7145336270332336,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writableended-240",
-            "score": 0.7084475159645081,
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writeinformation-statuscode-headers-246",
+            "score": 5.503846168518066,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writeprocessing-143",
-            "score": 0.6890079379081726,
+            "score": 4.818295001983643,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-end-data-encoding-callback-224",
-            "score": 0.6867803335189819,
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writableended-240",
+            "score": 4.5718231201171875,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-write-chunk-encoding-callback-241",
+            "score": 4.293182373046875,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-createpushresponse-headers-callback-223",
+            "score": 4.2401227951049805,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-event-finish-219",
-            "score": 0.6620412468910217,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-statuscode-237",
-            "score": 0.6511425971984863,
+            "score": 3.7232344150543213,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-write-chunk-encoding-callback-134",
-            "score": 0.6429976224899292,
+            "score": 3.5941314697265625,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-writehead-statuscode-statusmessage-headers-247",
-            "score": 0.635647177696228,
+            "chunk_id": "doc-api-http2-md-http-2-core-api-http2-createserver-options-onrequesthandler-151",
+            "score": 2.172755479812622,
             "source_type": "doc"
           }
         ]
@@ -504,52 +504,52 @@
         "top_results": [
           {
             "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-018",
-            "score": 0.7417072057723999,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-019",
-            "score": 0.715679407119751,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-server-getticketkeys-048",
-            "score": 0.6944243907928467,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-017",
-            "score": 0.6868587732315063,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-identifiers-016",
-            "score": 0.6720691919326782,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-event-newsession-038",
-            "score": 0.6584359407424927,
+            "score": 6.589993953704834,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-server-setticketkeys-keys-051",
-            "score": 0.6553778648376465,
+            "score": 4.850223541259766,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-event-session-061",
-            "score": 0.6350716352462769,
+            "score": 4.6085309982299805,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createserver-options-secureconnectionlistener-118",
-            "score": 0.6186017990112305,
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-identifiers-016",
+            "score": 3.9623546600341797,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createsecurecontext-options-113",
-            "score": 0.6124355792999268,
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-tlssocket-gettlsticket-085",
+            "score": 3.5821316242218018,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-server-getticketkeys-048",
+            "score": 3.468989372253418,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-019",
+            "score": 3.4183807373046875,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-ssl-concepts-session-resumption-session-tickets-017",
+            "score": 0.07844192534685135,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-server-event-newsession-038",
+            "score": -0.467157781124115,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-event-session-060",
+            "score": -2.729152202606201,
             "source_type": "doc"
           }
         ]
@@ -568,53 +568,53 @@
         "rank": null,
         "top_results": [
           {
+            "chunk_id": "issue-9324-test-001",
+            "score": 4.428755760192871,
+            "source_type": "resolved_issue"
+          },
+          {
             "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-023",
-            "score": 0.7676225900650024,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-https-md-https-https-createserver-options-requestlistener-018",
-            "score": 0.7041060924530029,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-https-md-https-class-https-server-server-close-callback-007",
-            "score": 0.6370878219604492,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-https-md-https-class-https-server-server-listen-012",
-            "score": 0.6333807706832886,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-http-md-http-http-request-url-options-callback-208",
-            "score": 0.6283190250396729,
+            "score": 4.110136985778809,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-https-md-https-https-get-url-options-callback-021",
-            "score": 0.6196662187576294,
+            "score": 4.076117515563965,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-https-md-https-class-https-server-server-closeidleconnections-010",
-            "score": 0.6143132448196411,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-https-md-https-class-https-server-server-closeallconnections-009",
-            "score": 0.6127707958221436,
+            "chunk_id": "doc-api-https-md-https-class-https-server-server-close-callback-007",
+            "score": 2.6721253395080566,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-024",
-            "score": 0.6092315912246704,
+            "score": 2.510003089904785,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-https-md-https-class-https-server-server-headerstimeout-011",
-            "score": 0.6060015559196472,
+            "chunk_id": "doc-api-https-md-https-https-createserver-options-requestlistener-018",
+            "score": 1.2003371715545654,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-class-https-server-server-listen-012",
+            "score": 0.5717024803161621,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-http-request-url-options-callback-208",
+            "score": 0.4878743290901184,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-class-https-server-server-closeallconnections-009",
+            "score": -0.22829729318618774,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-class-https-server-server-closeidleconnections-010",
+            "score": -0.4104923903942108,
             "source_type": "doc"
           }
         ]
@@ -633,53 +633,53 @@
         "rank": null,
         "top_results": [
           {
-            "chunk_id": "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-007",
-            "score": 0.7708386182785034,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-008",
-            "score": 0.7528150677680969,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-095",
-            "score": 0.6898238658905029,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-decompresszstdsync-options-105",
-            "score": 0.6862204074859619,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-unzip-047",
-            "score": 0.681462287902832,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-zstdcompress-055",
-            "score": 0.6575490236282349,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-gzip-044",
-            "score": 0.6558194756507874,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-decompressgzipsync-options-104",
-            "score": 0.6556793451309204,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-gunzip-043",
-            "score": 0.654511570930481,
+            "score": 4.56773567199707,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-zlib-md-zlib-002",
-            "score": 0.6474844217300415,
+            "score": 0.9269688725471497,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-007",
+            "score": -0.18036846816539764,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-095",
+            "score": -0.25503915548324585,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-decompresszstdsync-options-105",
+            "score": -0.4389849901199341,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-iterable-compression-decompressgzipsync-options-104",
+            "score": -0.5925765037536621,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-unzip-047",
+            "score": -0.8666107654571533,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-gzip-044",
+            "score": -2.8109002113342285,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-zstdcompress-055",
+            "score": -3.0394625663757324,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-gunzip-043",
+            "score": -4.109188079833984,
             "source_type": "doc"
           }
         ]
@@ -693,58 +693,58 @@
         "ground_truth_chunk_ids": [
           "doc-api-permissions-md-permissions-process-based-permissions-permission-model-permission-model-constraints-011"
         ],
-        "hit_at_5": false,
+        "hit_at_5": true,
         "hit_at_10": true,
-        "rank": 9,
+        "rank": 3,
         "top_results": [
           {
-            "chunk_id": "doc-api-permissions-md-permissions-001",
-            "score": 0.7993355989456177,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-003",
-            "score": 0.7080017328262329,
+            "score": 8.099925994873047,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-configuration-file-support-009",
-            "score": 0.6704917550086975,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-child-process-010",
-            "score": 0.6674160361289978,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-net-015",
-            "score": 0.6579499244689941,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-file-system-permissions-007",
-            "score": 0.6541593074798584,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-wasi-016",
-            "score": 0.6345495581626892,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-using-the-permission-model-with-npx-010",
-            "score": 0.6344438791275024,
+            "chunk_id": "doc-api-permissions-md-permissions-001",
+            "score": 5.781590461730957,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-permission-model-constraints-011",
-            "score": 0.6342676877975464,
+            "score": 5.430873870849609,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-access-denied-048",
+            "score": 5.148099422454834,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-cli-md-command-line-api-options-allow-worker-017",
-            "score": 0.6305713653564453,
+            "score": 3.8497633934020996,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-using-the-permission-model-with-npx-010",
+            "score": 3.0601398944854736,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-configuration-file-support-009",
+            "score": 2.4643726348876953,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-net-015",
+            "score": 2.222930431365967,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-child-process-010",
+            "score": 1.932429552078247,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-command-line-api-options-allow-wasi-016",
+            "score": 1.6536685228347778,
             "source_type": "doc"
           }
         ]
@@ -764,52 +764,52 @@
         "top_results": [
           {
             "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-053",
-            "score": 0.8042495250701904,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-event-drain-025",
-            "score": 0.7235620021820068,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-implementers-implementing-a-writable-stream-an-example-writable-stream-191",
-            "score": 0.7214246392250061,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-052",
-            "score": 0.6988272666931152,
+            "score": 4.465000152587891,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-stream-iter-md-iterable-streams-concepts-backpressure-block-017",
-            "score": 0.6910842657089233,
+            "score": 3.6570239067077637,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-implementers-implementing-a-writable-stream-errors-while-writing-190",
-            "score": 0.6877598166465759,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-pipe-destination-options-077",
-            "score": 0.681645393371582,
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-052",
+            "score": 2.8672947883605957,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-stream-iter-md-iterable-streams-classic-stream-interop-fromwritable-writable-options-082",
-            "score": 0.6742551326751709,
+            "score": 2.848087787628174,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-051",
-            "score": 0.670494019985199,
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-implementers-implementing-a-writable-stream-errors-while-writing-190",
+            "score": 2.729130744934082,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-end-chunk-encoding-callback-036",
-            "score": 0.6691589951515198,
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-event-drain-025",
+            "score": 2.003915786743164,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-implementers-implementing-a-writable-stream-an-example-writable-stream-191",
+            "score": 0.8613890409469604,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-pipe-destination-options-077",
+            "score": -0.3370388448238373,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-writable-039",
+            "score": -1.9216924905776978,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-writable-streams-class-stream-writable-writable-write-chunk-encoding-callback-050",
+            "score": -2.8181238174438477,
             "source_type": "doc"
           }
         ]
@@ -829,53 +829,53 @@
         "top_results": [
           {
             "chunk_id": "issue-7776-val-001",
-            "score": 0.7766073346138,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-5908-excluded-001",
-            "score": 0.727505624294281,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-8827-test-001",
-            "score": 0.6936603784561157,
+            "score": 5.107232570648193,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-3595-excluded-001",
-            "score": 0.6337183713912964,
+            "score": 4.916998863220215,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "issue-9551-excluded-001",
-            "score": 0.6109771728515625,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-7728-excluded-003",
-            "score": 0.6032451391220093,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-7728-excluded-004",
-            "score": 0.5988795757293701,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-4334-excluded-001",
-            "score": 0.5910210609436035,
+            "chunk_id": "issue-5908-excluded-001",
+            "score": 4.313729763031006,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-9541-excluded-001",
-            "score": 0.5864881277084351,
+            "score": 2.832771062850952,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "issue-3692-excluded-001",
-            "score": 0.5850586891174316,
+            "chunk_id": "issue-8827-test-001",
+            "score": 2.71004319190979,
             "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-4334-excluded-001",
+            "score": 2.200925350189209,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-9551-excluded-001",
+            "score": -2.205078601837158,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-7728-excluded-004",
+            "score": -2.2777023315429688,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-7728-excluded-003",
+            "score": -4.296240329742432,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-001",
+            "score": -8.568563461303711,
+            "source_type": "doc"
           }
         ]
       },
@@ -894,53 +894,53 @@
         "top_results": [
           {
             "chunk_id": "issue-8827-test-001",
-            "score": 0.8925349712371826,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-7776-val-001",
-            "score": 0.7319045066833496,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-1522-excluded-001",
-            "score": 0.7214740514755249,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-9530-excluded-001",
-            "score": 0.6799516677856445,
+            "score": 5.80587100982666,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-9268-excluded-001",
-            "score": 0.6567989587783813,
+            "score": 4.9855451583862305,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-1866-excluded-001",
-            "score": 0.6530940532684326,
+            "score": 4.6113433837890625,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "issue-9085-excluded-001",
-            "score": 0.6403511166572571,
+            "chunk_id": "issue-9530-excluded-001",
+            "score": 4.555635452270508,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-1522-excluded-001",
+            "score": 4.335665702819824,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-5029-excluded-001",
-            "score": 0.6391619443893433,
+            "score": 3.1839873790740967,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "issue-5908-excluded-001",
-            "score": 0.6363120675086975,
+            "chunk_id": "issue-3595-excluded-001",
+            "score": 2.825326442718506,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "issue-6518-excluded-001",
-            "score": 0.632230281829834,
+            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-node-memory-debug-124",
+            "score": 1.1517016887664795,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-7776-val-001",
+            "score": 1.075569748878479,
             "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-023",
+            "score": -6.349699020385742,
+            "source_type": "doc"
           }
         ]
       },
@@ -959,52 +959,52 @@
         "top_results": [
           {
             "chunk_id": "issue-7910-excluded-001",
-            "score": 0.7014167904853821,
+            "score": 3.9138436317443848,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-6632-excluded-001",
-            "score": 0.6685369610786438,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-9530-excluded-002",
-            "score": 0.6595342755317688,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-5469-excluded-001",
-            "score": 0.6474517583847046,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-2628-excluded-001",
-            "score": 0.6449775695800781,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-2631-excluded-001",
-            "score": 0.6321887969970703,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-8827-test-001",
-            "score": 0.6287286877632141,
+            "score": 3.8668365478515625,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-9513-test-001",
-            "score": 0.618001401424408,
+            "score": 2.8609213829040527,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-2631-excluded-001",
+            "score": 1.8124523162841797,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-9530-excluded-002",
+            "score": 1.7206416130065918,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-2628-excluded-001",
+            "score": 1.1604986190795898,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-9668-excluded-001",
-            "score": 0.6141675710678101,
+            "score": 0.5477062463760376,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-8827-test-001",
+            "score": -0.251891165971756,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-1522-excluded-001",
-            "score": 0.6136994957923889,
+            "score": -0.9027285575866699,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-5469-excluded-001",
+            "score": -1.699562430381775,
             "source_type": "resolved_issue"
           }
         ]
@@ -1020,56 +1020,56 @@
         ],
         "hit_at_5": true,
         "hit_at_10": true,
-        "rank": 4,
+        "rank": 1,
         "top_results": [
           {
-            "chunk_id": "issue-1625-excluded-001",
-            "score": 0.5114189386367798,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-036",
-            "score": 0.5043016672134399,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-4556-excluded-002",
-            "score": 0.4998461604118347,
-            "source_type": "resolved_issue"
-          },
-          {
             "chunk_id": "issue-7301-excluded-001",
-            "score": 0.4951923191547394,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-038",
-            "score": 0.4944142699241638,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-8366-excluded-001",
-            "score": 0.4934941232204437,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-809-excluded-001",
-            "score": 0.48576727509498596,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-1005-excluded-004",
-            "score": 0.47588911652565,
+            "score": 4.264019966125488,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-4543-excluded-001",
-            "score": 0.4756540060043335,
+            "score": -2.679877758026123,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-8368-excluded-001",
-            "score": 0.4645412564277649,
+            "score": -2.804593563079834,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-809-excluded-001",
+            "score": -4.753365516662598,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-4556-excluded-002",
+            "score": -5.276188850402832,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-8366-excluded-001",
+            "score": -5.725550651550293,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-036",
+            "score": -6.768150806427002,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-1625-excluded-001",
+            "score": -7.243289470672607,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-038",
+            "score": -8.3500394821167,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-1005-excluded-004",
+            "score": -9.574884414672852,
             "source_type": "resolved_issue"
           }
         ]
@@ -1089,53 +1089,53 @@
         "top_results": [
           {
             "chunk_id": "issue-8008-excluded-001",
-            "score": 0.8018051385879517,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-tls-cert-altname-invalid-343",
-            "score": 0.677991509437561,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-5867-excluded-001",
-            "score": 0.6475014686584473,
+            "score": 3.4140305519104004,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-105-excluded-001",
-            "score": 0.6390602588653564,
+            "score": 2.406186580657959,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-errors-md-errors-openssl-error-codes-name-related-errors-hostname-mismatch-483",
-            "score": 0.6306695938110352,
+            "chunk_id": "issue-617-excluded-001",
+            "score": 0.8525954484939575,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-5867-excluded-001",
+            "score": 0.7752448916435242,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-1256-excluded-002",
+            "score": -2.0730576515197754,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-tls-cert-altname-invalid-343",
+            "score": -2.0823230743408203,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-tls-cert-altname-format-342",
-            "score": 0.6107120513916016,
+            "score": -4.261228561401367,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-checkserveridentity-hostname-cert-096",
+            "score": -6.538172721862793,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-tls-md-tls-ssl-x509-certificate-error-codes-030",
-            "score": 0.5906369686126709,
+            "score": -7.372824668884277,
             "source_type": "doc"
           },
           {
-            "chunk_id": "issue-617-excluded-001",
-            "score": 0.5550338625907898,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-openssl-error-codes-name-related-errors-482",
-            "score": 0.5531967282295227,
+            "chunk_id": "doc-api-errors-md-errors-openssl-error-codes-name-related-errors-hostname-mismatch-483",
+            "score": -7.568260192871094,
             "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-2772-excluded-002",
-            "score": 0.541528582572937,
-            "source_type": "resolved_issue"
           }
         ]
       },
@@ -1154,52 +1154,52 @@
         "top_results": [
           {
             "chunk_id": "issue-8436-test-001",
-            "score": 0.737261950969696,
+            "score": 6.179874897003174,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "issue-4545-excluded-001",
-            "score": 0.5878580212593079,
+            "chunk_id": "issue-736-excluded-001",
+            "score": 4.737590789794922,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-8436-test-003",
-            "score": 0.5807216167449951,
+            "score": 4.398800849914551,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-dns-md-dns-error-codes-081",
-            "score": 0.5494654178619385,
+            "chunk_id": "issue-4545-excluded-001",
+            "score": 3.8067831993103027,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-dns-md-dns-implementation-considerations-dns-lookup-083",
+            "score": 3.398987054824829,
             "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-736-excluded-001",
-            "score": 0.5445553064346313,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-2969-excluded-076",
-            "score": 0.5303064584732056,
-            "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-4207-excluded-001",
-            "score": 0.528807520866394,
+            "score": 0.4609846770763397,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-dns-md-dns-dns-lookup-hostname-options-callback-015",
-            "score": 0.5238398313522339,
+            "chunk_id": "doc-api-net-md-net-class-net-socket-event-lookup-060",
+            "score": -0.903253436088562,
             "source_type": "doc"
           },
           {
-            "chunk_id": "issue-1011-excluded-001",
-            "score": 0.5226345062255859,
+            "chunk_id": "doc-api-dns-md-dns-error-codes-081",
+            "score": -3.3125996589660645,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-2969-excluded-076",
+            "score": -6.879870414733887,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-037",
-            "score": 0.5191175937652588,
+            "chunk_id": "doc-api-test-md-test-runner-describe-and-it-aliases-008",
+            "score": -8.602421760559082,
             "source_type": "doc"
           }
         ]
@@ -1219,52 +1219,52 @@
         "top_results": [
           {
             "chunk_id": "issue-8871-test-001",
-            "score": 0.7693027257919312,
+            "score": 6.719973564147949,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-zlibbase-zlib-reset-053",
-            "score": 0.740947961807251,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-inflate-045",
-            "score": 0.7302060723304749,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-deflateraw-042",
-            "score": 0.7248423099517822,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-deflate-041",
-            "score": 0.7239559292793274,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-inflateraw-046",
-            "score": 0.7216922640800476,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "issue-1479-excluded-001",
-            "score": 0.6918651461601257,
+            "score": 5.047896385192871,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-2485-excluded-001",
-            "score": 0.6819784641265869,
+            "score": 2.4608936309814453,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "doc-api-zlib-md-zlib-zlib-createdeflateraw-options-064",
-            "score": 0.6799229383468628,
+            "score": -1.0917866230010986,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-zlib-md-zlib-memory-usage-tuning-for-zlib-based-streams-015",
-            "score": 0.6757543683052063,
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-zlibbase-zlib-reset-053",
+            "score": -1.8660001754760742,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-inflate-045",
+            "score": -2.2651047706604004,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-deflateraw-042",
+            "score": -2.326930522918701,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-inflateraw-046",
+            "score": -2.5510149002075195,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-class-zlib-deflate-041",
+            "score": -2.565239906311035,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-zlib-md-zlib-convenience-methods-zlib-deflate-buffer-options-callback-077",
+            "score": -2.576789379119873,
             "source_type": "doc"
           }
         ]
@@ -1284,52 +1284,52 @@
         "top_results": [
           {
             "chunk_id": "issue-9336-test-001",
-            "score": 0.7468896508216858,
+            "score": 6.819045543670654,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-9671-test-002",
-            "score": 0.6662396192550659,
+            "score": 4.83381462097168,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-9671-test-001",
-            "score": 0.6379368901252747,
+            "score": 3.6934146881103516,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-9489-excluded-001",
+            "score": 2.5545802116394043,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-7337-val-001",
-            "score": 0.5993282794952393,
+            "score": 1.0944806337356567,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-fs-md-file-system-synchronous-api-fs-readvsync-fd-buffers-position-237",
-            "score": 0.597392737865448,
+            "chunk_id": "doc-api-fs-md-file-system-synchronous-api-fs-readsync-fd-buffer-offset-length-position-235",
+            "score": -1.5024833679199219,
             "source_type": "doc"
           },
           {
-            "chunk_id": "issue-9489-excluded-001",
-            "score": 0.5668931603431702,
-            "source_type": "resolved_issue"
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-fs-file-too-large-139",
+            "score": -1.6581990718841553,
+            "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-fs-file-too-large-139",
-            "score": 0.5646929144859314,
+            "chunk_id": "doc-api-fs-md-file-system-synchronous-api-fs-readvsync-fd-buffers-position-237",
+            "score": -2.0241425037384033,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readv-fd-buffers-position-callback-160",
-            "score": 0.5646333694458008,
+            "score": -4.455707550048828,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-fs-md-file-system-synchronous-api-fs-readsync-fd-buffer-offset-length-position-235",
-            "score": 0.5644232630729675,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-buffer-md-buffer-class-buffer-buf-byteoffset-065",
-            "score": 0.5522122383117676,
+            "chunk_id": "doc-api-buffer-md-buffer-class-buffer-static-method-buffer-allocunsafe-size-034",
+            "score": -4.78848934173584,
             "source_type": "doc"
           }
         ]
@@ -1349,52 +1349,52 @@
         "top_results": [
           {
             "chunk_id": "issue-9025-test-001",
-            "score": 0.802161693572998,
+            "score": 7.094545841217041,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createserver-options-secureconnectionlistener-115",
-            "score": 0.7373815178871155,
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-default-min-version-132",
+            "score": 1.8422174453735352,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-tls-md-tls-ssl-tls-default-max-version-131",
-            "score": 0.6977713704109192,
+            "score": 1.6269922256469727,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-createserver-options-secureconnectionlistener-115",
+            "score": 1.417891263961792,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-tls-md-tls-ssl-tls-createsecurecontext-options-107",
-            "score": 0.6964273452758789,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-tls-md-tls-ssl-tls-default-min-version-132",
-            "score": 0.6901519298553467,
+            "score": -0.12201690673828125,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-min-v1-3-185",
-            "score": 0.6818219423294067,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-max-v1-2-180",
-            "score": 0.6633431911468506,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-max-v1-3-181",
-            "score": 0.6544844508171082,
+            "score": -1.212371826171875,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-min-v1-0-182",
-            "score": 0.6501736640930176,
+            "score": -2.535625457763672,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-min-v1-1-183",
-            "score": 0.6478906273841858,
+            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-max-v1-3-181",
+            "score": -2.605224609375,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-using-75-of-available-system-memory-tls-max-v1-2-180",
+            "score": -2.7523484230041504,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-tls-md-tls-ssl-tls-default-ciphers-133",
+            "score": -2.766328811645508,
             "source_type": "doc"
           }
         ]
@@ -1410,56 +1410,56 @@
         ],
         "hit_at_5": true,
         "hit_at_10": true,
-        "rank": 2,
+        "rank": 1,
         "top_results": [
           {
-            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-error-065",
-            "score": 0.6354717016220093,
-            "source_type": "doc"
-          },
-          {
             "chunk_id": "issue-676-excluded-001",
-            "score": 0.6189785003662109,
+            "score": 6.682055473327637,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-65-excluded-001",
-            "score": 0.5913705825805664,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-8683-excluded-001",
-            "score": 0.5844958424568176,
+            "score": 4.043257713317871,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-8685-excluded-001",
-            "score": 0.580766499042511,
+            "score": 3.018923044204712,
             "source_type": "resolved_issue"
           },
           {
+            "chunk_id": "issue-8235-excluded-002",
+            "score": 2.728233814239502,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-8683-excluded-001",
+            "score": 1.7721662521362305,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-error-065",
+            "score": -0.3373498022556305,
+            "source_type": "doc"
+          },
+          {
             "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-readable-resume-093",
-            "score": 0.5755196809768677,
+            "score": -1.5406203269958496,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-additional-notes-highwatermark-discrepancy-after-calling-readable-setencoding-234",
+            "score": -2.76399827003479,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-readable-streams-class-stream-readable-event-readable-067",
+            "score": -3.980997085571289,
             "source_type": "doc"
           },
           {
             "chunk_id": "issue-3321-excluded-005",
-            "score": 0.5725488066673279,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-stream-md-stream-additional-notes-highwatermark-discrepancy-after-calling-readable-setencoding-234",
-            "score": 0.5723174810409546,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-8235-excluded-002",
-            "score": 0.5702459216117859,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-8535-excluded-002",
-            "score": 0.5653911828994751,
+            "score": -4.0148773193359375,
             "source_type": "resolved_issue"
           }
         ]
@@ -1479,52 +1479,52 @@
         "top_results": [
           {
             "chunk_id": "issue-3760-excluded-001",
-            "score": 0.9077199101448059,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-fips-184",
-            "score": 0.8136940002441406,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-forced-077",
-            "score": 0.8105462789535522,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-crypto-md-crypto-notes-fips-mode-275",
-            "score": 0.8042617440223694,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-setfips-bool-254",
-            "score": 0.8014989495277405,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-unavailable-078",
-            "score": 0.788749098777771,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-cli-md-load-the-generated-snapshot-and-start-the-application-from-index-js-enable-fips-041",
-            "score": 0.7703438997268677,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-5465-excluded-001",
-            "score": 0.7547943592071533,
+            "score": 8.332881927490234,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-8455-excluded-001",
-            "score": 0.7539244294166565,
+            "score": 5.652531147003174,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0093-crypto-fips-is-deprecated-and-replaced-095",
-            "score": 0.7492218613624573,
+            "chunk_id": "issue-5465-excluded-001",
+            "score": 4.3341288566589355,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-forced-077",
+            "score": 0.7755769491195679,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-unavailable-078",
+            "score": 0.11691267788410187,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-notes-fips-mode-275",
+            "score": -0.6556128263473511,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-fips-184",
+            "score": -0.6918627023696899,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-crypto-node-crypto-module-methods-and-properties-crypto-setfips-bool-254",
+            "score": -0.8531152009963989,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-cli-md-load-the-generated-snapshot-and-start-the-application-from-index-js-enable-fips-041",
+            "score": -2.194305896759033,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-crypto-md-included-fipsmodule-cnf-276",
+            "score": -3.3371217250823975,
             "source_type": "doc"
           }
         ]
@@ -1544,52 +1544,52 @@
         "top_results": [
           {
             "chunk_id": "issue-6578-excluded-001",
-            "score": 0.727234959602356,
+            "score": 2.590869903564453,
             "source_type": "resolved_issue"
           },
           {
-            "chunk_id": "doc-api-deprecations-md-deprecated-apis-001",
-            "score": 0.7032510638237,
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0041-node-repl-history-file-environment-variable-045",
+            "score": -0.6784989833831787,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-deprecations-md-deprecated-apis-revoking-deprecations-004",
-            "score": 0.6840105056762695,
+            "score": -1.1862971782684326,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0134-process-tickcallback-136",
-            "score": 0.64589524269104,
+            "score": -1.4078387022018433,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0036-fs-lchmodsync-path-mode-040",
-            "score": 0.6350083947181702,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-util-md-util-deprecated-apis-171",
-            "score": 0.622794508934021,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0140-use-request-destroy-instead-of-request-abort-142",
-            "score": 0.6141822338104248,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0041-node-repl-history-file-environment-variable-045",
-            "score": 0.6081525087356567,
+            "score": -1.7592322826385498,
             "source_type": "doc"
           },
           {
             "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0039-require-extensions-043",
-            "score": 0.6077473759651184,
+            "score": -1.8824317455291748,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-list-of-deprecated-apis-dep0140-use-request-destroy-instead-of-request-abort-142",
+            "score": -2.2922415733337402,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-deprecations-md-deprecated-apis-001",
+            "score": -2.481874942779541,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-util-md-util-deprecated-apis-171",
+            "score": -2.904879093170166,
             "source_type": "doc"
           },
           {
             "chunk_id": "issue-4677-excluded-002",
-            "score": 0.6070147156715393,
+            "score": -3.2289814949035645,
             "source_type": "resolved_issue"
           }
         ]
@@ -1609,53 +1609,53 @@
         "top_results": [
           {
             "chunk_id": "issue-9513-test-001",
-            "score": 0.6810895800590515,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-1924-excluded-001",
-            "score": 0.6368932127952576,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-http-md-http-class-http-server-server-keepalivetimeoutbuffer-104",
-            "score": 0.6213418245315552,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-9595-test-001",
-            "score": 0.6172274351119995,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "doc-api-http-md-http-class-http-server-server-maxrequestspersocket-101",
-            "score": 0.6105895638465881,
-            "source_type": "doc"
-          },
-          {
-            "chunk_id": "issue-2642-excluded-001",
-            "score": 0.5827343463897705,
-            "source_type": "resolved_issue"
-          },
-          {
-            "chunk_id": "issue-9845-excluded-004",
-            "score": 0.5776144862174988,
+            "score": 6.150979518890381,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "issue-7910-excluded-001",
-            "score": 0.5735170841217041,
+            "score": 2.6269760131835938,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-2642-excluded-001",
+            "score": 1.6315946578979492,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "issue-1924-excluded-001",
+            "score": 1.568337321281433,
             "source_type": "resolved_issue"
           },
           {
             "chunk_id": "doc-api-http-md-http-class-http-server-server-closeallconnections-093",
-            "score": 0.5695675611495972,
+            "score": 0.2615387737751007,
             "source_type": "doc"
           },
           {
-            "chunk_id": "doc-api-http-md-http-class-http-agent-agent-maxfreesockets-020",
-            "score": 0.5541438460350037,
+            "chunk_id": "doc-api-http-md-http-class-http-server-server-maxrequestspersocket-101",
+            "score": -0.3104374408721924,
             "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-9595-test-001",
+            "score": -1.5073224306106567,
+            "source_type": "resolved_issue"
+          },
+          {
+            "chunk_id": "doc-api-http-md-http-class-http-server-server-keepalivetimeoutbuffer-104",
+            "score": -6.586382865905762,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "doc-api-dgram-md-udp-datagram-sockets-class-dgram-socket-event-connect-004",
+            "score": -6.876955986022949,
+            "source_type": "doc"
+          },
+          {
+            "chunk_id": "issue-9845-excluded-004",
+            "score": -8.069445610046387,
+            "source_type": "resolved_issue"
           }
         ]
       }
