@@ -7,31 +7,74 @@
     <style>
       body {
         margin: 0;
-        font-family: system-ui, sans-serif;
-        background: #0f172a;
-        color: #e2e8f0;
+        font-family: "Aptos", "Segoe UI", sans-serif;
+        background:
+          linear-gradient(120deg, rgba(31, 111, 235, 0.08), transparent 34%),
+          linear-gradient(180deg, #f8fafc 0%, #e8eef6 100%);
+        color: #172033;
       }
 
       main {
-        max-width: 720px;
+        max-width: 880px;
         margin: 0 auto;
-        padding: 64px 24px;
+        padding: 72px 24px;
       }
 
-      .panel {
-        border: 1px solid #334155;
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(32px, 6vw, 56px);
+        letter-spacing: 0;
+      }
+
+      p {
+        max-width: 680px;
+        color: #475467;
+        font-size: 18px;
+        line-height: 1.6;
+      }
+
+      pre {
+        overflow-x: auto;
+        border: 1px solid #d7dde8;
         border-radius: 8px;
-        background: #111827;
-        padding: 24px;
+        background: #101828;
+        color: #e6edf7;
+        padding: 18px;
+      }
+
+      code {
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 13px;
       }
     </style>
   </head>
   <body>
     <main>
-      <div class="panel">
-        <h1>Maintainer's Copilot Demo Host</h1>
-        <p>This static host is reserved for embedding and demoing the React widget surface later.</p>
-      </div>
+      <h1>Maintainer's Copilot Demo Host</h1>
+      <p>
+        This page embeds the Maintainer's Copilot widget. The widget runtime loads configuration from the API,
+        then calls <code>/chat</code> with <code>use_llm=false</code> so the demo works in deterministic fallback mode.
+      </p>
+
+      <pre><code>&lt;script
+  src="http://localhost:8000/widget.js"
+  data-widget-id="demo-widget"
+  data-api-base-url="http://localhost:8000"
+  data-widget-url="http://localhost:5173"&gt;
+&lt;/script&gt;</code></pre>
+
+      <p>
+        <code>data-api-base-url</code> points to the API service. <code>data-widget-url</code> points to the built
+        or Vite-dev widget frontend.
+      </p>
     </main>
+
+    <!-- api_base_url points to the API. widget_url points to the built/dev widget frontend. -->
+    <script
+      src="http://localhost:8000/widget.js"
+      data-widget-id="demo-widget"
+      data-api-base-url="http://localhost:8000"
+      data-widget-url="http://localhost:5173">
+    </script>
   </body>
 </html>

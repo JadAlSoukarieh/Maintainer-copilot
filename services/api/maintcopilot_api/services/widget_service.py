@@ -20,9 +20,11 @@ class WidgetService:
         self._audit_repository = audit_repository
         self._session = session
 
-    def get_public_config(self, public_widget_id: str) -> WidgetConfigResponse:
+    def get_public_config(self, public_widget_id: str, *, enable_demo_fallback: bool = False) -> WidgetConfigResponse:
         record = self._repository.get_public_by_public_widget_id(public_widget_id)
         if record is None or not record["is_active"]:
+            if enable_demo_fallback and public_widget_id == "demo-widget":
+                return demo_widget_config()
             raise NotFoundError("Widget config was not found.")
         return WidgetConfigResponse(**record)
 
@@ -87,3 +89,13 @@ class WidgetService:
         )
         self._session.commit()
         return WidgetDisableResponse(public_widget_id=public_widget_id, status="disabled")
+
+
+def demo_widget_config() -> WidgetConfigResponse:
+    return WidgetConfigResponse(
+        public_widget_id="demo-widget",
+        theme={"primaryColor": "#1f6feb", "position": "bottom-right"},
+        greeting="Ask Maintainer's Copilot about this project.",
+        enabled_tools=["classify_issue", "extract_entities", "summarize_thread", "rag_answer", "write_memory"],
+        allowed_origins=["http://localhost:8000", "http://localhost:5173", "http://localhost:8090"],
+    )

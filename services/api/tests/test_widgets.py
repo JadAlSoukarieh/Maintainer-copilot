@@ -8,10 +8,11 @@ import pytest
 
 from maintcopilot_api.api.deps import require_admin
 from maintcopilot_api.api.error_handlers import domain_error_handler
-from maintcopilot_api.api.routes.widgets import create_widget, disable_widget, widget_config
+from maintcopilot_api.api.routes.widgets import create_widget, disable_widget, widget_config, widget_loader
 from maintcopilot_api.domain.auth import UserRead, UserRole
 from maintcopilot_api.domain.errors import ForbiddenError, NotFoundError
 from maintcopilot_api.domain.widgets import WidgetCreateRequest
+from maintcopilot_api.infra.config import Settings
 
 
 def test_public_widget_config_can_be_fetched(widget_service, seed_user) -> None:
@@ -26,7 +27,20 @@ def test_public_widget_config_can_be_fetched(widget_service, seed_user) -> None:
     create_widget(payload, admin_user, widget_service)
     response = widget_config("widget_123", widget_service)
     assert response.public_widget_id == "widget_123"
+    assert response.greeting == "Hello maintainer"
+    assert response.theme.primaryColor == "#1f6feb"
     assert response.enabled_tools == ["classify_issue", "summarize_thread"]
+
+
+def test_widget_loader_returns_iframe_injection_javascript() -> None:
+    response = widget_loader()
+    body = response.body.decode("utf-8")
+
+    assert response.media_type == "application/javascript"
+    assert "data-widget-id" in body
+    assert "Maintainer's Copilot Widget" in body
+    assert "document.createElement(\"iframe\")" in body
+    assert "maintcopilot:resize" in body
 
 
 @pytest.mark.anyio
@@ -102,3 +116,30 @@ def test_disabling_widget_makes_public_config_unavailable(widget_service, seed_u
     disable_widget("widget_disable", admin_user, widget_service)
     with pytest.raises(NotFoundError):
         widget_service.get_public_config("widget_disable")
+
+
+def test_demo_widget_fallback_disabled_by_default(widget_service) -> None:
+    with pytest.raises(NotFoundError):
+        widget_service.get_public_config("demo-widget")
+
+
+def test_demo_widget_fallback_enabled_returns_config(widget_service) -> None:
+    response = widget_service.get_public_config("demo-widget", enable_demo_fallback=True)
+
+    assert response.public_widget_id == "demo-widget"
+    assert response.theme.primaryColor == "#1f6feb"
+    assert response.theme.position == "bottom-right"
+    assert response.greeting == "Ask Maintainer's Copilot about this project."
+    assert response.enabled_tools == ["classify_issue", "extract_entities", "summarize_thread", "rag_answer", "write_memory"]
+    assert "http://localhost:5173" in response.allowed_origins
+
+
+def test_demo_widget_fallback_does_not_apply_to_random_widget(widget_service) -> None:
+    with pytest.raises(NotFoundError):
+        widget_service.get_public_config("not-demo-widget", enable_demo_fallback=True)
+
+
+def test_widget_config_route_uses_demo_fallback_flag(widget_service) -> None:
+    response = widget_config("demo-widget", widget_service, Settings(require_vault=False, enable_demo_widget_fallback=True))
+
+    assert response.public_widget_id == "demo-widget"
