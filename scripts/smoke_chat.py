@@ -39,11 +39,18 @@ def build_chat_payload(check: str, *, use_llm: bool = False) -> dict[str, Any]:
 
 def summarize_chat_response(payload: dict[str, Any]) -> str:
     message = str(payload.get("message") or "")
+    citations = []
+    tool_result = payload.get("tool_result")
+    if isinstance(tool_result, dict):
+        raw_citations = tool_result.get("citations")
+        if isinstance(raw_citations, list):
+            citations = raw_citations
     return (
         f"selected_tool={payload.get('selected_tool')} "
         f"mode={payload.get('mode')} "
         f"conversation_id={payload.get('conversation_id')} "
-        f"message={message[:300]}"
+        f"citations={len(citations)} "
+        f"message={message[:500]}"
     )
 
 

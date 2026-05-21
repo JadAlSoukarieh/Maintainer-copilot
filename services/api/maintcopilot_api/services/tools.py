@@ -6,11 +6,13 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from maintcopilot_api.domain.chat import ChatRequest, ChatToolName
+from maintcopilot_api.domain.errors import DependencyUnavailableError
 from maintcopilot_api.domain.memory import MemoryWriteRequest
 from maintcopilot_api.domain.rag import RagAnswerRequest
 from maintcopilot_api.infra.logging import log_with_context
 from maintcopilot_api.infra.model_client import ModelClientError, ModelServerClient
 from maintcopilot_api.infra.redaction import redact
+from maintcopilot_api.infra.tracing import get_tracer
 from maintcopilot_api.repositories.audit_repository import AuditRepository
 from maintcopilot_api.services.memory_service import MemoryService
 from maintcopilot_api.services.rag.rag_service import RagService
@@ -52,22 +54,30 @@ class ToolExecutor:
         user_id: str,
     ) -> dict[str, Any]:
         self.executed_tools.append(tool_name)
-        if tool_name == "classify_issue":
-            result = self._classify_issue(tool_input, payload)
-        elif tool_name == "extract_entities":
-            result = self._extract_entities(tool_input, payload)
-        elif tool_name == "summarize_thread":
-            result = self._summarize_thread(tool_input, payload)
-        elif tool_name == "rag_answer":
-            result = self._rag_answer(tool_input, payload)
-        elif tool_name == "write_memory":
-            result = self._write_memory(tool_input, payload=payload, conversation_id=conversation_id, user_id=user_id)
-        elif tool_name == "none":
-            result = {"status": "no_tool_selected"}
-        else:
-            raise ToolInputValidationError(f"Unsupported tool: {tool_name}")
-        log_with_context(logging.getLogger("app.chat"), "info", "chat.tool.completed", selected_tool=tool_name)
-        return result
+        tracer = get_tracer()
+        with tracer.start_as_current_span(f"tool.{tool_name}") as span:
+            span.set_attribute("tool.name", tool_name)
+            span.set_attribute("tool.conversation_id", conversation_id)
+            try:
+                if tool_name == "classify_issue":
+                    result = self._classify_issue(tool_input, payload)
+                elif tool_name == "extract_entities":
+                    result = self._extract_entities(tool_input, payload)
+                elif tool_name == "summarize_thread":
+                    result = self._summarize_thread(tool_input, payload)
+                elif tool_name == "rag_answer":
+                    result = self._rag_answer(tool_input, payload)
+                elif tool_name == "write_memory":
+                    result = self._write_memory(tool_input, payload=payload, conversation_id=conversation_id, user_id=user_id)
+                elif tool_name == "none":
+                    result = {"status": "no_tool_selected"}
+                else:
+                    raise ToolInputValidationError(f"Unsupported tool: {tool_name}")
+            except Exception as exc:
+                span.record_exception(exc)
+                raise
+            log_with_context(logging.getLogger("app.chat"), "info", "chat.tool.completed", selected_tool=tool_name)
+            return result
 
     def _classify_issue(self, tool_input: dict[str, Any], payload: ChatRequest) -> dict[str, Any]:
         title, body = _issue_title_body(tool_input, payload)
@@ -117,17 +127,20 @@ class ToolExecutor:
         memory_text = str(tool_input.get("memory_text") or payload.message).strip()
         if not memory_text:
             raise ToolInputValidationError("write_memory requires non-empty memory_text.")
-        response = self._memory_service.create(
-            MemoryWriteRequest(
-                user_id=user_id,
-                content=str(redact(memory_text)),
-                conversation_id=conversation_id,
-                metadata={
-                    "source": "chat.write_memory",
-                    "memory_type": str(tool_input.get("memory_type") or "episodic"),
-                },
+        try:
+            response = self._memory_service.create(
+                MemoryWriteRequest(
+                    user_id=user_id,
+                    content=str(redact(memory_text)),
+                    conversation_id=conversation_id,
+                    metadata={
+                        "source": "chat.write_memory",
+                        "memory_type": str(tool_input.get("memory_type") or "episodic"),
+                    },
+                )
             )
-        )
+        except DependencyUnavailableError as exc:
+            raise ToolFailureError(str(exc)) from exc
         if self._audit_repository is not None:
             self._audit_repository.create_event(
                 event_type="memory.write",

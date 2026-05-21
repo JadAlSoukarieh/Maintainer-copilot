@@ -1,7 +1,5 @@
-version: "3.9"
-
 services:
-  db:
+  postgres:
     image: pgvector/pgvector:pg16
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -49,26 +47,54 @@ services:
     command: vault server -dev
     ports:
       - "8200:8200"
+    healthcheck:
+      test: ["CMD", "vault", "status", "-address=http://127.0.0.1:8200"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  vault-init:
+    image: hashicorp/vault:1.16
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${VAULT_DEV_ROOT_TOKEN_ID:-dev-root-token}
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        vault kv put secret/maintainers-copilot/api jwt_secret=dev-only-jwt-secret-change-me
+        vault kv put secret/maintainers-copilot/postgres password=postgres
+        vault kv put secret/maintainers-copilot/minio access_key=minioadmin secret_key=minioadmin
+        vault kv put secret/maintainers-copilot/anthropic api_key=placeholder-not-required
+        echo 'Vault secrets seeded.'
+    depends_on:
+      vault:
+        condition: service_healthy
+    restart: "no"
 
   migrate:
     build:
-      context: ./services/api
+      context: .
+      dockerfile: services/api/Dockerfile
     command: alembic upgrade head
     env_file:
-      - .env
+      - .env.example
     environment:
-      DATABASE_URL: ${API_DATABASE_URL}
+      API_DATABASE_URL: ${API_DATABASE_URL}
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
 
   model-server:
     build:
       context: ./services/model-server
     env_file:
-      - .env
+      - .env.example
     environment:
       PORT: ${MODEL_SERVER_PORT}
+      MODEL_SERVER_ARTIFACT_DIR: /app/artifacts/classifier
+      MODEL_SERVER_CLASSIFIER_ARTIFACT_DIR: /app/artifacts/classifier/transformer
+      MODEL_SERVER_CLASSIFIER_MODEL_DIR: /app/artifacts/classifier/transformer/model
     ports:
       - "${MODEL_SERVER_PORT}:8001"
     volumes:
@@ -81,32 +107,55 @@ services:
 
   api:
     build:
-      context: ./services/api
+      context: .
+      dockerfile: services/api/Dockerfile
     env_file:
-      - .env
+      - .env.example
     environment:
       PORT: ${API_PORT}
+      API_REQUIRE_VAULT: ${API_REQUIRE_VAULT:-true}
+      API_AUTH_OPTIONAL_FOR_DEV: ${API_AUTH_OPTIONAL_FOR_DEV:-false}
+      API_CHAT_LLM_ENABLED: ${API_CHAT_LLM_ENABLED:-true}
+      API_CHAT_ALLOW_ENV_KEY_FALLBACK: ${API_CHAT_ALLOW_ENV_KEY_FALLBACK:-false}
+      API_ENABLE_DEMO_WIDGET_FALLBACK: ${API_ENABLE_DEMO_WIDGET_FALLBACK:-false}
+      API_ALLOW_IN_MEMORY_MEMORY: ${API_ALLOW_IN_MEMORY_MEMORY:-false}
+      API_REQUIRE_LLM_KEY: ${API_REQUIRE_LLM_KEY:-false}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      API_OTEL_EXPORTER_ENDPOINT: ${API_OTEL_EXPORTER_ENDPOINT:-http://jaeger:4317}
     ports:
       - "${API_PORT}:8000"
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
       model-server:
         condition: service_healthy
       redis:
         condition: service_healthy
       vault:
-        condition: service_started
+        condition: service_healthy
+      vault-init:
+        condition: service_completed_successfully
       minio:
         condition: service_started
       migrate:
         condition: service_completed_successfully
+    volumes:
+      - ./data:/app/data:ro
+      - ./reports:/app/reports:ro
+      - ./evals:/app/evals:ro
+      - ./scripts:/app/services/api/scripts:ro
+      - ./artifacts/classifier:/app/artifacts/classifier:ro
+      - ./artifacts/rag:/app/artifacts/rag:ro
+      - ./prompts:/app/prompts:ro
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface:ro
 
   chatbot:
     build:
       context: ./services/chatbot
     env_file:
-      - .env
+      - .env.example
+    environment:
+      API_CHAT_LLM_ENABLED: ${API_CHAT_LLM_ENABLED:-true}
     ports:
       - "${CHATBOT_PORT}:8501"
     depends_on:
@@ -117,7 +166,7 @@ services:
     build:
       context: ./services/widget
     env_file:
-      - .env
+      - .env.example
     ports:
       - "${WIDGET_PORT}:5173"
     depends_on:
@@ -133,7 +182,14 @@ services:
       widget:
         condition: service_started
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.58
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "4317:4317"     # OTLP gRPC receiver
+
 volumes:
   postgres-data:
   minio-data:
-

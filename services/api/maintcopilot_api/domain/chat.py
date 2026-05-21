@@ -26,7 +26,7 @@ class ChatRequest(BaseModel):
     conversation_id: str | None = None
     message: str = Field(min_length=1)
     context: ChatContext = Field(default_factory=ChatContext)
-    use_llm: bool = True
+    use_llm: bool | None = None
 
 
 class ChatMemoryInfo(BaseModel):

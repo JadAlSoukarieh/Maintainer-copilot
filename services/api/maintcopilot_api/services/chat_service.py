@@ -47,35 +47,47 @@ class ChatService:
             event={"role": "user", "message": payload.message, "context": payload.context.model_dump(), "request_id": request_id},
         )
 
+        requested_use_llm = payload.use_llm if payload.use_llm is not None else self._settings.chat_llm_enabled
         mode = "deterministic_fallback"
         fallback_reason: str | None = None
         selection = ToolSelection(selected_tool="none", tool_input={})
 
-        if payload.use_llm and self._settings.chat_llm_enabled and self._llm_chat_service is not None:
+        if requested_use_llm and self._settings.chat_llm_enabled and self._llm_chat_service is not None:
             try:
                 selection = self._llm_chat_service.select_tool(payload)
                 mode = "llm_tool_calling"
-            except LLMChatError:
-                log_with_context(logger, "warning", "chat.llm.failed", conversation_id=conversation_id)
+            except LLMChatError as exc:
+                log_with_context(
+                    logger,
+                    "warning",
+                    "chat.llm.failed",
+                    conversation_id=conversation_id,
+                    reason=exc.reason,
+                    provider_status_code=exc.provider_status_code,
+                )
                 if not self._settings.chat_fallback_enabled:
                     return self._response(
                         conversation_id=conversation_id,
                         message="Claude is unavailable and deterministic fallback is disabled.",
                         mode="llm_tool_calling",
                         selected_tool="none",
-                        tool_result={"error": {"code": "llm_unavailable"}},
+                        tool_result={"error": {"code": exc.reason}},
                         memory_writes=memory_writes,
                         request_id=request_id,
                         trace_id=trace_id,
-                        fallback_reason=None,
+                        fallback_reason=exc.reason,
                     )
                 selection = ToolSelection(selected_tool=route_tool(payload), tool_input={})
-                fallback_reason = "llm_unavailable"
+                fallback_reason = exc.reason
                 log_with_context(logger, "info", "chat.fallback.used", reason=fallback_reason)
         else:
             selection = ToolSelection(selected_tool=route_tool(payload), tool_input={})
-            fallback_reason = None if not payload.use_llm else "llm_disabled"
-            log_with_context(logger, "info", "chat.fallback.used", reason=fallback_reason or "request_disabled")
+            if payload.use_llm is False:
+                fallback_reason = None
+                log_with_context(logger, "info", "chat.fallback.used", reason="request_disabled")
+            else:
+                fallback_reason = "llm_disabled" if requested_use_llm else None
+                log_with_context(logger, "info", "chat.fallback.used", reason=fallback_reason or "request_disabled")
 
         log_with_context(logger, "info", "chat.tool.selected", selected_tool=selection.selected_tool)
         tool_result: dict[str, Any]
@@ -91,7 +103,14 @@ class ChatService:
             tool_result = compact_tool_result(selected_tool, raw_tool_result)
             if selected_tool == "write_memory" and "memory_id" in tool_result:
                 memory_writes.append({"memory_id": tool_result["memory_id"], "source": "chat.write_memory"})
-            message = self._final_message(payload=payload, selection=selection, tool_result=tool_result, mode=mode)
+            message, mode, fallback_reason = self._final_message(
+                payload=payload,
+                selection=selection,
+                tool_result=tool_result,
+                mode=mode,
+                fallback_reason=fallback_reason,
+                conversation_id=conversation_id,
+            )
         except ToolInputValidationError as exc:
             tool_result = {"error": {"code": "tool_input_validation_error", "message": str(exc)}}
             message = str(exc)
@@ -128,17 +147,39 @@ class ChatService:
         selection: ToolSelection,
         tool_result: dict[str, Any],
         mode: str,
-    ) -> str:
+        fallback_reason: str | None,
+        conversation_id: str,
+    ) -> tuple[str, str, str | None]:
+        deterministic_message = _deterministic_tool_message(selection.selected_tool, tool_result)
         if mode == "llm_tool_calling" and self._llm_chat_service is not None:
             try:
-                return self._llm_chat_service.final_response(
-                    payload=payload,
-                    selection=selection,
-                    compacted_tool_result=tool_result,
+                return (
+                    self._llm_chat_service.final_response(
+                        payload=payload,
+                        selection=selection,
+                        compacted_tool_result=tool_result,
+                    ),
+                    mode,
+                    fallback_reason,
                 )
-            except LLMChatError:
-                log_with_context(logging.getLogger("app.chat"), "warning", "chat.llm.failed", phase="final_response")
-        return _deterministic_tool_message(selection.selected_tool, tool_result)
+            except LLMChatError as exc:
+                log_with_context(
+                    logging.getLogger("app.chat"),
+                    "warning",
+                    "chat.llm.failed",
+                    phase="final_response",
+                    conversation_id=conversation_id,
+                    reason=exc.reason,
+                    provider_status_code=exc.provider_status_code,
+                )
+                if not self._settings.chat_fallback_enabled:
+                    return (
+                        "Claude final response is unavailable and deterministic fallback is disabled.",
+                        mode,
+                        exc.reason,
+                    )
+                return deterministic_message, "deterministic_fallback", exc.reason
+        return deterministic_message, mode, fallback_reason
 
     def _response(
         self,

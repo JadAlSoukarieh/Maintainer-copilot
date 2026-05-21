@@ -154,6 +154,48 @@ def chunk_issue_record(
     ]
 
 
+def chunk_issue_comment_record(
+    record: dict,
+    *,
+    source_split: str,
+    max_chars: int = 1400,
+    overlap_chars: int = 200,
+) -> list[dict]:
+    issue_number = record.get("issue_number", "unknown")
+    author_login = (record.get("author_login") or "unknown").strip()
+    association = (record.get("author_association") or "NONE").strip()
+    body = (record.get("body") or "").strip()
+    if not body:
+        return []
+    structured = "\n\n".join(
+        [
+            f"Issue comment for #{issue_number}",
+            f"Author: {author_login} ({association})",
+            f"Comment:\n{body}",
+        ]
+    )
+    pieces = split_long_text(structured, max_chars=max_chars, overlap_chars=overlap_chars)
+    return [
+        {
+            "title": f"Issue comment #{record.get('comment_id', 'unknown')} on issue {issue_number}",
+            "text": piece,
+            "metadata": {
+                "source_split": source_split,
+                "label": None,
+                "issue_number": issue_number,
+                "created_at": record.get("created_at"),
+                "closed_at": None,
+                "section": "issue_comment",
+                "author_association": association,
+                "is_possible_maintainer": bool(record.get("is_possible_maintainer")),
+                "comment_id": record.get("comment_id"),
+                "chunk_index": index,
+            },
+        }
+        for index, piece in enumerate(pieces, start=1)
+    ]
+
+
 def _split_dense_text(text: str, *, max_chars: int, overlap_chars: int) -> list[str]:
     sentences = [segment.strip() for segment in SENTENCE_SPLIT_RE.split(text) if segment.strip()]
     if len(sentences) <= 1:

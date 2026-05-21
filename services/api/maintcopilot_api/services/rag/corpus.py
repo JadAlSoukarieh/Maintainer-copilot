@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from maintcopilot_api.services.rag.chunking import chunk_issue_record, chunk_markdown_document
+from maintcopilot_api.services.rag.chunking import chunk_issue_comment_record, chunk_issue_record, chunk_markdown_document
 
 
 def load_jsonl_records(path: Path) -> list[dict]:
@@ -69,6 +69,52 @@ def build_issue_corpus_rows(
     return rows
 
 
+def build_issue_comment_corpus_rows(
+    records: list[dict],
+    *,
+    source_split: str,
+    max_chars: int = 1400,
+    overlap_chars: int = 200,
+) -> list[dict]:
+    rows: list[dict] = []
+    for record in records:
+        issue_number = record.get("issue_number") or "unknown"
+        comment_id = record.get("comment_id") or "unknown"
+        url = record.get("url") or ""
+        repo = record.get("repo") or "nodejs/node"
+        for chunk in chunk_issue_comment_record(
+            record,
+            source_split=source_split,
+            max_chars=max_chars,
+            overlap_chars=overlap_chars,
+        ):
+            chunk_index = chunk["metadata"].pop("chunk_index")
+            row = {
+                "chunk_id": f"issue-comment-{issue_number}-{comment_id}-{chunk_index:03d}",
+                "source_type": "issue_comment",
+                "source_id": str(comment_id),
+                "title": chunk["title"],
+                "url": url,
+                "text": chunk["text"],
+                "metadata": {
+                    "repo": repo,
+                    "source_split": source_split,
+                    "label": None,
+                    "issue_number": issue_number,
+                    "created_at": record.get("created_at"),
+                    "closed_at": None,
+                    "path": None,
+                    "section": chunk["metadata"].get("section"),
+                    "author_association": chunk["metadata"].get("author_association"),
+                    "is_possible_maintainer": chunk["metadata"].get("is_possible_maintainer"),
+                    "comment_id": chunk["metadata"].get("comment_id"),
+                },
+            }
+            validate_corpus_row(row)
+            rows.append(row)
+    return rows
+
+
 def build_doc_corpus_rows(
     docs_dir: Path,
     *,
@@ -125,7 +171,7 @@ def validate_corpus_row(row: dict) -> None:
     for key in required_top:
         if key not in row:
             raise ValueError(f"Corpus row is missing required field: {key}")
-    if row["source_type"] not in {"doc", "resolved_issue"}:
+    if row["source_type"] not in {"doc", "resolved_issue", "issue_comment"}:
         raise ValueError(f"Unsupported source_type: {row['source_type']}")
 
     metadata = row["metadata"]
@@ -142,6 +188,10 @@ def validate_corpus_row(row: dict) -> None:
     for key in required_metadata:
         if key not in metadata:
             raise ValueError(f"Corpus row metadata is missing required field: {key}")
+    if row["source_type"] == "issue_comment":
+        for key in ("author_association", "is_possible_maintainer", "comment_id"):
+            if key not in metadata:
+                raise ValueError(f"Corpus row metadata is missing required field: {key}")
 
 
 def discover_doc_paths(docs_dir: Path) -> list[Path]:

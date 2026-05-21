@@ -78,7 +78,7 @@ def test_chat_docs_question_uses_rag_answer() -> None:
     response = service.chat(ChatRequest(message="How do I debug a memory leak in https request?", use_llm=False), request_id="req-1", trace_id="trace-1")
 
     assert response.selected_tool == "rag_answer"
-    assert response.tool_result["answer"].startswith("Based on retrieved")
+    assert response.tool_result["answer"].startswith("Based on")
 
 
 def test_chat_remember_request_uses_write_memory() -> None:
@@ -148,6 +148,73 @@ def test_claude_unavailable_uses_deterministic_fallback() -> None:
     assert response.mode == "deterministic_fallback"
     assert response.fallback_reason == "llm_unavailable"
     assert response.selected_tool == "classify_issue"
+
+
+def test_request_without_use_llm_defaults_to_llm_when_config_enabled() -> None:
+    service, _tools, _memory = _service(
+        llm_service=_FakeLLM("rag_answer", {"question": "How do docs explain http?"}),
+        chat_llm_enabled=True,
+    )
+
+    response = service.chat(ChatRequest(message="How do docs explain http?"), request_id="req-1", trace_id="trace-1")
+
+    assert response.mode == "llm_tool_calling"
+    assert response.selected_tool == "rag_answer"
+    assert response.fallback_reason is None
+
+
+def test_explicit_use_llm_false_forces_deterministic_fallback() -> None:
+    service, _tools, _memory = _service(
+        llm_service=_FakeLLM("classify_issue", {"title": "x", "body": "y"}),
+        chat_llm_enabled=True,
+    )
+
+    response = service.chat(
+        ChatRequest(
+            message="How do docs explain http?",
+            use_llm=False,
+        ),
+        request_id="req-1",
+        trace_id="trace-1",
+    )
+
+    assert response.mode == "deterministic_fallback"
+    assert response.selected_tool == "rag_answer"
+    assert response.fallback_reason is None
+
+
+def test_claude_auth_failure_uses_deterministic_fallback_reason() -> None:
+    service, _tools, _memory = _service(
+        llm_service=_FailingLLM(reason="llm_auth_failed", provider_status_code=401),
+        chat_llm_enabled=True,
+    )
+
+    response = service.chat(
+        ChatRequest(
+            message="Classify this issue",
+            context={"issue_title": "Memory leak", "issue_body": "Repeated requests grow memory."},
+        ),
+        request_id="req-1",
+        trace_id="trace-1",
+    )
+
+    assert response.mode == "deterministic_fallback"
+    assert response.fallback_reason == "llm_auth_failed"
+    assert response.selected_tool == "classify_issue"
+
+
+def test_claude_final_response_failure_falls_back_cleanly() -> None:
+    service, _tools, _memory = _service(
+        llm_service=_FinalResponseFailingLLM("rag_answer", {"question": "How do docs explain http?"}),
+        chat_llm_enabled=True,
+    )
+
+    response = service.chat(ChatRequest(message="How do docs explain http?"), request_id="req-1", trace_id="trace-1")
+
+    assert response.mode == "deterministic_fallback"
+    assert response.selected_tool == "rag_answer"
+    assert response.fallback_reason == "llm_timeout"
+    assert response.message.startswith("Based on the local Node.js knowledge base")
 
 
 def test_fake_claude_tool_selection_path_works() -> None:
@@ -248,7 +315,8 @@ def test_smoke_chat_payload_and_summary_helpers() -> None:
     assert rag_payload == {"use_llm": False, "message": "How do I debug a memory leak in https request?"}
     assert classify_payload["context"]["issue_title"] == "Memory leak in https.request"
     assert "selected_tool=rag_answer" in summary
-    assert len(summary) < 420
+    assert "citations=0" in summary
+    assert len(summary) < 620
 
 
 def _service(
@@ -297,7 +365,7 @@ class _FailingModelClient(_FakeModelClient):
 class _FakeRagService:
     def answer_rag_question(self, request: Any) -> RagAnswerResponse:
         return RagAnswerResponse(
-            answer="Based on retrieved local corpus chunks: use HTTP diagnostics.",
+            answer="Based on the local Node.js knowledge base, use HTTP diagnostics.",
             question=request.question,
             rewritten_query=request.question,
             intent="debug",
@@ -352,8 +420,17 @@ class _FakeLLM:
 
 
 class _FailingLLM:
+    def __init__(self, *, reason: str = "llm_unavailable", provider_status_code: int | None = None) -> None:
+        self.reason = reason
+        self.provider_status_code = provider_status_code
+
     def select_tool(self, payload: ChatRequest) -> ToolSelection:
-        raise LLMChatError("offline")
+        raise LLMChatError("offline", reason=self.reason, provider_status_code=self.provider_status_code)
+
+
+class _FinalResponseFailingLLM(_FakeLLM):
+    def final_response(self, **kwargs: Any) -> str:
+        raise LLMChatError("timed out", reason="llm_timeout")
 
 
 def _load_smoke_chat_module():

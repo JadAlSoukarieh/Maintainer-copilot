@@ -97,5 +97,6 @@ def demo_widget_config() -> WidgetConfigResponse:
         theme={"primaryColor": "#1f6feb", "position": "bottom-right"},
         greeting="Ask Maintainer's Copilot about this project.",
         enabled_tools=["classify_issue", "extract_entities", "summarize_thread", "rag_answer", "write_memory"],
-        allowed_origins=["http://localhost:8000", "http://localhost:5173", "http://localhost:8090"],
+        allowed_origins=["http://localhost:8000", "http://localhost:5173", "http://localhost:8080", "http://localhost:8090"],
+        default_use_llm=False,
     )

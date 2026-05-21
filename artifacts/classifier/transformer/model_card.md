@@ -114,3 +114,24 @@ Data hash: `db3e1d356b3202533fc16fe75a21fdf40c9a5c060a19172ec3d403398f7c6d27`
 ## Runtime Note
 
 The model was trained in Colab because fine-tuning requires GPU resources. The production project does not depend on Colab at runtime. The Docker stack should load this frozen artifact, verify its hash against this model card, and run CI evals against golden examples without retraining.
+
+## Training run
+
+Logged to local MLflow for demo/review use. To view:
+
+```bash
+python scripts/log_training_run.py
+mlflow ui --backend-store-uri mlruns --port 5000
+```
+
+Key training config:
+
+- Base model: `roberta-base`
+- Epochs: 5
+- Learning rate: `1e-5`
+- Train batch size: 8
+- Max length: 512
+- Optimizer: AdamW fused
+- Weight decay: 0.01
+- Best metric: `macro_f1` (`eval_strategy=epoch`)
+- Train time: approximately 644 seconds on Colab GPU

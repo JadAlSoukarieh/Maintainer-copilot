@@ -297,8 +297,8 @@ def load_corpus_rows(path: Path) -> list[dict]:
 def filter_corpus_rows(rows: list[dict], source_type: str | None = None) -> list[dict]:
     if source_type is None:
         return list(rows)
-    if source_type not in {"doc", "resolved_issue"}:
-        raise ValueError("source_type must be doc, resolved_issue, or None.")
+    if source_type not in {"doc", "resolved_issue", "issue_comment"}:
+        raise ValueError("source_type must be doc, resolved_issue, issue_comment, or None.")
     return [row for row in rows if row.get("source_type") == source_type]
 
 
@@ -349,7 +349,7 @@ def _metadata_boost_for_result(
         score_boost += boost_amount
     if rewrite_result.intent in DOC_INTENTS and source_type == "doc":
         score_boost += boost_amount
-    if rewrite_result.intent in ISSUE_INTENTS and source_type == "resolved_issue":
+    if rewrite_result.intent in ISSUE_INTENTS and source_type in {"resolved_issue", "issue_comment"}:
         score_boost += boost_amount
 
     haystack = _metadata_haystack(result)
@@ -396,7 +396,12 @@ def _load_sentence_transformer(model_name: str):
             "sentence-transformers is required for dense RAG retrieval. "
             "Run python scripts/bootstrap_dev.py or install the API package dependencies."
         ) from exc
-    return SentenceTransformer(model_name, local_files_only=True)
+    return SentenceTransformer(
+        model_name,
+        local_files_only=True,
+        device="cpu",
+        model_kwargs={"low_cpu_mem_usage": False},
+    )
 
 
 def _load_cross_encoder(model_name: str):
@@ -408,7 +413,12 @@ def _load_cross_encoder(model_name: str):
             "Run python scripts/bootstrap_dev.py or install the API package dependencies."
         ) from exc
     try:
-        return CrossEncoder(model_name, local_files_only=True)
+        return CrossEncoder(
+            model_name,
+            local_files_only=True,
+            device="cpu",
+            automodel_args={"low_cpu_mem_usage": False},
+        )
     except OSError as exc:
         raise RuntimeError(
             "The reranker model is not cached locally: "

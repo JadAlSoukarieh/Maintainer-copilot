@@ -12,6 +12,8 @@ from maintcopilot_api.services.rag.retrieval import (
     HybridRetriever,
     RerankedRetriever,
     SparseRetriever,
+    _load_cross_encoder,
+    _load_sentence_transformer,
     apply_metadata_boost,
     filter_corpus_rows,
 )
@@ -227,6 +229,64 @@ def test_metadata_boost_increases_preferred_source_type_score() -> None:
     assert boosted[0]["original_score"] == 0.78
     assert boosted[0]["metadata_boost"] > 0
     assert boosted[0]["final_score"] == boosted[0]["score"]
+
+
+def test_sentence_transformer_loader_uses_cpu_and_disables_low_cpu_mem_usage(monkeypatch) -> None:
+    import maintcopilot_api.services.rag.retrieval as retrieval_module
+
+    captured = {}
+
+    class FakeSentenceTransformer:
+        def __init__(self, model_name: str, **kwargs) -> None:
+            captured["model_name"] = model_name
+            captured["kwargs"] = kwargs
+
+    monkeypatch.setattr(retrieval_module, "SentenceTransformer", FakeSentenceTransformer, raising=False)
+
+    original_import = __import__
+
+    def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "sentence_transformers":
+            return type("FakeModule", (), {"SentenceTransformer": FakeSentenceTransformer})()
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr("builtins.__import__", fake_import)
+
+    _load_sentence_transformer("sentence-transformers/all-MiniLM-L6-v2")
+
+    assert captured["model_name"] == "sentence-transformers/all-MiniLM-L6-v2"
+    assert captured["kwargs"]["device"] == "cpu"
+    assert captured["kwargs"]["local_files_only"] is True
+    assert captured["kwargs"]["model_kwargs"]["low_cpu_mem_usage"] is False
+
+
+def test_cross_encoder_loader_uses_cpu_and_disables_low_cpu_mem_usage(monkeypatch) -> None:
+    import maintcopilot_api.services.rag.retrieval as retrieval_module
+
+    captured = {}
+
+    class FakeCrossEncoder:
+        def __init__(self, model_name: str, **kwargs) -> None:
+            captured["model_name"] = model_name
+            captured["kwargs"] = kwargs
+
+    monkeypatch.setattr(retrieval_module, "CrossEncoder", FakeCrossEncoder, raising=False)
+
+    original_import = __import__
+
+    def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "sentence_transformers":
+            return type("FakeModule", (), {"CrossEncoder": FakeCrossEncoder})()
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr("builtins.__import__", fake_import)
+
+    _load_cross_encoder("artifacts/rag/reranker_model")
+
+    assert captured["model_name"] == "artifacts/rag/reranker_model"
+    assert captured["kwargs"]["device"] == "cpu"
+    assert captured["kwargs"]["local_files_only"] is True
+    assert captured["kwargs"]["automodel_args"]["low_cpu_mem_usage"] is False
 
 
 def test_source_type_filter_returns_only_matching_rows() -> None:

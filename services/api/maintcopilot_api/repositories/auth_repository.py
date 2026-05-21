@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import insert, select, update
+from sqlalchemy import delete as sa_delete, insert, select, update
 from sqlalchemy.orm import Session
 
 from maintcopilot_api.domain.auth import UserRole
@@ -29,6 +29,8 @@ class AuthRepository:
         hashed_password: str,
         role: UserRole,
         is_active: bool = True,
+        is_superuser: bool = False,
+        is_verified: bool = False,
     ) -> dict:
         user_id = str(uuid.uuid4())
         self._session.execute(
@@ -38,9 +40,21 @@ class AuthRepository:
                 hashed_password=hashed_password,
                 role=role.value,
                 is_active=is_active,
+                is_superuser=is_superuser,
+                is_verified=is_verified,
             )
         )
         return self.get_user_by_id(user_id) or {}
+
+    def update_user(self, user_id: str, **kwargs: object) -> dict | None:
+        allowed = {"hashed_password", "is_active", "is_superuser", "is_verified"}
+        values = {k: v for k, v in kwargs.items() if k in allowed}
+        if values:
+            self._session.execute(update(users).where(users.c.id == user_id).values(**values))
+        return self.get_user_by_id(user_id)
+
+    def delete_user(self, user_id: str) -> None:
+        self._session.execute(sa_delete(users).where(users.c.id == user_id))
 
     def create_invite(
         self,
@@ -87,5 +101,14 @@ class AuthRepository:
         hashed_password: str,
         role: UserRole,
         is_active: bool = True,
+        is_superuser: bool = False,
+        is_verified: bool = False,
     ) -> dict:
-        return self.create_user(email=email, hashed_password=hashed_password, role=role, is_active=is_active)
+        return self.create_user(
+            email=email,
+            hashed_password=hashed_password,
+            role=role,
+            is_active=is_active,
+            is_superuser=is_superuser,
+            is_verified=is_verified,
+        )

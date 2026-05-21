@@ -1,80 +1,747 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maintainer's Copilot Demo Host</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: "Aptos", "Segoe UI", sans-serif;
-        background:
-          linear-gradient(120deg, rgba(31, 111, 235, 0.08), transparent 34%),
-          linear-gradient(180deg, #f8fafc 0%, #e8eef6 100%);
-        color: #172033;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintainer's Copilot — Node.js Issue Triage</title>
+  <style>
+    /* ── Reset & Tokens ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --bg-card:   #161b22;
+      --bg-card2:  #1c2128;
+      --border:    #30363d;
+      --border-s:  #21262d;
+      --primary:   #1f6feb;
+      --primary-l: #388bfd;
+      --green:     #3fb950;
+      --amber:     #e3b341;
+      --red:       #f85149;
+      --purple:    #a371f7;
+      --text:      #e6edf3;
+      --text-2:    #8b949e;
+      --text-3:    #484f58;
+      --font:      -apple-system, "Segoe UI", system-ui, sans-serif;
+      --mono:      "SFMono-Regular", Consolas, monospace;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--primary-l); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 32px;
+      height: 60px;
+      background: rgba(13,17,23,0.85);
+      border-bottom: 1px solid var(--border-s);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 650; color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1c4ed8, #1f6feb);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    .nav-badge {
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 999px;
+      background: rgba(56,139,253,0.15);
+      color: var(--primary-l);
+      border: 1px solid rgba(56,139,253,0.3);
+    }
+
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+    .nav-link {
+      font-size: 13.5px; color: var(--text-2);
+      transition: color 140ms;
+    }
+    .nav-link:hover { color: var(--text); text-decoration: none; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 16px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600;
+      cursor: pointer; border: none; transition: all 140ms;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 0 0 rgba(31,111,235,0);
+    }
+    .btn-primary:hover {
+      background: var(--primary-l);
+      text-decoration: none;
+      box-shadow: 0 0 16px rgba(31,111,235,0.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-3); text-decoration: none; }
+
+    /* ── Hero ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      padding: 96px 32px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(31,111,235,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 50%, rgba(163,113,247,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600;
+      color: var(--primary-l);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      border: 1px solid rgba(56,139,253,0.25);
+      background: rgba(56,139,253,0.08);
+      padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #e6edf3 0%, #8b949e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-title span {
+      background: linear-gradient(90deg, #388bfd, #a371f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      max-width: 560px; margin: 0 auto 36px;
+      font-size: 18px; color: var(--text-2); line-height: 1.65;
+    }
+
+    .hero-cta {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex; align-items: center; justify-content: center; gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-s);
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-value {
+      font-size: 28px; font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--text) 0%, var(--text-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-value.green { background: linear-gradient(135deg, #3fb950, #26a641); -webkit-background-clip: text; background-clip: text; }
+    .stat-value.blue  { background: linear-gradient(135deg, #388bfd, #1f6feb); -webkit-background-clip: text; background-clip: text; }
+    .stat-value.purple { background: linear-gradient(135deg, #a371f7, #7c3aed); -webkit-background-clip: text; background-clip: text; }
+
+    .stat-label { font-size: 12px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+    /* ── Section shared ─────────────────────────────────────── */
+    section { padding: 72px 32px; max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 12px; font-weight: 700;
+      color: var(--primary-l);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .section-sub {
+      font-size: 15.5px; color: var(--text-2); max-width: 520px;
+      margin-bottom: 40px; line-height: 1.6;
+    }
+
+    /* ── Capability cards ───────────────────────────────────── */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .cap-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-s);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: border-color 160ms, transform 160ms;
+      cursor: default;
+    }
+
+    .cap-card:hover {
+      border-color: var(--border);
+      transform: translateY(-2px);
+    }
+
+    .cap-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .cap-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .cap-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.5; }
+
+    /* ── Metrics ────────────────────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-s);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+
+    .metric-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .metric-title { font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .metric-badge {
+      font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    }
+
+    .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+    .badge-blue  { background: rgba(56,139,253,0.15); color: var(--primary-l); border: 1px solid rgba(56,139,253,0.3); }
+    .badge-purple { background: rgba(163,113,247,0.15); color: var(--purple); border: 1px solid rgba(163,113,247,0.3); }
+    .badge-amber { background: rgba(227,179,65,0.15); color: var(--amber); border: 1px solid rgba(227,179,65,0.3); }
+
+    .metric-value { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; }
+    .metric-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+    .metric-bar { margin-top: 14px; height: 4px; background: var(--bg-card2); border-radius: 2px; overflow: hidden; }
+    .metric-bar-fill { height: 100%; border-radius: 2px; transition: width 0.8s ease; }
+
+    /* ── Try it panel ───────────────────────────────────────── */
+    .try-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 700px) { .try-grid { grid-template-columns: 1fr; } }
+
+    .try-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-s);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 160ms, background 160ms;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .try-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .try-card.blue::before  { background: var(--primary); }
+    .try-card.green::before { background: var(--green); }
+    .try-card.amber::before { background: var(--amber); }
+    .try-card.purple::before { background: var(--purple); }
+
+    .try-card:hover { border-color: var(--border); background: var(--bg-card2); }
+
+    .try-tool { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 7px; }
+    .try-tool.blue   { color: var(--primary-l); }
+    .try-tool.green  { color: var(--green); }
+    .try-tool.amber  { color: var(--amber); }
+    .try-tool.purple { color: var(--purple); }
+
+    .try-prompt { font-size: 13.5px; color: var(--text); line-height: 1.5; font-weight: 500; }
+    .try-sub    { font-size: 12px; color: var(--text-2); margin-top: 5px; line-height: 1.4; }
+
+    .try-arrow {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      color: var(--text-3); font-size: 18px; transition: right 160ms, color 160ms;
+    }
+    .try-card:hover .try-arrow { right: 12px; color: var(--text-2); }
+
+    /* ── Architecture ───────────────────────────────────────── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .arch-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-s);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .arch-layer { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 8px; }
+    .arch-name  { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .arch-tech  { font-size: 11.5px; color: var(--text-2); line-height: 1.4; }
+
+    /* ── Embed snippet ──────────────────────────────────────── */
+    .code-block {
+      background: #010409;
+      border: 1px solid var(--border-s);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.65;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block .kw  { color: #ff7b72; }
+    .code-block .str { color: #a5d6ff; }
+    .code-block .tag { color: #7ee787; }
+    .code-block .attr { color: #79c0ff; }
+    .code-block .cmt { color: #8b949e; font-style: italic; }
+
+    .copy-code-btn {
+      position: absolute; top: 12px; right: 12px;
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-size: 11.5px; font-family: var(--font);
+      cursor: pointer; transition: all 140ms;
+    }
+    .copy-code-btn:hover { color: var(--text); border-color: var(--text-3); }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border-s);
+      padding: 28px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      font-size: 12.5px; color: var(--text-3);
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    footer span { display: flex; align-items: center; gap: 6px; }
+
+    .dot-sep { color: var(--border); }
+
+    /* ── Divider ────────────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--border-s); margin: 0; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      .hero { padding: 64px 16px 56px; }
+      section { padding: 48px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────── -->
+  <nav>
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-icon">🤖</div>
+      Maintainer's Copilot
+    </a>
+    <span class="nav-badge">Week 7 Demo</span>
+    <div class="nav-right">
+      <a class="nav-link" href="#capabilities">Capabilities</a>
+      <a class="nav-link" href="#metrics">Metrics</a>
+      <a class="nav-link" href="#try">Try it</a>
+      <a class="btn btn-ghost" href="http://localhost:8501" target="_blank">Admin Console ↗</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <span>🟢</span> Live demo · Claude claude-haiku-4-5
+    </div>
+    <h1 class="hero-title">
+      AI-powered triage for<br><span>Node.js maintainers</span>
+    </h1>
+    <p class="hero-sub">
+      Classify issues, extract entities, summarize threads, and search
+      13,580 chunks of Node.js docs and resolved issues — all locally, with no external API calls.
+    </p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" onclick="openWidget()">
+        💬 Open the Copilot
+      </button>
+      <a class="btn btn-ghost" href="#try">See example queries →</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-value green">80%</div>
+        <div class="stat-label">RAG hit@5</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value blue">0.63</div>
+        <div class="stat-label">RAG MRR@10</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value purple">72.5%</div>
+        <div class="stat-label">Classifier Accuracy</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">0.71</div>
+        <div class="stat-label">Macro F1</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value green">13,580</div>
+        <div class="stat-label">Corpus Chunks</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ── Capabilities ──────────────────────────────────────── -->
+  <section id="capabilities">
+    <div class="section-label">What it does</div>
+    <h2 class="section-title">Five tools, one conversation</h2>
+    <p class="section-sub">
+      Each message is routed to the right tool automatically. In demo mode a deterministic
+      router handles triage; with Claude enabled, LLM tool-calling takes over.
+    </p>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <div class="cap-icon" style="background:rgba(248,81,73,0.12)">🏷</div>
+        <div class="cap-name">Classify Issue</div>
+        <div class="cap-desc">RoBERTa-base fine-tuned on Node.js issues. Returns label + confidence bar across Bug, Question, Enhancement, Docs.</div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon" style="background:rgba(227,179,65,0.12)">🔍</div>
+        <div class="cap-name">Extract Entities</div>
+        <div class="cap-desc">Rule-based NER extracts versions, file paths, URLs, CLI flags, function names, and module names from issue text.</div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon" style="background:rgba(163,113,247,0.12)">📝</div>
+        <div class="cap-name">Summarize Thread</div>
+        <div class="cap-desc">Extractive summarizer condenses issue title + body into up to 5 bullet points for fast maintainer triage.</div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon" style="background:rgba(63,185,80,0.12)">📚</div>
+        <div class="cap-name">RAG Search</div>
+        <div class="cap-desc">Reranked hybrid retrieval (sparse + dense MiniLM + cross-encoder) over 13,580 Node.js doc and resolved-issue chunks.</div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon" style="background:rgba(56,139,253,0.12)">💾</div>
+        <div class="cap-name">Write Memory</div>
+        <div class="cap-desc">Explicit-only episodic memory stored in pgvector with 384-dim MiniLM embeddings. Persists across conversations.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Metrics ────────────────────────────────────────────── -->
+  <section id="metrics">
+    <div class="section-label">Evaluation results</div>
+    <h2 class="section-title">Measured against golden sets</h2>
+    <p class="section-sub">
+      All metrics are evaluated offline against curated golden sets. No LLM judge in CI — deterministic gates only.
+    </p>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-top">
+          <span class="metric-title">RAG Retrieval · hit@5</span>
+          <span class="metric-badge badge-green">↑ vs sparse +24pp</span>
+        </div>
+        <div class="metric-value" style="color:var(--green)">80%</div>
+        <div class="metric-sub">Reranked hybrid · alpha=0.50 · top-20</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="width:80%;background:var(--green)"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-top">
+          <span class="metric-title">RAG Retrieval · MRR@10</span>
+          <span class="metric-badge badge-green">↑ vs sparse +0.28</span>
+        </div>
+        <div class="metric-value" style="color:var(--green)">0.628</div>
+        <div class="metric-sub">Reranked hybrid with query rewrite + boost</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="width:62.8%;background:var(--green)"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-top">
+          <span class="metric-title">Classifier · Accuracy</span>
+          <span class="metric-badge badge-purple">196-example test set</span>
+        </div>
+        <div class="metric-value" style="color:var(--purple)">72.5%</div>
+        <div class="metric-sub">RoBERTa-base · 36ms avg latency</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="width:72.5%;background:var(--purple)"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-top">
+          <span class="metric-title">Classifier · Macro F1</span>
+          <span class="metric-badge badge-purple">vs Haiku 0.7112</span>
+        </div>
+        <div class="metric-value" style="color:var(--purple)">0.711</div>
+        <div class="metric-sub">Beats Claude Haiku at 1/30th the latency</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="width:71.1%;background:var(--purple)"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-top">
+          <span class="metric-title">Classifier · Bug F1</span>
+          <span class="metric-badge badge-blue">Hardest class</span>
+        </div>
+        <div class="metric-value" style="color:var(--primary-l)">55.6%</div>
+        <div class="metric-sub">Classical baseline: 44.4% · Haiku: 52.1%</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="width:55.6%;background:var(--primary-l)"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-top">
+          <span class="metric-title">Corpus size</span>
+          <span class="metric-badge badge-amber">Local · no API</span>
+        </div>
+        <div class="metric-value" style="color:var(--amber)">13,580</div>
+        <div class="metric-sub">Node.js docs + resolved issues after dedup</div>
+        <div class="metric-bar"><div class="metric-bar-fill" style="width:100%;background:var(--amber)"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Try it ─────────────────────────────────────────────── -->
+  <section id="try">
+    <div class="section-label">Try it now</div>
+    <h2 class="section-title">Click a prompt to open the Copilot</h2>
+    <p class="section-sub">
+      These examples cover all five tools. Paste the text into the chat widget to see the result.
+    </p>
+
+    <div class="try-grid">
+      <div class="try-card blue" onclick="sendToWidget('How do I debug a memory leak in https.request?')">
+        <div class="try-tool blue">📚 RAG Search</div>
+        <div class="try-prompt">How do I debug a memory leak in https.request?</div>
+        <div class="try-sub">Searches 13,580 Node.js doc + issue chunks with reranked hybrid retrieval</div>
+        <span class="try-arrow">→</span>
+      </div>
+
+      <div class="try-card green" onclick="sendToWidget('Classify this issue: dns.lookup blocks filesystem I/O on slow networks')">
+        <div class="try-tool green">🏷 Classify Issue</div>
+        <div class="try-prompt">Classify this issue: dns.lookup blocks filesystem I/O on slow networks</div>
+        <div class="try-sub">RoBERTa-base returns label + confidence breakdown</div>
+        <span class="try-arrow">→</span>
+      </div>
+
+      <div class="try-card amber" onclick="sendToWidget('Extract entities from: fs.utimes fails on v6.5.0, see /usr/local/lib/node_modules/app/index.js, call crypto.pbkdf2() with --trace-warnings')">
+        <div class="try-tool amber">🔍 Extract Entities</div>
+        <div class="try-prompt">Extract entities from: fs.utimes fails on v6.5.0, see /usr/local/lib/node_modules/app/index.js</div>
+        <div class="try-sub">Returns versions, file paths, function names, flags as colored chips</div>
+        <span class="try-arrow">→</span>
+      </div>
+
+      <div class="try-card purple" onclick="sendToWidget('Summarize this thread: Memory leak in https.request. Version: v6.8.0. Platform: Ubuntu 16.04. Repro: send many requests. Actual: memory grows after ECONNRESET.')">
+        <div class="try-tool purple">📝 Summarize</div>
+        <div class="try-prompt">Summarize: Memory leak in https.request. Version v6.8.0. Repro: many requests. Memory grows after ECONNRESET.</div>
+        <div class="try-sub">Extractive summarizer returns up to 5 bullet points</div>
+        <span class="try-arrow">→</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Architecture ───────────────────────────────────────── -->
+  <section id="arch">
+    <div class="section-label">Stack</div>
+    <h2 class="section-title">What's running right now</h2>
+    <p class="section-sub">All services are local. No external API calls in deterministic mode.</p>
+
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="arch-layer">API · :8000</div>
+        <div class="arch-name">FastAPI</div>
+        <div class="arch-tech">Chat orchestration, RAG, auth, memory, widget config, SSE streaming</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-layer">Model Server · :8001</div>
+        <div class="arch-name">RoBERTa-base</div>
+        <div class="arch-tech">Fine-tuned issue classifier + rule-based NER + extractive summarizer</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-layer">Widget · :5173</div>
+        <div class="arch-name">React + Vite</div>
+        <div class="arch-tech">SSE streaming, tool result cards, issue context panel, suggested prompts</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-layer">Storage · :5432</div>
+        <div class="arch-name">PostgreSQL + pgvector</div>
+        <div class="arch-tech">Users, widgets, episodic memory with 384-dim MiniLM embeddings</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-layer">RAG Retrieval</div>
+        <div class="arch-name">Hybrid + Rerank</div>
+        <div class="arch-tech">TF-IDF sparse + MiniLM dense + cross-encoder reranker. Query rewrite + metadata boost.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-layer">Tracing · :16686</div>
+        <div class="arch-name">Jaeger OTEL</div>
+        <div class="arch-tech">Spans on every LLM call, tool execution, and RAG retrieval via OpenTelemetry SDK</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Embed snippet ──────────────────────────────────────── -->
+  <section id="embed">
+    <div class="section-label">Embedding</div>
+    <h2 class="section-title">One script tag to embed anywhere</h2>
+    <p class="section-sub">
+      Drop this into any HTML page. The widget loads its config from the API and enforces
+      <code style="font-family:var(--mono);font-size:13px;color:var(--text-2)">Content-Security-Policy: frame-ancestors</code> based on <code style="font-family:var(--mono);font-size:13px;color:var(--text-2)">allowed_origins</code>.
+    </p>
+
+    <div class="code-block">
+      <button class="copy-code-btn" onclick="copyEmbed(this)">Copy</button>
+<span class="cmt">&lt;!-- Drop this script tag into any page --&gt;</span>
+<span class="tag">&lt;script</span>
+  <span class="attr">src</span>=<span class="str">"https://your-api.example.com/widget.js"</span>
+  <span class="attr">data-widget-id</span>=<span class="str">"demo-widget"</span>
+  <span class="attr">data-api-base-url</span>=<span class="str">"https://your-api.example.com"</span>
+  <span class="attr">data-widget-url</span>=<span class="str">"https://widget.example.com"</span><span class="tag">&gt;&lt;/script&gt;</span>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <hr class="divider" style="max-width:1100px;margin:0 auto" />
+  <footer>
+    <span>🤖 Maintainer's Copilot <span class="dot-sep">·</span> AIE Week 7</span>
+    <span>
+      <a href="http://localhost:8000/docs" target="_blank">API docs</a>
+      <span class="dot-sep">·</span>
+      <a href="http://localhost:8501" target="_blank">Admin console</a>
+      <span class="dot-sep">·</span>
+      <a href="http://localhost:16686" target="_blank">Jaeger traces</a>
+      <span class="dot-sep">·</span>
+      <a href="http://localhost:9001" target="_blank">MinIO</a>
+    </span>
+  </footer>
+
+  <!-- ── Widget iframe ─────────────────────────────────────── -->
+  <!--
+    Embedding the widget as an iframe and communicating via postMessage
+    avoids cross-frame DOM access restrictions. The widget listens for
+    maintcopilot:open and maintcopilot:send and resizes the parent via
+    maintcopilot:resize.
+  -->
+  <iframe
+    id="mcw-frame"
+    src="http://localhost:5173?widget_id=demo-widget&api_base_url=http://localhost:8000"
+    style="position:fixed;bottom:0;right:0;width:98px;height:98px;border:none;z-index:9999;background:transparent;"
+    allow="clipboard-write"
+    title="Maintainer's Copilot"
+  ></iframe>
+
+  <!-- ── Demo helpers ──────────────────────────────────────── -->
+  <script>
+    const mcwFrame = document.getElementById('mcw-frame');
+
+    // Resize the iframe to match the widget's collapsed/expanded state
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.type !== 'maintcopilot:resize') return;
+      if (e.data.expanded) {
+        mcwFrame.style.width  = '410px';
+        mcwFrame.style.height = '670px';
+      } else {
+        mcwFrame.style.width  = '98px';
+        mcwFrame.style.height = '98px';
       }
+    });
 
-      main {
-        max-width: 880px;
-        margin: 0 auto;
-        padding: 72px 24px;
-      }
+    function openWidget() {
+      mcwFrame.contentWindow.postMessage({ type: 'maintcopilot:open' }, '*');
+    }
 
-      h1 {
-        margin: 0 0 12px;
-        font-size: clamp(32px, 6vw, 56px);
-        letter-spacing: 0;
-      }
+    function sendToWidget(text) {
+      mcwFrame.contentWindow.postMessage({ type: 'maintcopilot:send', text: text }, '*');
+    }
 
-      p {
-        max-width: 680px;
-        color: #475467;
-        font-size: 18px;
-        line-height: 1.6;
-      }
-
-      pre {
-        overflow-x: auto;
-        border: 1px solid #d7dde8;
-        border-radius: 8px;
-        background: #101828;
-        color: #e6edf7;
-        padding: 18px;
-      }
-
-      code {
-        font-family: "SFMono-Regular", Consolas, monospace;
-        font-size: 13px;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>Maintainer's Copilot Demo Host</h1>
-      <p>
-        This page embeds the Maintainer's Copilot widget. The widget runtime loads configuration from the API,
-        then calls <code>/chat</code> with <code>use_llm=false</code> so the demo works in deterministic fallback mode.
-      </p>
-
-      <pre><code>&lt;script
-  src="http://localhost:8000/widget.js"
-  data-widget-id="demo-widget"
-  data-api-base-url="http://localhost:8000"
-  data-widget-url="http://localhost:5173"&gt;
-&lt;/script&gt;</code></pre>
-
-      <p>
-        <code>data-api-base-url</code> points to the API service. <code>data-widget-url</code> points to the built
-        or Vite-dev widget frontend.
-      </p>
-    </main>
-
-    <!-- api_base_url points to the API. widget_url points to the built/dev widget frontend. -->
-    <script
-      src="http://localhost:8000/widget.js"
-      data-widget-id="demo-widget"
-      data-api-base-url="http://localhost:8000"
-      data-widget-url="http://localhost:5173">
-    </script>
-  </body>
+    function copyEmbed(btn) {
+      const snippet = '<script\n  src="https://your-api.example.com/widget.js"\n  data-widget-id="demo-widget"\n  data-api-base-url="https://your-api.example.com"\n  data-widget-url="https://widget.example.com"><\/script>';
+      navigator.clipboard.writeText(snippet).then(function() {
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = 'Copy'; }, 1800);
+      });
+    }
+  </script>
+</body>
 </html>

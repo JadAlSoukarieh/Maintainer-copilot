@@ -1,0 +1,23 @@
+{
+  "dist_dir": "services/widget/dist",
+  "asset_count": 3,
+  "total_size_bytes": 173134,
+  "assets": [
+    {
+      "path": "assets/index-BPmm9-tt.css",
+      "size_bytes": 15023
+    },
+    {
+      "path": "assets/index-DpxOTsxU.js",
+      "size_bytes": 157698
+    },
+    {
+      "path": "index.html",
+      "size_bytes": 413
+    }
+  ],
+  "notes": [
+    "Demo mode still serves the widget through the widget service.",
+    "Production path is build dist -> serve via CDN/MinIO/static host -> point /widget.js iframe at that widget URL."
+  ]
+}

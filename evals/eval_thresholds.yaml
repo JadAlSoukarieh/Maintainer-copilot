@@ -7,10 +7,16 @@ classification:
     docs: 0.50
     question: 0.50
 rag:
-  grounded_answer_rate_min: 0.00
-  hallucination_rate_max: 1.00
+  grounded_answer_rate_min: 0.60
+  hallucination_rate_max: 0.40
 rag_retrieval:
   min_hit_at_5: 0.40
   min_mrr_at_10: 0.20
+rag_generation:
+  min_answer_relevancy: 0.25
+  min_faithfulness: 0.40
+  min_citation_coverage: 0.60
+  min_groundedness_pass_rate: 0.30
+  min_human_judge_agreement: 0.60
 summarization:
-  factuality_min: 0.00
+  factuality_min: 0.50

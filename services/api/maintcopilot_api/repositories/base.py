@@ -22,6 +22,8 @@ users = Table(
     Column("hashed_password", Text, nullable=False),
     Column("role", String(20), nullable=False),
     Column("is_active", Boolean, nullable=False, default=True, server_default="1"),
+    Column("is_superuser", Boolean, nullable=False, default=False, server_default="0"),
+    Column("is_verified", Boolean, nullable=False, default=False, server_default="0"),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )
@@ -57,6 +59,7 @@ memories = Table(
     Column("user_id", String(255), nullable=False),
     Column("content", Text, nullable=False),
     Column("metadata", JSON, nullable=False),
+    Column("embedding", JSON, nullable=True),
     Column("created_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
     Column("updated_at", DateTime(timezone=True), nullable=False, server_default=func.now()),
 )

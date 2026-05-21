@@ -12,6 +12,8 @@ class ShortTermMemoryStore(Protocol):
 
     def append(self, *, conversation_id: str, event: dict[str, Any]) -> None: ...
 
+    def list_events(self, *, conversation_id: str, limit: int = 100) -> list[dict[str, Any]]: ...
+
 
 class InMemoryShortTermMemoryStore:
     def __init__(self) -> None:
@@ -22,6 +24,9 @@ class InMemoryShortTermMemoryStore:
 
     def append(self, *, conversation_id: str, event: dict[str, Any]) -> None:
         self.events.setdefault(conversation_id, []).append(_memory_event(event))
+
+    def list_events(self, *, conversation_id: str, limit: int = 100) -> list[dict[str, Any]]:
+        return list(self.events.get(conversation_id, []))[-limit:]
 
 
 class RedisShortTermMemoryStore:
@@ -38,6 +43,9 @@ class RedisShortTermMemoryStore:
             _memory_event(event),
             self._ttl_seconds,
         )
+
+    def list_events(self, *, conversation_id: str, limit: int = 100) -> list[dict[str, Any]]:
+        return self._redis_client.list_json(f"chat:short_term:{conversation_id}", limit=limit)
 
 
 def _memory_event(event: dict[str, Any]) -> dict[str, Any]:
