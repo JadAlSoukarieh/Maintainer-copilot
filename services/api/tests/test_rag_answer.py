@@ -291,6 +291,31 @@ def test_rag_answer_falls_back_to_hybrid_when_reranker_model_missing(tmp_path: P
     assert response.diagnostics.fallback_reason == "reranker_model_missing"
 
 
+def test_rag_answer_falls_back_to_sparse_when_dense_query_path_is_unavailable(monkeypatch, tmp_path: Path) -> None:
+    corpus_path = tmp_path / "rag_corpus.jsonl"
+    corpus_path.write_text(json.dumps(_row("doc-http", "doc", "HTTP docs explain ClientRequest behavior.")) + "\n", encoding="utf-8")
+    embedding_dir = _write_tiny_embedding_index(tmp_path, ["doc-http"])
+    service = RagService(
+        corpus_path=corpus_path,
+        embedding_index_dir=embedding_dir,
+        reranker_model_path=tmp_path / "missing-reranker-model",
+        rerank_top_n=20,
+    )
+
+    monkeypatch.setattr(
+        "maintcopilot_api.services.rag.retrieval.DenseRetriever.query",
+        lambda self, query_text, top_k=5: (_ for _ in ()).throw(RuntimeError("dense unavailable")),
+    )
+
+    response = service.answer_rag_question(RagAnswerRequest(question="Where do docs explain https request?", top_k=1))
+
+    assert response.retriever == "sparse"
+    assert response.diagnostics.requested_retriever == "reranked"
+    assert response.diagnostics.effective_retriever == "sparse"
+    assert response.diagnostics.fallback_reason == "dense_retriever_unavailable"
+    assert response.citations
+
+
 def _row(chunk_id: str, source_type: str, text: str, *, title: str | None = None) -> dict:
     return {
         "chunk_id": chunk_id,

@@ -4,385 +4,469 @@ import streamlit as st
 
 
 def apply_styles() -> None:
-    st.markdown(
-        """
-        <style>
-        :root {
-          --mc-bg: #f0f4f9;
-          --mc-surface: #ffffff;
-          --mc-border: #d2dde9;
-          --mc-border-strong: #b8cce0;
-          --mc-text: #0c1e33;
-          --mc-text-soft: #2a4460;
-          --mc-muted: #5a7490;
-          --mc-accent: #1a63d8;
-          --mc-accent-dark: #1450b0;
-          --mc-accent-soft: #e8f0fc;
-          --mc-success: #1a7a3c;
-          --mc-success-bg: #e6f7ed;
-          --mc-warning: #8a4d00;
-          --mc-warning-bg: #fff4e0;
-          --mc-danger: #a01f17;
-          --mc-danger-bg: #fdf0ef;
-          --mc-shadow: 0 20px 56px rgba(10,28,54,0.12);
-          --mc-shadow-soft: 0 2px 12px rgba(10,28,54,0.07);
-          --mc-radius: 14px;
-          --mc-radius-sm: 10px;
-        }
+    st.html("""
+    <style>
+    /* ══════════════════════════════════════════════════════════
+       MAINTAINER'S COPILOT — ADMIN CONSOLE
+       Streamlit 1.57 compatible — uses st.html() injection
+    ══════════════════════════════════════════════════════════ */
 
-        html, body, [class*="css"] { color: var(--mc-text); }
+    :root {
+      --c-accent:    #1a5fd4;
+      --c-accent-2:  #1048a8;
+      --c-accent-bg: #e6effc;
+      --c-surface:   #ffffff;
+      --c-bg:        #edf3fc;
+      --c-border:    rgba(0,0,0,.08);
+      --c-text:      #0b1c33;
+      --c-text-2:    #2c4a68;
+      --c-text-3:    #567090;
+      --c-shadow-2:  0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(8,20,48,.08);
+      --c-shadow-3:  0 2px 6px rgba(0,0,0,.07), 0 8px 28px rgba(8,20,48,.12);
+      --r:           14px;
+    }
 
-        /* ── Page background ───────────────────────── */
-        [data-testid="stAppViewContainer"] {
-          background:
-            radial-gradient(ellipse at 0% 0%, rgba(26,99,216,0.06) 0%, transparent 30%),
-            linear-gradient(180deg, #f4f8ff 0%, #edf3fb 55%, #e8f0f9 100%);
-        }
-        .block-container {
-          max-width: 1480px;
-          padding-top: 0.75rem;
-          padding-bottom: 2rem;
-          padding-left: 1.5rem;
-          padding-right: 1.5rem;
-        }
-        .stAppToolbar, header[data-testid="stHeader"] { background: transparent; }
+    /* ── Page background (all three cover Streamlit version variants) ── */
+    [data-testid="stMain"],
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stAppViewContainer"] {
+      background: linear-gradient(175deg, #edf3fc 0%, #e4edf7 100%) !important;
+      min-height: 100vh;
+    }
+    .block-container {
+      max-width: 1520px !important;
+      padding: 0.4rem 1.5rem 2.5rem !important;
+    }
+    header[data-testid="stHeader"],
+    .stAppToolbar { background: transparent !important; }
 
-        /* ── Sidebar ───────────────────────────────── */
-        [data-testid="stSidebar"] {
-          background: linear-gradient(180deg, #091826 0%, #0e2540 55%, #162f52 100%);
-          border-right: 1px solid rgba(255,255,255,0.05);
-        }
-        [data-testid="stSidebar"] * { color: #bdd4ee !important; }
-        [data-testid="stSidebar"] h1,
-        [data-testid="stSidebar"] h2,
-        [data-testid="stSidebar"] h3 { color: #e2efff !important; font-size: 1rem !important; }
-        [data-testid="stSidebar"] .stButton button {
-          background: rgba(255,255,255,0.07);
-          border: 1px solid rgba(255,255,255,0.13);
-          color: #bdd4ee !important;
-          border-radius: 9px;
-          font-size: 0.85rem;
-          transition: all 0.15s;
-        }
-        [data-testid="stSidebar"] .stButton button:hover {
-          background: rgba(255,255,255,0.13);
-          border-color: rgba(255,255,255,0.26);
-          color: #e2efff !important;
-        }
-        [data-testid="stSidebar"] .stButton button[kind="primary"] {
-          background: var(--mc-accent); border-color: var(--mc-accent); color: #fff !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stToggle"] label,
-        [data-testid="stSidebar"] [data-testid="stToggle"] span { color: #bdd4ee !important; }
-        [data-testid="stSidebar"] code {
-          background: rgba(255,255,255,0.09) !important;
-          color: #90bde0 !important;
-          border: 1px solid rgba(255,255,255,0.1) !important;
-          border-radius: 6px !important;
-          font-size: 0.78rem !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stCaption"] {
-          color: rgba(189,212,238,0.65) !important;
-          font-size: 0.78rem !important;
-        }
+    /* ── Sidebar (CLI --theme.secondaryBackgroundColor sets the base,
+         this gradient adds polish) ── */
+    [data-testid="stSidebar"] {
+      background: linear-gradient(180deg, #06101e 0%, #0b1e38 45%, #112444 100%) !important;
+      border-right: 1px solid rgba(255,255,255,.05) !important;
+    }
+    [data-testid="stSidebar"] * { color: #aec8e4 !important; }
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+      color: #d8ecff !important;
+      font-size: 0.98rem !important;
+      font-weight: 750 !important;
+    }
+    [data-testid="stSidebar"] .stButton button {
+      background: rgba(255,255,255,.07) !important;
+      border: 1px solid rgba(255,255,255,.13) !important;
+      color: #aec8e4 !important;
+      border-radius: 8px !important;
+      font-size: 0.83rem !important;
+      transition: all .14s !important;
+    }
+    [data-testid="stSidebar"] .stButton button:hover {
+      background: rgba(255,255,255,.14) !important;
+      color: #d8ecff !important;
+    }
+    [data-testid="stSidebar"] code {
+      background: rgba(255,255,255,.09) !important;
+      color: #6aaada !important;
+      border: 1px solid rgba(255,255,255,.10) !important;
+      border-radius: 5px !important;
+      font-size: 0.76rem !important;
+      padding: 0.12rem 0.35rem !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stCaption"] {
+      color: rgba(174,200,228,.55) !important;
+      font-size: 0.76rem !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stToggle"] label span {
+      color: #aec8e4 !important;
+    }
 
-        /* ── st.container(border=True) cards ──────── */
-        [data-testid="stBorderContainer"] {
-          background: #ffffff !important;
-          border: 1px solid var(--mc-border) !important;
-          border-radius: var(--mc-radius) !important;
-          box-shadow: var(--mc-shadow-soft) !important;
-          padding: 1rem 1.1rem !important;
-        }
-        /* Chat message coloring via :has() */
-        [data-testid="stBorderContainer"]:has(.mc-msg-user) {
-          border-left: 3px solid #aac4e8 !important;
-          background: linear-gradient(160deg, #f8fbff 0%, #f0f6ff 100%) !important;
-        }
-        [data-testid="stBorderContainer"]:has(.mc-msg-asst) {
-          border-left: 3px solid var(--mc-accent) !important;
-          background: linear-gradient(160deg, #f0f6ff 0%, #e8f2ff 100%) !important;
-        }
+    /* ── Cards (st.container border=True) ── */
+    [data-testid="stBorderContainer"] {
+      background: #ffffff !important;
+      border-radius: 14px !important;
+      border: 1px solid rgba(0,0,0,.08) !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(8,20,48,.08) !important;
+      padding: 1.2rem 1.4rem 1.1rem !important;
+      transition: box-shadow .18s, border-color .18s !important;
+    }
+    [data-testid="stBorderContainer"]:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,.07), 0 8px 28px rgba(8,20,48,.12) !important;
+      border-color: rgba(26,95,212,.18) !important;
+    }
 
-        /* ── Tabs ──────────────────────────────────── */
-        [data-testid="stTabs"] > div:first-child {
-          border-bottom: 2px solid var(--mc-border);
-          gap: 0;
-          margin-bottom: 0.25rem;
-        }
-        button[data-baseweb="tab"] {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: var(--mc-muted);
-          padding: 0.6rem 1.1rem 0.55rem;
-          border-radius: 8px 8px 0 0;
-          transition: color 0.15s, background 0.15s;
-          border-bottom: 2px solid transparent;
-          margin-bottom: -2px;
-        }
-        button[data-baseweb="tab"]:hover {
-          color: var(--mc-text);
-          background: rgba(26,99,216,0.05);
-        }
-        button[data-baseweb="tab"][aria-selected="true"] {
-          color: var(--mc-accent) !important;
-          font-weight: 760;
-          border-bottom-color: var(--mc-accent) !important;
-          background: rgba(26,99,216,0.04);
-        }
+    /* ── Primary buttons ── */
+    button[data-testid="stBaseButton-primary"],
+    button[data-testid="stBaseButton-primaryFormSubmit"],
+    .stFormSubmitButton button[kind="primaryFormSubmit"],
+    .stFormSubmitButton button {
+      background: #1a5fd4 !important;
+      color: #ffffff !important;
+      border: none !important;
+      box-shadow: 0 1px 4px rgba(26,95,212,.30) !important;
+      border-radius: 9px !important;
+      font-weight: 650 !important;
+    }
+    button[data-testid="stBaseButton-primary"]:hover,
+    button[data-testid="stBaseButton-primaryFormSubmit"]:hover,
+    .stFormSubmitButton button:hover {
+      background: #1048a8 !important;
+    }
+    button[data-testid="stBaseButton-secondary"],
+    button[data-testid="stBaseButton-secondaryFormSubmit"] {
+      border-radius: 9px !important;
+    }
 
-        /* ── Forms ─────────────────────────────────── */
-        div[data-testid="stForm"] { border: none; padding: 0; background: transparent; }
+    /* ── Inputs ── */
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea,
+    [data-testid="stNumberInput"] input {
+      border-radius: 9px !important;
+      border: 1px solid #c4d4e6 !important;
+      transition: border-color .14s, box-shadow .14s !important;
+    }
+    [data-testid="stTextInput"] input:focus,
+    [data-testid="stTextArea"] textarea:focus {
+      border-color: #1a5fd4 !important;
+      box-shadow: 0 0 0 3px rgba(26,95,212,.15) !important;
+    }
 
-        /* ── Banner ────────────────────────────────── */
-        .mc-banner {
-          background: linear-gradient(135deg, #08192e 0%, #0d2d50 42%, #1250aa 82%, #1a63d8 100%);
-          border-radius: var(--mc-radius);
-          padding: 1.2rem 1.5rem 1rem;
-          margin-bottom: 1rem;
-          position: relative;
-          overflow: hidden;
-        }
-        .mc-banner::before {
-          content: "";
-          position: absolute;
-          top: -35%; right: -4%;
-          width: 42%; height: 200%;
-          background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 60%);
-          pointer-events: none;
-        }
-        .mc-banner-eyebrow {
-          font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-          letter-spacing: 0.13em; color: rgba(190,215,255,0.7); margin-bottom: 0.3rem;
-        }
-        .mc-banner-title {
-          font-size: 1.65rem; font-weight: 800; line-height: 1.1;
-          color: #fff; margin-bottom: 0.28rem; letter-spacing: -0.01em;
-        }
-        .mc-banner-subtitle {
-          color: rgba(205,225,255,0.8); font-size: 0.92rem;
-          line-height: 1.55; max-width: 820px;
-        }
+    /* ── Tabs ── */
+    [data-testid="stTabs"] [role="tablist"] {
+      border-bottom: 1px solid rgba(0,0,0,.10) !important;
+      gap: 0 !important;
+    }
+    [data-testid="stTabs"] button[role="tab"] {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 2px solid transparent !important;
+      color: #567090 !important;
+      font-size: 0.88rem !important;
+      font-weight: 580 !important;
+      padding: 0.65rem 1.1rem !important;
+      border-radius: 0 !important;
+      transition: color .14s, border-color .14s !important;
+    }
+    [data-testid="stTabs"] button[role="tab"]:hover {
+      color: #1a5fd4 !important;
+      background: rgba(26,95,212,.04) !important;
+    }
+    [data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+      color: #1a5fd4 !important;
+      border-bottom-color: #1a5fd4 !important;
+      font-weight: 700 !important;
+    }
 
-        /* ── HTML-only cards (metric, feature, etc.) */
-        .mc-card, .mc-command-card {
-          background: rgba(255,255,255,0.97);
-          border: 1px solid var(--mc-border);
-          border-radius: var(--mc-radius);
-          box-shadow: var(--mc-shadow-soft);
-          padding: 1rem 1.05rem;
-          margin-bottom: 0.75rem;
-        }
-        .mc-login-card {
-          background: #fff;
-          border: 1px solid var(--mc-border);
-          border-radius: var(--mc-radius);
-          box-shadow: var(--mc-shadow);
-          padding: 1.6rem 1.5rem;
-          margin-bottom: 0.75rem;
-        }
-        .mc-feature-card {
-          min-height: 130px;
-          background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
-        }
-        .mc-feature-title {
-          font-size: 0.98rem; font-weight: 760; margin-bottom: 0.28rem; color: var(--mc-text);
-        }
-        .mc-section-title {
-          font-size: 0.7rem; font-weight: 780; text-transform: uppercase;
-          letter-spacing: 0.1em; color: var(--mc-muted); margin-bottom: 0.55rem;
-        }
-        .mc-card-copy { color: var(--mc-text-soft); line-height: 1.6; font-size: 0.93rem; }
-        .mc-card-caption { color: var(--mc-muted); font-size: 0.83rem; margin-top: 0.45rem; }
-        .mc-tab-intro {
-          color: var(--mc-muted); font-size: 0.91rem; line-height: 1.55; margin-bottom: 0.8rem;
-        }
-        .mc-section-intro { margin-bottom: 0.9rem; }
-        .mc-eyebrow {
-          color: var(--mc-accent); font-size: 0.74rem; font-weight: 620;
-          letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 0.28rem;
-        }
-        .mc-section-description {
-          color: var(--mc-muted); font-size: 0.9rem; line-height: 1.5; margin-top: 0.28rem;
-        }
+    /* ── Native st.metric() ── */
+    [data-testid="stMetric"] {
+      background: #ffffff !important;
+      border-radius: 14px !important;
+      padding: 1.1rem 1.3rem !important;
+      border: 1px solid rgba(0,0,0,.07) !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(8,20,48,.07) !important;
+    }
+    [data-testid="stMetricLabel"] {
+      font-size: 0.70rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.08em !important;
+      color: #567090 !important;
+    }
+    [data-testid="stMetricValue"] {
+      font-size: 1.45rem !important;
+      font-weight: 800 !important;
+      color: #0b1c33 !important;
+    }
+    [data-testid="stMetricDelta"] {
+      font-size: 0.78rem !important;
+      color: #567090 !important;
+    }
 
-        /* ── Metric cards ──────────────────────────── */
-        .mc-metric-card {
-          min-height: 106px; display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .mc-metric-accent  { border-color: rgba(26,99,216,0.28); background: linear-gradient(180deg,#fff 0%,#f0f6ff 100%); }
-        .mc-metric-success { border-color: rgba(26,122,60,0.22); background: linear-gradient(180deg,#fff 0%,#f2faf5 100%); }
-        .mc-metric-warning { border-color: rgba(138,77,0,0.20); }
-        .mc-metric-danger  { border-color: rgba(160,31,23,0.20); }
-        .mc-metric-label {
-          color: var(--mc-muted); font-size: 0.7rem;
-          text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.28rem;
-        }
-        .mc-metric-value {
-          font-size: 1.3rem; line-height: 1.15; font-weight: 800;
-          color: var(--mc-text); word-break: break-word;
-        }
-        .mc-metric-caption { margin-top: 0.35rem; color: var(--mc-muted); font-size: 0.79rem; }
+    /* ── Chat message coloring (via :has()) ── */
+    [data-testid="stBorderContainer"]:has(.mc-msg-user) {
+      border-left: 4px solid rgba(94,155,226,.5) !important;
+      background: linear-gradient(155deg, #f6f9ff, #ecf4ff) !important;
+    }
+    [data-testid="stBorderContainer"]:has(.mc-msg-asst) {
+      border-left: 4px solid #1a5fd4 !important;
+      background: linear-gradient(155deg, #edf4ff, #e4effe) !important;
+    }
 
-        /* ── Badges ────────────────────────────────── */
-        .mc-badge {
-          display: inline-flex; align-items: center; border-radius: 999px;
-          padding: 0.22rem 0.6rem; margin-right: 0.3rem; margin-bottom: 0.3rem;
-          font-size: 0.74rem; font-weight: 750; border: 1px solid transparent; white-space: nowrap;
-        }
-        .mc-badge-success { background: var(--mc-success-bg); color: var(--mc-success); border-color: #aadfc0; }
-        .mc-badge-warning { background: var(--mc-warning-bg); color: var(--mc-warning); border-color: #eecf90; }
-        .mc-badge-danger  { background: var(--mc-danger-bg);  color: var(--mc-danger);  border-color: #f0c0bc; }
-        .mc-badge-muted   { background: #f0f4f8; color: #4d6075; border-color: #d2dce8; }
-        .mc-badge-info    { background: var(--mc-accent-soft); color: #1340b0; border-color: #b0ccf8; }
+    /* ── Dataframe ── */
+    [data-testid="stDataFrame"] {
+      border-radius: 10px !important;
+      overflow: hidden !important;
+    }
 
-        /* ── Chat messages ─────────────────────────── */
-        .mc-message-meta {
-          font-size: 0.7rem; font-weight: 780; text-transform: uppercase;
-          letter-spacing: 0.1em; margin-bottom: 0.3rem;
-        }
-        .mc-msg-user { color: #5a7faa; }
-        .mc-msg-asst { color: var(--mc-accent); }
-        .mc-message-badges { margin-top: 0.45rem; }
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(26,95,212,.25); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(26,95,212,.45); }
 
-        /* ── Source / citation cards ───────────────── */
-        .mc-source-card {
-          border: 1px solid #d5e4f2; border-radius: 10px;
-          background: linear-gradient(180deg,#fff 0%,#f7fbff 100%);
-          padding: 0.8rem 0.95rem; margin-bottom: 0.55rem;
-        }
-        .mc-source-top {
-          display: flex; justify-content: space-between;
-          align-items: flex-start; gap: 0.7rem; margin-bottom: 0.22rem;
-        }
-        .mc-source-title { font-size: 0.93rem; font-weight: 740; line-height: 1.3; color: var(--mc-text); }
-        .mc-source-meta  { color: var(--mc-muted); font-size: 0.77rem; margin-bottom: 0.32rem; }
-        .mc-source-excerpt { color: var(--mc-text-soft); font-size: 0.88rem; line-height: 1.48; margin-bottom: 0.32rem; }
-        .mc-source-link a, .mc-small-link a {
-          color: var(--mc-accent); text-decoration: none; font-weight: 700;
-        }
-        .mc-source-link a:hover, .mc-small-link a:hover { text-decoration: underline; }
+    /* ════════════════════════════════════════════════════════════
+       CUSTOM mc-* COMPONENT CLASSES
+       These style HTML we emit via st.html() — fully controlled.
+    ════════════════════════════════════════════════════════════ */
 
-        /* ── Empty states ──────────────────────────── */
-        .mc-empty-state {
-          border: 1px dashed var(--mc-border-strong); border-radius: 10px;
-          background: linear-gradient(180deg,#fafdff 0%,#f2f8ff 100%);
-          padding: 0.95rem 1rem; margin: 0.15rem 0 0.35rem;
-        }
-        .mc-empty-title { font-size: 0.92rem; font-weight: 740; color: var(--mc-text); margin-bottom: 0.16rem; }
-        .mc-empty-copy  { color: var(--mc-muted); font-size: 0.88rem; line-height: 1.5; }
+    /* Sidebar helpers */
+    .mc-sidebar-heading {
+      font-size: 0.62rem;
+      font-weight: 780;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(174,200,228,.42) !important;
+      padding: 0.85rem 0 0.18rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+      margin-top: 0.3rem;
+    }
+    .mc-small-link { padding: 0.12rem 0; }
+    .mc-small-link a {
+      color: rgba(174,200,228,.70) !important;
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: color .12s;
+    }
+    .mc-small-link a:hover { color: #d8ecff !important; }
 
-        /* ── Chips ─────────────────────────────────── */
-        .mc-chip-row { display: flex; flex-wrap: wrap; gap: 0.38rem; }
-        .mc-chip {
-          display: inline-flex; align-items: center;
-          border: 1px solid #ccdaeb; border-radius: 999px; padding: 0.24rem 0.56rem;
-          background: #f5f9ff; color: var(--mc-text-soft); font-size: 0.79rem; font-weight: 640;
-        }
+    /* Service health rows */
+    .mc-health-row {
+      display: flex; align-items: center; gap: 0.42rem;
+      padding: 0.26rem 0; font-size: 0.81rem;
+      flex-wrap: nowrap; overflow: hidden;
+    }
+    .mc-health-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .mc-health-dot-green  { background: #22d46a; box-shadow: 0 0 7px rgba(34,212,106,.65); }
+    .mc-health-dot-yellow { background: #f0c030; box-shadow: 0 0 5px rgba(240,192,48,.5); }
+    .mc-health-dot-red    { background: #f03c3c; box-shadow: 0 0 5px rgba(240,60,60,.55); }
+    .mc-health-dot-grey   { background: rgba(120,158,200,.38); }
+    .mc-health-name {
+      flex: 1; font-weight: 640; color: #aec8e4;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mc-health-port {
+      font-size: 0.74rem; color: rgba(174,200,228,.42);
+      font-family: ui-monospace, "SF Mono", monospace;
+    }
 
-        /* ── Key-value grid ────────────────────────── */
-        .mc-kv-row {
-          display: flex; justify-content: space-between;
-          align-items: flex-start; gap: 1rem; padding: 0.4rem 0;
-          border-bottom: 1px solid #eaf0f7;
-        }
-        .mc-kv-row:last-child { border-bottom: none; }
-        .mc-kv-label { color: var(--mc-muted); font-size: 0.81rem; flex: 0 0 40%; }
-        .mc-kv-value { color: var(--mc-text); font-size: 0.86rem; font-weight: 670; text-align: right; overflow-wrap: anywhere; }
+    /* Console banner (gradient header bar) */
+    .mc-banner {
+      background: linear-gradient(130deg, #050e1c 0%, #0a1f3e 30%, #0c308a 68%, #1a5fd4 100%);
+      border-radius: 14px;
+      padding: 1.5rem 1.8rem 1.4rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 6px 24px rgba(8,28,72,.22), inset 0 1px 0 rgba(255,255,255,.07);
+    }
+    .mc-banner-eyebrow {
+      font-size: 0.63rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.17em; color: rgba(255,255,255,.52);
+      margin-bottom: 0.3rem;
+    }
+    .mc-banner-title {
+      font-size: 1.55rem; font-weight: 800; color: #ffffff;
+      letter-spacing: -0.03em; line-height: 1.15;
+    }
+    .mc-banner-subtitle {
+      font-size: 0.84rem; color: rgba(255,255,255,.63);
+      margin-top: 0.35rem; line-height: 1.5;
+    }
 
-        /* ── Eval progress bars ────────────────────── */
-        .mc-eval-row { margin-bottom: 0.6rem; }
-        .mc-eval-header {
-          display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.18rem;
-        }
-        .mc-eval-label { font-size: 0.82rem; font-weight: 660; color: var(--mc-text-soft); }
-        .mc-eval-value { font-size: 0.87rem; font-weight: 780; color: var(--mc-text); }
-        .mc-eval-track { height: 7px; background: #e4edf7; border-radius: 999px; overflow: hidden; }
-        .mc-eval-fill {
-          height: 100%; border-radius: 999px;
-          background: linear-gradient(90deg,#1a63d8 0%,#4a90e2 100%);
-          transition: width 0.4s ease;
-        }
-        .mc-eval-fill-success { background: linear-gradient(90deg,#1a7a3c 0%,#38b06a 100%); }
-        .mc-eval-fill-warning { background: linear-gradient(90deg,#c47c10 0%,#e9a530 100%); }
+    /* Section title inside cards */
+    .mc-section-title {
+      font-size: 0.70rem;
+      font-weight: 770;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: #1a5fd4;
+      padding-left: 0.55rem;
+      border-left: 2.5px solid #1a5fd4;
+      margin-bottom: 0.65rem;
+      line-height: 1.4;
+    }
 
-        /* ── Service health grid ───────────────────── */
-        .mc-health-row {
-          display: flex; align-items: center; gap: 0.48rem; padding: 0.36rem 0;
-          border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.82rem;
-        }
-        .mc-health-row:last-child { border-bottom: none; }
-        .mc-health-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-        .mc-health-dot-green  { background: #2ed672; box-shadow: 0 0 5px #2ed672; }
-        .mc-health-dot-yellow { background: #f5c541; box-shadow: 0 0 5px #f5c541; }
-        .mc-health-dot-red    { background: #ff4f3b; box-shadow: 0 0 5px #ff4f3b; }
-        .mc-health-dot-grey   { background: #607a90; }
-        .mc-health-name { flex: 1; font-weight: 620; color: #bdd4ee; }
-        .mc-health-port { font-size: 0.71rem; color: rgba(189,212,238,0.5); font-family: ui-monospace, monospace; }
+    /* Tab intro text */
+    .mc-tab-intro {
+      font-size: 0.88rem; color: #567090;
+      margin-bottom: 1.1rem; line-height: 1.6;
+    }
+    .mc-section-intro { margin-bottom: 0.5rem; }
+    .mc-eyebrow {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.14em; color: #1a5fd4; margin-bottom: 0.2rem;
+    }
+    .mc-section-description {
+      font-size: 0.84rem; color: #567090; margin: 0.2rem 0 0;
+    }
 
-        /* ── Sidebar headings ──────────────────────── */
-        .mc-sidebar-heading {
-          font-size: 0.66rem; font-weight: 760; text-transform: uppercase;
-          letter-spacing: 0.12em; color: rgba(189,212,238,0.42) !important;
-          padding: 0.7rem 0 0.15rem;
-        }
-        .mc-small-link { padding: 0.2rem 0; }
+    /* Badges */
+    .mc-badge {
+      display: inline-block;
+      font-size: 0.72rem; font-weight: 650;
+      border-radius: 20px;
+      padding: 0.20rem 0.65rem;
+      letter-spacing: 0.01em; line-height: 1.5;
+      margin: 0.1rem 0.12rem 0.1rem 0;
+    }
+    .mc-badge-success { background: #e2f5ec; color: #0f7a3a; }
+    .mc-badge-warning { background: #fff3dc; color: #8c4b00; }
+    .mc-badge-danger  { background: #fde8e7; color: #981c14; }
+    .mc-badge-muted   { background: #eef2f7; color: #567090; }
+    .mc-badge-info    { background: #e6effc; color: #1a5fd4; }
 
-        /* ── Login page ────────────────────────────── */
-        .mc-login-page { max-width: 1200px; margin: 0 auto; padding-top: 0.75rem; }
-        .mc-shell-title {
-          font-size: 2rem; line-height: 1.08; font-weight: 800;
-          letter-spacing: -0.01em; color: var(--mc-text); margin-bottom: 0.35rem;
-        }
-        .mc-shell-subtitle, .mc-login-subtitle {
-          max-width: 820px; color: var(--mc-muted); font-size: 0.95rem;
-          line-height: 1.65; margin-bottom: 0.8rem;
-        }
+    /* Custom HTML metric card (used in eval tab for tone variants) */
+    .mc-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 1.1rem 1.3rem;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 16px rgba(8,20,48,.07);
+      margin-bottom: 0.6rem;
+    }
+    .mc-card-copy { font-size: 0.86rem; color: #567090; line-height: 1.55; }
+    .mc-card-caption { font-size: 0.76rem; color: #8aa5c2; margin-top: 0.3rem; }
+    .mc-metric-card { min-height: 98px; }
+    .mc-metric-label {
+      font-size: 0.70rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: #567090; margin-bottom: 0.35rem;
+    }
+    .mc-metric-value {
+      font-size: 1.45rem; font-weight: 800; color: #0b1c33;
+      letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .mc-metric-caption { font-size: 0.75rem; color: #8aa5c2; margin-top: 0.2rem; }
+    .mc-metric-accent .mc-metric-value  { color: #1a5fd4; }
+    .mc-metric-success .mc-metric-value { color: #0f7a3a; }
+    .mc-metric-warning .mc-metric-value { color: #8c4b00; }
 
-        /* ── Command card ──────────────────────────── */
-        .mc-command-card pre, .mc-command-card code { margin: 0; }
+    /* Feature cards (login page) */
+    .mc-feature-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 1.5rem 1.4rem 1.3rem;
+      border: 1px solid rgba(0,0,0,.07);
+      border-top: 3px solid #1a5fd4;
+      box-shadow: 0 2px 6px rgba(0,0,0,.05), 0 8px 24px rgba(8,20,48,.08);
+      height: 100%;
+    }
+    .mc-feature-icon {
+      font-size: 1.8rem; margin-bottom: 0.7rem; display: block; line-height: 1;
+    }
+    .mc-feature-title {
+      font-size: 0.94rem; font-weight: 760; color: #0b1c33;
+      margin-bottom: 0.4rem; letter-spacing: -0.01em;
+    }
 
-        /* ── Streamlit native overrides ────────────── */
-        .stButton button, .stDownloadButton button {
-          border-radius: 9px; border: 1px solid #c4d4e6;
-          background: #fff; color: var(--mc-text);
-          min-height: 2.4rem; font-weight: 640; box-shadow: none; transition: all 0.15s;
-        }
-        .stButton button[kind="primary"], .stFormSubmitButton button[kind="primary"] {
-          background: var(--mc-accent); border-color: var(--mc-accent); color: #fff;
-        }
-        .stButton button:hover { border-color: var(--mc-accent); color: var(--mc-accent); }
-        .stButton button[kind="primary"]:hover, .stFormSubmitButton button[kind="primary"]:hover {
-          filter: brightness(0.92); color: #fff;
-        }
-        .stTextInput input, .stTextArea textarea,
-        .stSelectbox div[data-baseweb="select"] > div,
-        .stMultiSelect div[data-baseweb="select"] > div {
-          border-radius: 9px; border-color: #c4d4e6;
-          background: #fff; color: var(--mc-text); transition: border-color 0.15s;
-        }
-        .stTextInput input:focus, .stTextArea textarea:focus {
-          border-color: var(--mc-accent) !important;
-          box-shadow: 0 0 0 2px rgba(26,99,216,0.14) !important;
-        }
-        .stTextArea textarea { line-height: 1.55; }
-        .stCheckbox label, .stRadio label, .stSelectbox label,
-        .stTextInput label, .stTextArea label { color: var(--mc-text); font-weight: 600; }
-        .stExpander {
-          border: 1px solid var(--mc-border) !important;
-          border-radius: 10px !important;
-          background: rgba(255,255,255,0.88) !important;
-        }
-        .stExpander summary { font-size: 0.88rem !important; font-weight: 640 !important; }
-        .stDataFrame, [data-testid="stTable"] { border-radius: 10px; overflow: hidden; }
-        a { color: var(--mc-accent); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+    /* KV data grid */
+    .mc-kv-grid { margin: 0.2rem 0; }
+    .mc-kv-row {
+      display: flex; align-items: baseline; gap: 0.5rem;
+      padding: 0.38rem 0;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      font-size: 0.84rem;
+    }
+    .mc-kv-row:last-child { border-bottom: none; }
+    .mc-kv-label {
+      width: 38%; flex-shrink: 0;
+      font-weight: 650; color: #567090;
+      font-size: 0.77rem; text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .mc-kv-value {
+      flex: 1; color: #0b1c33;
+      font-family: ui-monospace, "SF Mono", Consolas, monospace;
+      font-size: 0.80rem; word-break: break-all;
+    }
 
-        @media (max-width: 1100px) {
-          .mc-banner-title { font-size: 1.4rem; }
-          .block-container { padding-left: 1rem; padding-right: 1rem; }
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    /* Eval progress bars */
+    .mc-eval-row { margin-bottom: 0.65rem; }
+    .mc-eval-header {
+      display: flex; justify-content: space-between; margin-bottom: 0.3rem;
+    }
+    .mc-eval-label { font-size: 0.80rem; font-weight: 650; color: #2c4a68; }
+    .mc-eval-value { font-size: 0.80rem; font-weight: 750; color: #0b1c33; }
+    .mc-eval-track {
+      height: 10px; background: #e8f0fa; border-radius: 6px; overflow: hidden;
+    }
+    .mc-eval-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a5fd4, #5a9cf4);
+      border-radius: 6px; transition: width .5s ease;
+    }
+    .mc-eval-fill-success { background: linear-gradient(90deg, #0f7a3a, #2cc36b); }
+    .mc-eval-fill-warning { background: linear-gradient(90deg, #8c4b00, #f0a030); }
+
+    /* Chip groups */
+    .mc-chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+    .mc-chip {
+      background: #e6effc; color: #1a5fd4;
+      font-size: 0.75rem; font-weight: 650;
+      border-radius: 20px; padding: 0.22rem 0.7rem;
+    }
+
+    /* Chat messages */
+    .mc-message-meta {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 0.4rem;
+    }
+    .mc-msg-user { color: #2c5fa8; }
+    .mc-msg-asst { color: #1a5fd4; }
+    .mc-message-badges { margin-top: 0.5rem; }
+
+    /* Citation cards */
+    .mc-source-card {
+      background: #f8faff;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgba(26,95,212,.12);
+      margin-bottom: 0.55rem;
+    }
+    .mc-source-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;
+    }
+    .mc-source-title { font-size: 0.84rem; font-weight: 700; color: #0b1c33; flex: 1; }
+    .mc-source-meta { font-size: 0.73rem; color: #8aa5c2; margin: 0.25rem 0; }
+    .mc-source-excerpt {
+      font-size: 0.81rem; color: #2c4a68; line-height: 1.55; margin: 0.35rem 0;
+    }
+    .mc-source-link a { font-size: 0.78rem; color: #1a5fd4; text-decoration: none; }
+    .mc-source-link a:hover { text-decoration: underline; }
+
+    /* Empty states */
+    .mc-empty-state {
+      text-align: center; padding: 2rem 1rem;
+      border: 1.5px dashed rgba(26,95,212,.22);
+      border-radius: 12px; background: rgba(26,95,212,.02);
+    }
+    .mc-empty-title {
+      font-size: 0.9rem; font-weight: 700; color: #2c4a68; margin-bottom: 0.4rem;
+    }
+    .mc-empty-copy { font-size: 0.82rem; color: #8aa5c2; line-height: 1.55; }
+
+    /* Login hero (full-width inline banner) */
+    .mc-login-hero {
+      background: linear-gradient(135deg, #050e1c 0%, #0a1f3e 35%, #0c308a 70%, #1a5fd4 100%);
+      border-radius: 16px;
+      padding: 3.2rem 2rem 3rem;
+      margin-bottom: 1.8rem;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(8,28,80,.28), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .mc-login-eyebrow {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.18em; color: rgba(255,255,255,.5);
+      margin-bottom: 0.8rem;
+    }
+    .mc-login-title {
+      font-size: 3rem; font-weight: 900; color: #ffffff;
+      letter-spacing: -0.05em; line-height: 1.05;
+      margin-bottom: 0.7rem;
+    }
+    .mc-login-subtitle {
+      font-size: 1.0rem; color: rgba(255,255,255,.68); line-height: 1.55;
+      max-width: 560px; margin: 0 auto;
+    }
+
+    </style>
+    """)

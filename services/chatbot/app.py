@@ -61,7 +61,6 @@ def main() -> None:
 
 
 def render_login_screen() -> None:
-    st.markdown('<div class="mc-login-page">', unsafe_allow_html=True)
     render_page_header(
         "Maintainer's Copilot",
         "Internal triage console for Node.js issue classification, RAG search, memory, and widget administration.",
@@ -77,10 +76,11 @@ def render_login_screen() -> None:
         with col:
             render_feature_card(title, body)
 
+    st.write("")
     outer_left, center, outer_right = st.columns([1.05, 1.1, 1.05])
     with center:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Sign in</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Sign in</div>')
             st.text_input("Email", key="welcome_email", placeholder="maintainer@example.com")
             st.text_input("Password", type="password", key="welcome_password", placeholder="Password")
             action_cols = st.columns(2, gap="small")
@@ -97,7 +97,6 @@ def render_login_screen() -> None:
 
             with st.expander("Advanced API settings", expanded=False):
                 st.session_state.api_base_url = st.text_input("API base URL", value=st.session_state.api_base_url)
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def attempt_login() -> None:
@@ -117,7 +116,7 @@ def render_sidebar(client: ApiClient) -> None:
         st.markdown("## Maintainer's Copilot")
         st.caption("Internal triage console · Week 7 demo")
 
-        st.markdown('<div class="mc-sidebar-heading">Identity</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-sidebar-heading">Identity</div>')
         if st.session_state.demo_mode:
             badge("Demo mode", "warning")
         elif st.session_state.user:
@@ -126,7 +125,7 @@ def render_sidebar(client: ApiClient) -> None:
             if role:
                 badge(f"Role: {role}", "muted")
 
-        st.markdown('<div class="mc-sidebar-heading">Services</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-sidebar-heading">Services</div>')
         api_online = _check_api_online(client)
         model_online = client.probe_model_server()
         render_health_row("API", "8000", online=api_online)
@@ -136,7 +135,7 @@ def render_sidebar(client: ApiClient) -> None:
         render_health_row("Jaeger", "16686", online=None)
         render_health_row("MinIO", "9001", online=None)
 
-        st.markdown('<div class="mc-sidebar-heading">Chat Mode</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-sidebar-heading">Chat Mode</div>')
         st.session_state.use_llm = st.toggle(
             "Claude tool-calling",
             value=bool(st.session_state.use_llm),
@@ -148,7 +147,7 @@ def render_sidebar(client: ApiClient) -> None:
         )
         st.caption("Claude is primary in demo mode; deterministic fallback is used for reproducible CI and when LLM is unavailable.")
 
-        st.markdown('<div class="mc-sidebar-heading">Conversation</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-sidebar-heading">Conversation</div>')
         conversation_id = st.session_state.conversation_id or "None yet"
         st.code(conversation_id[:18] + ("…" if len(conversation_id) > 18 else ""))
         if st.button("New conversation", use_container_width=True):
@@ -158,7 +157,7 @@ def render_sidebar(client: ApiClient) -> None:
             logout()
             st.rerun()
 
-        st.markdown('<div class="mc-sidebar-heading">Quick Links</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-sidebar-heading">Quick Links</div>')
         links = [
             ("API docs", f"{st.session_state.api_base_url.rstrip('/')}/docs"),
             ("Demo host", "http://localhost:8080"),
@@ -167,10 +166,7 @@ def render_sidebar(client: ApiClient) -> None:
             ("MinIO console", "http://localhost:9001"),
         ]
         for label, url in links:
-            st.markdown(
-                f'<div class="mc-small-link"><a href="{url}" target="_blank">{label}</a></div>',
-                unsafe_allow_html=True,
-            )
+            st.html(f'<div class="mc-small-link"><a href="{url}" target="_blank">{label}</a></div>')
 
 
 def render_console(client: ApiClient) -> None:
@@ -185,14 +181,10 @@ def render_console(client: ApiClient) -> None:
     current_mode = "Claude tool-calling" if st.session_state.use_llm else "Deterministic fallback"
 
     metrics = st.columns(4, gap="large")
-    with metrics[0]:
-        metric_card("Classifier", "RoBERTa", "72.5% acc · 0.71 macro-F1", tone="accent")
-    with metrics[1]:
-        metric_card("RAG retrieval", "Reranked hybrid", "80% hit@5 · 0.63 MRR", tone="accent")
-    with metrics[2]:
-        metric_card("Latest tool", latest_tool, "Most recent assistant action")
-    with metrics[3]:
-        metric_card("Chat mode", current_mode, "Live routing mode")
+    metrics[0].metric("Classifier", "RoBERTa", "F1 0.71 · Acc 72.5%")
+    metrics[1].metric("RAG hit@5", "80%", "Reranked hybrid · MRR 0.63")
+    metrics[2].metric("Latest tool", latest_tool)
+    metrics[3].metric("Chat mode", current_mode)
 
     tabs = st.tabs(["Chat", "Issue Tools", "Memory", "Widget Admin", "Observability", "Evals"])
     with tabs[0]:
@@ -215,7 +207,7 @@ def render_chat_tab(client: ApiClient) -> None:
 
     with main_col:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Chat History</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Chat History</div>')
             if not st.session_state.messages:
                 render_empty_state(
                     "No conversation yet",
@@ -246,18 +238,18 @@ def render_chat_tab(client: ApiClient) -> None:
 
     with side_col:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Issue Context</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Issue Context</div>')
             st.session_state.issue_title = st.text_input("Issue title", value=st.session_state.issue_title)
             st.session_state.issue_body = st.text_area("Issue body", value=st.session_state.issue_body, height=190)
 
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Quick Prompts</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Quick Prompts</div>')
             for prompt in QUICK_PROMPTS:
                 if st.button(prompt, key=f"chat-prompt-{prompt}", use_container_width=True):
                     st.session_state.chat_input = prompt
 
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Options</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Options</div>')
             badge("Claude tool-calling" if st.session_state.use_llm else "Deterministic fallback", "info" if st.session_state.use_llm else "muted")
             if st.button("Clear conversation", use_container_width=True):
                 start_new_conversation()
@@ -267,7 +259,7 @@ def render_chat_tab(client: ApiClient) -> None:
 def render_issue_tools_tab(client: ApiClient) -> None:
     render_section_intro("Use the same chat orchestration as the assistant, but shaped as a focused issue workbench.")
     with st.container(border=True):
-        st.markdown('<div class="mc-section-title">Issue Input</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-section-title">Issue Input</div>')
         title = st.text_input("Issue title", key="tools_issue_title", value=st.session_state.issue_title or "Memory leak in https.request")
         body = st.text_area(
             "Issue body",
@@ -287,7 +279,7 @@ def render_issue_tools_tab(client: ApiClient) -> None:
     for index, (label, message, copy) in enumerate(actions):
         with action_cols[index]:
             with st.container(border=True):
-                st.markdown(f'<div class="mc-section-title">{label}</div>', unsafe_allow_html=True)
+                st.html(f'<div class="mc-section-title">{label}</div>')
                 st.markdown(copy)
                 if st.button(label, key=f"issue-tool-{label}", use_container_width=True):
                     st.session_state.issue_tool_response = _chat_once(client, message, title, body)
@@ -298,7 +290,7 @@ def render_issue_tools_tab(client: ApiClient) -> None:
     response = st.session_state.get("issue_tool_response")
     if response:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Result</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Result</div>')
             _render_tool_response(response)
 
 
@@ -317,7 +309,7 @@ def render_memory_tab(client: ApiClient) -> None:
     left, right = st.columns([1, 1], gap="large")
     with left:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Current Conversation Memory</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Current Conversation Memory</div>')
             if st.session_state.conversation_id:
                 try:
                     memory_items = client.get_memory(st.session_state.conversation_id).get("items", [])
@@ -339,14 +331,14 @@ def render_memory_tab(client: ApiClient) -> None:
 
     with right:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Write Memory Demo</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Write Memory Demo</div>')
             memory_text = st.text_input("Memory text", value="missing JWT auth issues should be treated as bugs")
             if st.button("Write memory through chat", use_container_width=True):
                 _send_chat(client, f"Remember that {memory_text}")
                 st.rerun()
 
     with st.container(border=True):
-        st.markdown('<div class="mc-section-title">Long-Term Memories</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-section-title">Long-Term Memories</div>')
         search_cols = st.columns([4, 1])
         st.session_state.memory_search = search_cols[0].text_input("Search memory", value=st.session_state.memory_search)
         search_clicked = search_cols[1].button("Search", use_container_width=True)
@@ -385,7 +377,7 @@ def render_widget_admin_tab(client: ApiClient) -> None:
     render_section_intro("Widgets are embeddable chat surfaces. Their config controls greeting, theme, allowed origins, and enabled tools.")
 
     with st.container(border=True):
-        st.markdown('<div class="mc-section-title">Live Widget Preview</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-section-title">Live Widget Preview</div>')
         st.caption("The widget below runs live against the API. Open the bubble to chat.")
         render_widget_iframe(
             widget_id=st.session_state.widget_form_widget_id or "demo-widget",
@@ -401,14 +393,14 @@ def render_widget_admin_tab(client: ApiClient) -> None:
     left, right = st.columns([1.2, 1], gap="large")
     with left:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Existing Widgets</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Existing Widgets</div>')
             if widgets:
                 st.dataframe(widgets, use_container_width=True, hide_index=True)
             else:
                 render_empty_state("No widget rows available", "The current API context did not return any widget configuration rows.")
 
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Create or Update Widget</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Create or Update Widget</div>')
             st.session_state.widget_form_widget_id = st.text_input("public_widget_id", value=st.session_state.widget_form_widget_id)
             st.session_state.widget_form_greeting = st.text_area("Greeting", value=st.session_state.widget_form_greeting, height=100)
             st.session_state.widget_form_primary = st.color_picker("Primary color", value=st.session_state.widget_form_primary)
@@ -433,13 +425,15 @@ def render_widget_admin_tab(client: ApiClient) -> None:
                     st.error(str(exc))
 
     with right:
-        render_key_value_grid(
-            [
-                ("Demo host", "http://localhost:8080"),
-                ("Widget direct URL", "http://localhost:5173"),
-                ("Widget id", st.session_state.widget_form_widget_id or "demo-widget"),
-            ]
-        )
+        with st.container(border=True):
+            st.html('<div class="mc-section-title">Demo Links</div>')
+            render_key_value_grid(
+                [
+                    ("Demo host", "http://localhost:8080"),
+                    ("Widget direct URL", "http://localhost:5173"),
+                    ("Widget id", st.session_state.widget_form_widget_id or "demo-widget"),
+                ]
+            )
         render_widget_snippet(
             st.session_state.api_base_url,
             widget_id=st.session_state.widget_form_widget_id or "demo-widget",
@@ -454,12 +448,11 @@ def render_observability_tab(client: ApiClient) -> None:
     with jaeger_cols[0]:
         st.info("Distributed traces are available in Jaeger. Every LLM call, tool execution, and RAG retrieval emits a span.", icon="🔭")
     with jaeger_cols[1]:
-        st.markdown(
+        st.html(
             '<div class="mc-card" style="text-align:center">'
             '<div class="mc-section-title">Jaeger UI</div>'
             '<div class="mc-small-link"><a href="http://localhost:16686" target="_blank">Open Jaeger → :16686</a></div>'
-            "</div>",
-            unsafe_allow_html=True,
+            '</div>'
         )
 
     latest = st.session_state.latest_response or {}
@@ -471,32 +464,38 @@ def render_observability_tab(client: ApiClient) -> None:
 
     top_cols = st.columns(3, gap="large")
     with top_cols[0]:
-        render_key_value_grid(
-            [
-                ("Request ID", str(latest.get("request_id", "n/a"))),
-                ("Trace ID", str(latest.get("trace_id", "n/a"))),
-                ("Selected tool", str(latest.get("selected_tool", "n/a"))),
-            ]
-        )
+        with st.container(border=True):
+            st.html('<div class="mc-section-title">Latest Request</div>')
+            render_key_value_grid(
+                [
+                    ("Request ID", str(latest.get("request_id", "n/a"))),
+                    ("Trace ID", str(latest.get("trace_id", "n/a"))),
+                    ("Selected tool", str(latest.get("selected_tool", "n/a"))),
+                ]
+            )
     with top_cols[1]:
-        render_key_value_grid(
-            [
-                ("Mode", str(latest.get("mode", "n/a"))),
-                ("Fallback reason", str(latest.get("fallback_reason", "n/a"))),
-                ("Citations", str(len((latest.get("tool_result") or {}).get("citations", []))) if isinstance(latest.get("tool_result"), dict) else "0"),
-            ]
-        )
+        with st.container(border=True):
+            st.html('<div class="mc-section-title">Routing</div>')
+            render_key_value_grid(
+                [
+                    ("Mode", str(latest.get("mode", "n/a"))),
+                    ("Fallback reason", str(latest.get("fallback_reason", "n/a"))),
+                    ("Citations", str(len((latest.get("tool_result") or {}).get("citations", []))) if isinstance(latest.get("tool_result"), dict) else "0"),
+                ]
+            )
     with top_cols[2]:
-        render_key_value_grid(
-            [
-                ("Effective retriever", str(diagnostics.get("effective_retriever", "n/a"))),
-                ("Preferred source", str(diagnostics.get("preferred_source_type", "n/a"))),
-                ("Candidate count", str(diagnostics.get("candidate_count", "n/a"))),
-            ]
-        )
+        with st.container(border=True):
+            st.html('<div class="mc-section-title">RAG Diagnostics</div>')
+            render_key_value_grid(
+                [
+                    ("Effective retriever", str(diagnostics.get("effective_retriever", "n/a"))),
+                    ("Preferred source", str(diagnostics.get("preferred_source_type", "n/a"))),
+                    ("Candidate count", str(diagnostics.get("candidate_count", "n/a"))),
+                ]
+            )
 
     with st.container(border=True):
-        st.markdown('<div class="mc-section-title">Recent Events</div>', unsafe_allow_html=True)
+        st.html('<div class="mc-section-title">Recent Events</div>')
         try:
             events = client.get_recent_events(limit=int(event_limit), event_type=event_type or None, request_id=filter_request_id or None).get("items", [])
             if events:
@@ -550,7 +549,7 @@ def render_evals_tab(summary: dict[str, Any]) -> None:
     left, right = st.columns([1, 1], gap="large")
     with left:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">Classifier Comparison</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">Classifier Comparison</div>')
             classifier_rows = [
                 {"model": "Classical (TF-IDF + LR)", "macro_f1": format_report_metric(classifier.get("classical_macro_f1") or 0.6121)},
                 {"model": "RoBERTa fine-tuned ✓", "macro_f1": format_report_metric(classifier.get("transformer_macro_f1") or 0.7139)},
@@ -558,13 +557,13 @@ def render_evals_tab(summary: dict[str, Any]) -> None:
             ]
             st.dataframe(classifier_rows, use_container_width=True, hide_index=True)
 
-            st.markdown('<div class="mc-section-title" style="margin-top:0.8rem">RoBERTa metrics</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title" style="margin-top:0.8rem">RoBERTa metrics</div>')
             render_eval_progress("Macro-F1", classifier.get("transformer_macro_f1") or 0.7139, tone="success")
             render_eval_progress("Accuracy", classifier.get("transformer_accuracy") or 0.725)
             render_eval_progress("Golden gate accuracy", classification_golden.get("accuracy") or 0.96, tone="success")
 
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">RAG Retrieval Progression</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">RAG Retrieval Progression</div>')
             retrieval_rows = _build_retrieval_rows(rag_retrieval)
             if retrieval_rows:
                 st.dataframe(retrieval_rows, use_container_width=True, hide_index=True)
@@ -583,7 +582,7 @@ def render_evals_tab(summary: dict[str, Any]) -> None:
 
     with right:
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">RAG Generation Eval</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">RAG Generation Eval</div>')
             render_eval_progress("Answer relevancy", rag_generation.get("answer_relevancy_avg") or 0.3104)
             render_eval_progress("Faithfulness", rag_generation.get("faithfulness_avg") or 0.6244, tone="success")
             render_eval_progress("Citation coverage", rag_generation.get("citation_coverage") or 0.68, tone="success")
@@ -597,17 +596,15 @@ def render_evals_tab(summary: dict[str, Any]) -> None:
             )
 
         with st.container(border=True):
-            st.markdown('<div class="mc-section-title">RAG Retrieval Highlights</div>', unsafe_allow_html=True)
+            st.html('<div class="mc-section-title">RAG Retrieval Highlights</div>')
             render_eval_progress("hit@5 (reranked)", _extract_rag_metric(rag_retrieval, "hit_at_5") or 0.80, tone="success")
             render_eval_progress("hit@10 (reranked)", _extract_rag_metric(rag_retrieval, "hit_at_10") or 0.86, tone="success")
             render_eval_progress("MRR@10 (reranked)", _extract_rag_metric(rag_retrieval, "mrr_at_10") or 0.6311, tone="success")
 
-        with st.container(border=True):
-            st.markdown('<div class="mc-section-title">CI Workflow Jobs</div>', unsafe_allow_html=True)
-            render_chip_group(
-                "Active jobs",
-                ["api-tests", "model-server-tests", "widget-build", "lint", "type-check", "evals", "docker-build", "redaction-check"],
-            )
+        render_chip_group(
+            "CI Workflow Jobs",
+            ["api-tests", "model-server-tests", "widget-build", "lint", "type-check", "evals", "docker-build", "redaction-check"],
+        )
 
 
 def _send_chat(client: ApiClient, message: str, *, issue_title: str = "", issue_body: str = "", use_llm: bool | None = None) -> None:
@@ -626,7 +623,7 @@ def _send_chat(client: ApiClient, message: str, *, issue_title: str = "", issue_
         response = client.chat(payload)
     except ApiClientError as exc:
         st.session_state.last_error = str(exc)
-        add_message("assistant", "I couldn't reach the assistant service. Check the API is running.")
+        add_message("assistant", f"Assistant request failed: {exc}")
         return
 
     st.session_state.conversation_id = response.get("conversation_id")

@@ -42,7 +42,12 @@ class LocalSentenceTransformerEmbedder:
         except ImportError as exc:
             raise EmbeddingUnavailableError("sentence-transformers is not installed.") from exc
         try:
-            self._model = SentenceTransformer(self.model_name, local_files_only=self.local_files_only)
+            self._model = SentenceTransformer(
+                self.model_name,
+                local_files_only=self.local_files_only,
+                device="cpu",
+                model_kwargs={"low_cpu_mem_usage": False},
+            )
         except Exception as exc:  # pragma: no cover - depends on local model cache
             raise EmbeddingUnavailableError("Embedding model is not available locally.") from exc
         return self._model

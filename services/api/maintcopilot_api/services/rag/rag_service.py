@@ -86,11 +86,21 @@ class RagService:
         try:
             results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
         except RuntimeError:
-            if effective_retriever != "reranked":
+            if effective_retriever == "reranked":
+                try:
+                    retriever, effective_retriever = self._build_hybrid_retriever(rows, alpha=request.alpha), "hybrid"
+                    fallback_reason = "reranker_unavailable"
+                    results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
+                except RuntimeError:
+                    retriever, effective_retriever = SparseRetriever(rows), "sparse"
+                    fallback_reason = "dense_retriever_unavailable"
+                    results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
+            elif effective_retriever in {"hybrid", "dense"}:
+                retriever, effective_retriever = SparseRetriever(rows), "sparse"
+                fallback_reason = "dense_retriever_unavailable"
+                results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
+            else:
                 raise
-            retriever, effective_retriever = self._build_hybrid_retriever(rows, alpha=request.alpha), "hybrid"
-            fallback_reason = "reranker_unavailable"
-            results = retriever.query(rewrite_result.rewritten_query, top_k=request.top_k)
         if request.metadata_boost:
             results = apply_metadata_boost(results, rewrite_result)
         log_with_context(

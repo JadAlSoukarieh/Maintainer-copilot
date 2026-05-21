@@ -396,7 +396,12 @@ def _load_sentence_transformer(model_name: str):
             "sentence-transformers is required for dense RAG retrieval. "
             "Run python scripts/bootstrap_dev.py or install the API package dependencies."
         ) from exc
-    return SentenceTransformer(model_name, local_files_only=True)
+    return SentenceTransformer(
+        model_name,
+        local_files_only=True,
+        device="cpu",
+        model_kwargs={"low_cpu_mem_usage": False},
+    )
 
 
 def _load_cross_encoder(model_name: str):
@@ -408,7 +413,12 @@ def _load_cross_encoder(model_name: str):
             "Run python scripts/bootstrap_dev.py or install the API package dependencies."
         ) from exc
     try:
-        return CrossEncoder(model_name, local_files_only=True)
+        return CrossEncoder(
+            model_name,
+            local_files_only=True,
+            device="cpu",
+            automodel_args={"low_cpu_mem_usage": False},
+        )
     except OSError as exc:
         raise RuntimeError(
             "The reranker model is not cached locally: "

@@ -62,6 +62,7 @@ Partial / intentionally honest deviations:
    `API_CHAT_LLM_ENABLED=true`
    `API_CHAT_ALLOW_ENV_KEY_FALLBACK=true`
    `API_ALLOW_IN_MEMORY_MEMORY=true`
+   `ANTHROPIC_API_KEY=...` for live Claude mode, or leave the key unset and use deterministic fallback requests only
 4. Run the API locally:
    `cd services/api && ../../.venv/bin/python -m uvicorn maintcopilot_api.main:app --reload`
 5. Run the model server locally:
@@ -312,7 +313,7 @@ API_REQUIRE_VAULT=true ../../.venv/bin/uvicorn maintcopilot_api.main:app --reloa
 
 ## Chat Orchestration
 
-`POST /chat` is the Maintainer's Copilot orchestration endpoint. It uses one Claude tool-calling LLM when configured; this is not a multi-agent workflow. If Claude is disabled or unavailable and fallback is enabled, the deterministic router selects one tool and the response includes `mode="deterministic_fallback"` plus `fallback_reason`.
+`POST /chat` is the Maintainer's Copilot orchestration endpoint. It uses one Claude tool-calling LLM when configured; this is not a multi-agent workflow. If `use_llm` is omitted, the API defaults to `API_CHAT_LLM_ENABLED`. If `use_llm=false`, the deterministic router is used directly. If Claude is disabled or unavailable and fallback is enabled, the response includes `mode="deterministic_fallback"` plus `fallback_reason`.
 
 Available tools:
 
@@ -530,15 +531,22 @@ Build the Docker images:
 docker compose --env-file .env.example build api model-server widget chatbot
 ```
 
-Start the backend stack with dev-only flags for the local demo:
+Start the backend stack with dev-only flags for the primary local demo path:
 
 ```bash
 API_REQUIRE_VAULT=false \
 API_AUTH_OPTIONAL_FOR_DEV=true \
-API_CHAT_LLM_ENABLED=false \
+API_CHAT_LLM_ENABLED=true \
+API_CHAT_ALLOW_ENV_KEY_FALLBACK=true \
 API_ENABLE_DEMO_WIDGET_FALLBACK=true \
 API_ALLOW_IN_MEMORY_MEMORY=true \
 docker compose --env-file .env.example up -d postgres redis minio vault model-server api
+```
+
+For a fully reproducible offline fallback-only demo, switch:
+
+```bash
+API_CHAT_LLM_ENABLED=false
 ```
 
 Health checks:
