@@ -6,6 +6,7 @@ import sys
 from datetime import datetime, timezone
 from typing import Any
 
+from maintcopilot_api.infra.observability import recent_events
 from maintcopilot_api.infra.redaction import redact
 from maintcopilot_api.infra.tracing import get_request_id, get_trace_id
 
@@ -38,4 +39,6 @@ def configure_logging(log_level: str) -> None:
 
 def log_with_context(logger: logging.Logger, level: str, message: str, **fields: Any) -> None:
     log_method = getattr(logger, level.lower())
-    log_method(message, extra={"event_fields": redact(fields)})
+    redacted_fields = redact(fields)
+    recent_events.append(message, redacted_fields)
+    log_method(message, extra={"event_fields": redacted_fields})

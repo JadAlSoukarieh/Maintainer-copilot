@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 RagRetriever = Literal["sparse", "dense", "hybrid", "reranked"]
-RagSourceType = Literal["doc", "resolved_issue"]
+RagSourceType = Literal["doc", "resolved_issue", "issue_comment"]
 RagIntent = Literal["docs", "issue", "debug", "api", "memory", "network", "crypto", "stream", "fs", "dns", "unknown"]
 
 
@@ -45,6 +45,7 @@ class RagAnswerDiagnostics(BaseModel):
     requested_retriever: RagRetriever
     effective_retriever: RagRetriever
     fallback_reason: str | None = None
+    answer_synthesis_titles: list[str] = Field(default_factory=list)
 
 
 class RagAnswerResponse(BaseModel):

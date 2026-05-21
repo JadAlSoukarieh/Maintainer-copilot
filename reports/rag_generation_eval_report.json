@@ -1,0 +1,1231 @@
+{
+  "judge_version": "frozen-rag-judge-v1",
+  "mode": "deterministic",
+  "example_count": 25,
+  "answer_relevancy_avg": 0.3104294684218752,
+  "faithfulness_avg": 0.6243582775445823,
+  "citation_coverage": 0.68,
+  "groundedness_pass_rate": 0.72,
+  "average_answer_length": 379.96,
+  "refusal_or_empty_rate": 0.0,
+  "ai_assisted_labeled_count": 0,
+  "human_labeled_count": 5,
+  "human_label_review_status": [
+    "human_spot_checked"
+  ],
+  "judge_human_agreement": 0.7,
+  "disagreements": [
+    {
+      "golden_id": "rag-golden-002",
+      "human_faithful": true,
+      "judge_groundedness_pass": false,
+      "human_relevant": true,
+      "judge_relevant": true
+    },
+    {
+      "golden_id": "rag-golden-014",
+      "human_faithful": true,
+      "judge_groundedness_pass": true,
+      "human_relevant": true,
+      "judge_relevant": false
+    },
+    {
+      "golden_id": "rag-golden-018",
+      "human_faithful": true,
+      "judge_groundedness_pass": true,
+      "human_relevant": true,
+      "judge_relevant": false
+    }
+  ],
+  "thresholds": {
+    "min_answer_relevancy": 0.25,
+    "min_faithfulness": 0.4,
+    "min_citation_coverage": 0.6,
+    "min_groundedness_pass_rate": 0.3,
+    "min_human_judge_agreement": 0.6
+  },
+  "threshold_gate": "PASS",
+  "passed": true,
+  "failures": [],
+  "details": [
+    {
+      "golden_id": "rag-golden-001",
+      "question": "How does `stream.pipeline()` clean up streams when a pipeline fails?",
+      "ideal_answer": "The stream docs say `stream.pipeline()` calls `stream.destroy(err)` on all streams except readable streams that already emitted `end` or `close` and writable streams that already emitted `finish` or `close`. They also warn that `pipeline()` can leave dangling listeners after the callback and may destroy an HTTP socket before an error response is sent.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `stream`. The stream docs say `stream.pipeline()` calls `stream.destroy(err)` on the streams when the pipeline fails. The documented exceptions are readable streams that already emitted `end` or `close`, and writable streams that already emitted `finish` or `close`. The same docs also warn about dangling listeners after the callback. In `rfc: standardize stream.destroy() and pipe`, the cited text notes: Given that it is a de-facto standard, we can document it in the stream API, and add a default implementation of it. Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `stream`. The stream docs say `stream.pipeline()` calls `stream.destroy(err)` on the streams when the pipeline fails. The documented exceptions are readable streams that already emitted `end` or `close`, and writable streams that already emitted `finish` or `close`. The same docs also warn about dangling listeners after the callback. In `rfc: standardize stream.destroy() and pipe`, the cited text notes: Given that it is a de-facto standard, we can document it in the stream API, and add a default implementation of it. Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-146",
+          "title": "stream",
+          "source_type": "doc",
+          "url": "",
+          "score": 6.3376704025268555,
+          "text_excerpt": "`stream.pipeline()` will call `stream.destroy(err)` on all streams except: * `Readable` streams which have emitted `'end'` or `'close'`. * `Writable` streams which have emitted `'finish'` or `'close'`. `stream.pipeline()` leaves dangling event listeners on the streams after the `callback` has bee..."
+        },
+        {
+          "chunk_id": "issue-4401-excluded-001",
+          "title": "rfc: standardize stream.destroy() and pipe",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/4401",
+          "score": 3.0214165019989014,
+          "text_excerpt": "Given that it is a de-facto standard, we can document it in the stream API, and add a default implementation of it."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-stream-md-stream-api-for-stream-consumers-stream-pipeline-streams-callback-146",
+        "issue-4401-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.5192763157894738,
+      "faithfulness": 0.6,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 642,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-002",
+      "question": "Where do the Node.js DNS docs list resolver error codes such as `dns.NODATA` and `dns.TIMEOUT`?",
+      "ideal_answer": "The DNS docs have an Error codes section listing resolver failures such as `dns.NODATA`, `dns.FORMERR`, `dns.SERVFAIL`, `dns.NOTFOUND`, `dns.CONNREFUSED`, and `dns.TIMEOUT`.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `dns`. The DNS > Error codes section lists resolver error codes including `dns.NODATA`, `dns.FORMERR`, `dns.SERVFAIL`, `dns.NOTFOUND`, `dns.CONNREFUSED`, `dns.TIMEOUT`. Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `dns`. The DNS > Error codes section lists resolver error codes including `dns.NODATA`, `dns.FORMERR`, `dns.SERVFAIL`, `dns.NOTFOUND`, `dns.CONNREFUSED`, `dns.TIMEOUT`. Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-dns-set-servers-failed-116",
+          "title": "errors",
+          "source_type": "doc",
+          "url": "",
+          "score": 2.8505698013305665,
+          "text_excerpt": "errors Errors > Node.js error codes > `ERR_DNS_SET_SERVERS_FAILED` `c-ares` failed to set the DNS server."
+        },
+        {
+          "chunk_id": "doc-api-dns-md-dns-error-codes-081",
+          "title": "dns",
+          "source_type": "doc",
+          "url": "",
+          "score": 2.4108520317077637,
+          "text_excerpt": "dns DNS > Error codes Each DNS query can return one of the following error codes: * `dns.NODATA`: DNS server returned an answer with no data. * `dns.FORMERR`: DNS server claims query was misformatted. * `dns.SERVFAIL`: DNS server returned general failure. * `dns.NOTFOUND`: Domain name not found...."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-errors-md-errors-node-js-error-codes-err-dns-set-servers-failed-116",
+        "doc-api-dns-md-dns-error-codes-081"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.5394736842105263,
+      "faithfulness": 0.4117647058823529,
+      "citation_coverage": true,
+      "groundedness_pass": false,
+      "answer_length": 288,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-003",
+      "question": "What does `response.write()` do on an `http.ServerResponse`?",
+      "ideal_answer": "The HTTP docs say `response.write()` sends a chunk of the response body and can be called multiple times. If `writeHead()` has not been called yet, Node switches to implicit header mode and flushes the headers before sending the chunk.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest retrieved docs and issue evidence are cited below. The most relevant retrieved evidence includes `http`. Use the citations as grounded starting points; they show related evidence, not a guaranteed answer for every case.",
+      "answer": "Based on the local Node.js knowledge base, the closest retrieved docs and issue evidence are cited below. The most relevant retrieved evidence includes `http`. Use the citations as grounded starting points; they show related evidence, not a guaranteed answer for every case.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-writecontinue-137",
+          "title": "http",
+          "source_type": "doc",
+          "url": "",
+          "score": 7.59834098815918,
+          "text_excerpt": "http HTTP > Class: `http.ServerResponse` > `response.writeContinue()` Sends an HTTP/1.1 100 Continue message to the client, indicating that the request body should be sent. See the [`'checkContinue'`][] event on `Server`."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-http-md-http-class-http-serverresponse-response-writecontinue-137"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.17762605042016807,
+      "faithfulness": 0.1,
+      "citation_coverage": false,
+      "groundedness_pass": false,
+      "answer_length": 274,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-004",
+      "question": "How can Node.js integrate with Chrome DevTools for debugging?",
+      "ideal_answer": "The `node:inspector` docs say the module exposes an API for tools that speak the Chrome DevTools Protocol. Connected DevTools frontends can receive protocol events from the running Node.js process and display them for debugging.",
+      "generated_answer": "Based on the local Node.js knowledge base, related issue evidence points to similar symptoms and request-lifecycle problems. The strongest cited issues include `Inspecting Node.js with Chrome DevTools`. The retrieved issues describe this related evidence: V8 Inspector integration allows attaching Chrome DevTools to Node.js instances for debugging and profiling. ",
+      "answer": "Based on the local Node.js knowledge base, related issue evidence points to similar symptoms and request-lifecycle problems. The strongest cited issues include `Inspecting Node.js with Chrome DevTools`. The retrieved issues describe this related evidence: V8 Inspector integration allows attaching Chrome DevTools to Node.js instances for debugging and profiling. ",
+      "citations": [
+        {
+          "chunk_id": "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-028",
+          "title": "debugger",
+          "source_type": "doc",
+          "url": "",
+          "score": 8.362066268920898,
+          "text_excerpt": "V8 Inspector integration allows attaching Chrome DevTools to Node.js instances for debugging and profiling. It uses the [Chrome DevTools Protocol][]. V8 Inspector can be enabled by passing the `--inspect` flag when starting a Node.js application. It is also possible to supply a custom port with t..."
+        },
+        {
+          "chunk_id": "doc-api-inspector-md-inspector-integration-with-devtools-030",
+          "title": "inspector",
+          "source_type": "doc",
+          "url": "",
+          "score": 8.334772109985352,
+          "text_excerpt": "inspector Inspector > Integration with DevTools > Stability: 1.1 - Active development The `node:inspector` module provides an API for integrating with devtools that support Chrome DevTools Protocol. DevTools frontends connected to a running Node.js instance can capture protocol events emitted fro..."
+        },
+        {
+          "chunk_id": "issue-2546-excluded-001",
+          "title": "Inspecting Node.js with Chrome DevTools",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/2546",
+          "score": 6.9619340896606445,
+          "text_excerpt": "Inspecting Node.js with Chrome DevTools ### Objective We\u2019ve been thinking about providing unified debugger support across various v8 embedders. One natural approach to that is to reuse Chrome DevTools and provide its JS debugger, performance and memory profiler functionality to Node.js users. Wha..."
+        },
+        {
+          "chunk_id": "doc-api-cli-md-will-result-in-this-is-na-multiline-as-the-value-inspect-host-port-096",
+          "title": "cli",
+          "source_type": "doc",
+          "url": "",
+          "score": 6.0111589431762695,
+          "text_excerpt": "cli will result in `THIS IS\\nA MULTILINE` as the value. > `--inspect[=[host:]port]` Activate inspector on `host:port`. Default is `127.0.0.1:9229`. If port `0` is specified, a random available port will be used. V8 inspector integration allows tools such as Chrome DevTools and IDEs to debug and p..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-debugger-md-debugger-advanced-usage-v8-inspector-integration-for-node-js-028",
+        "doc-api-inspector-md-inspector-integration-with-devtools-030",
+        "issue-2546-excluded-001",
+        "doc-api-cli-md-will-result-in-this-is-na-multiline-as-the-value-inspect-host-port-096"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.40925925925925927,
+      "faithfulness": 0.625,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 364,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-005",
+      "question": "What do the `fs.readFile()` docs recommend when I want to avoid buffering an entire file in memory?",
+      "ideal_answer": "The `fs.readFile()` docs say the function buffers the entire file. To reduce memory cost, prefer streaming with `fs.createReadStream()` when possible.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `fs`. It points to this behavior: If a request is aborted the callback is called with an `AbortError`: The `fs.readFile()` function buffers the entire file. In `Reduce memory consumption of streams for large amounts of data`, the cited text notes: Doing so prevents this growth of memory usage, and is significantly more efficient than using a ReadStream (in terms of memory usage, less pressure on GC and fewer memory (de)allocations). Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `fs`. It points to this behavior: If a request is aborted the callback is called with an `AbortError`: The `fs.readFile()` function buffers the entire file. In `Reduce memory consumption of streams for large amounts of data`, the cited text notes: Doing so prevents this growth of memory usage, and is significantly more efficient than using a ReadStream (in terms of memory usage, less pressure on GC and fewer memory (de)allocations). Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "issue-6078-excluded-002",
+          "title": "Reduce memory consumption of streams for large amounts of data",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/6078",
+          "score": 3.127523021697998,
+          "text_excerpt": "Doing so prevents this growth of memory usage, and is significantly more efficient than using a ReadStream (in terms of memory usage, less pressure on GC and fewer memory (de)allocations)."
+        },
+        {
+          "chunk_id": "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-156",
+          "title": "fs",
+          "source_type": "doc",
+          "url": "",
+          "score": 2.8906938934326174,
+          "text_excerpt": "It is possible to abort an ongoing request using an `AbortSignal`. If a request is aborted the callback is called with an `AbortError`: The `fs.readFile()` function buffers the entire file. To minimize memory costs, when possible prefer streaming via `fs.createReadStream()`. Aborting an ongoing r..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-6078-excluded-002",
+        "doc-api-fs-md-file-system-callback-api-fs-readfile-path-options-callback-156"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.45952380952380956,
+      "faithfulness": 0.825,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 556,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-006",
+      "question": "Where do the Node.js error docs explain common system errors like `EADDRINUSE` and `ECONNRESET`?",
+      "ideal_answer": "The Errors docs include a Common system errors section that explains frequently encountered failures such as `EACCES`, `EADDRINUSE`, `ECONNREFUSED`, and `ECONNRESET`.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `errors`. It points to this behavior: This is a list of system errors commonly-encountered when writing a Node.js program. In `ECONNRESET problem with http.Server and https.Server (node 6.3, 6.2.2 and poss earlier)`, the cited text notes: I believe these may be idle sockets, and therefore the error should be handled by node. Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `errors`. It points to this behavior: This is a list of system errors commonly-encountered when writing a Node.js program. In `ECONNRESET problem with http.Server and https.Server (node 6.3, 6.2.2 and poss earlier)`, the cited text notes: I believe these may be idle sockets, and therefore the error should be handled by node. Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-errors-md-errors-class-systemerror-common-system-errors-036",
+          "title": "errors",
+          "source_type": "doc",
+          "url": "",
+          "score": 5.463993072509766,
+          "text_excerpt": "This is a list of system errors commonly-encountered when writing a Node.js program. For a comprehensive list, see the [`errno`(3) man page][]. * `EACCES` (Permission denied): An attempt was made to access a file in a way forbidden by its file access permissions. * `EADDRINUSE` (Address already i..."
+        },
+        {
+          "chunk_id": "issue-7776-val-001",
+          "title": "ECONNRESET problem with http.Server and https.Server (node 6.3, 6.2.2 and poss earlier)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/7776",
+          "score": 2.7583024406433108,
+          "text_excerpt": "I believe these may be idle sockets, and therefore the error should be handled by node."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-errors-md-errors-class-systemerror-common-system-errors-036",
+        "issue-7776-val-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.3275,
+      "faithfulness": 0.7741935483870968,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 446,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-007",
+      "question": "How does `response.write()` behave on an `Http2ServerResponse`?",
+      "ideal_answer": "The HTTP/2 compatibility docs say `response.write()` sends a chunk of the response body and may be called multiple times. If `writeHead()` has not been called yet, Node flushes the implicit headers before writing the chunk.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest retrieved docs and issue evidence are cited below. The most relevant retrieved evidence includes `http2` and `http`. Use the citations as grounded starting points; they show related evidence, not a guaranteed answer for every case.",
+      "answer": "Based on the local Node.js knowledge base, the closest retrieved docs and issue evidence are cited below. The most relevant retrieved evidence includes `http2` and `http`. Use the citations as grounded starting points; they show related evidence, not a guaranteed answer for every case.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-end-data-encoding-callback-224",
+          "title": "http2",
+          "source_type": "doc",
+          "url": "",
+          "score": 5.966484069824219,
+          "text_excerpt": "http2 HTTP/2 > Compatibility API > Class: `http2.Http2ServerResponse` > `response.end([data[, encoding]][, callback])` * `data` {string Uint8Array} * `encoding` {string} * `callback` {Function} * Returns: {this} This method signals to the server that all of the response headers and body have been..."
+        },
+        {
+          "chunk_id": "doc-api-http-md-http-class-http-serverresponse-response-end-data-encoding-callback-112",
+          "title": "http",
+          "source_type": "doc",
+          "url": "",
+          "score": 5.506184101104736,
+          "text_excerpt": "http HTTP > Class: `http.ServerResponse` > `response.end([data[, encoding]][, callback])` * `data` {string Uint8Array} * `encoding` {string} * `callback` {Function} * Returns: {this} This method signals to the server that all of the response headers and body have been sent; that server should con..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-http2-md-http-2-compatibility-api-class-http2-http2serverresponse-response-end-data-encoding-callback-224",
+        "doc-api-http-md-http-class-http-serverresponse-response-end-data-encoding-callback-112"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.1603448275862069,
+      "faithfulness": 0.18181818181818182,
+      "citation_coverage": false,
+      "groundedness_pass": false,
+      "answer_length": 286,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-008",
+      "question": "How do TLS session tickets work in Node.js?",
+      "ideal_answer": "The TLS docs say the server encrypts the full session state and sends it to the client as a ticket. On reconnect, the client sends that state back so the server can resume the session without keeping a server-side cache.",
+      "generated_answer": "Based on the local Node.js knowledge base, related issue evidence points to similar symptoms and request-lifecycle problems. The retrieved issues show similar symptoms around tls. ",
+      "answer": "Based on the local Node.js knowledge base, related issue evidence points to similar symptoms and request-lifecycle problems. The retrieved issues show similar symptoms around tls. ",
+      "citations": [
+        {
+          "chunk_id": "doc-api-tls-md-tls-ssl-class-tls-tlssocket-event-session-061",
+          "title": "tls",
+          "source_type": "doc",
+          "url": "",
+          "score": 4.781411247253418,
+          "text_excerpt": "* `session` {Buffer} The `'session'` event is emitted on a client `tls.TLSSocket` when a new session or TLS ticket is available. This may or may not be before the handshake is complete, depending on the TLS protocol version that was negotiated. The event is not emitted on the server, or if a new..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-tls-md-tls-ssl-class-tls-tlssocket-event-session-061"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.12065217391304348,
+      "faithfulness": 0.0,
+      "citation_coverage": false,
+      "groundedness_pass": false,
+      "answer_length": 180,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-009",
+      "question": "Where do the HTTPS docs show how to call `https.request()`?",
+      "ideal_answer": "The HTTPS docs include examples that call `https.request()` with an options object, with a `URL` object, and with certificate pinning through `checkServerIdentity`.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `https`. The following additional `options` from [`tls.connect()`][] are also accepted: `ca`, `cert`, `ciphers`, `clientCertEngine` (deprecated), `crl`, `dhparam`, `ecdhCurve`, `honorCipherOrder`, `key`, `passphrase`, `pfx`, `rejectUnauthorized`, `secureOptions`, `s... Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `https`. The following additional `options` from [`tls.connect()`][] are also accepted: `ca`, `cert`, `ciphers`, `clientCertEngine` (deprecated), `crl`, `dhparam`, `ecdhCurve`, `honorCipherOrder`, `key`, `passphrase`, `pfx`, `rejectUnauthorized`, `secureOptions`, `s... Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-https-md-https-https-request-url-options-callback-024",
+          "title": "https",
+          "source_type": "doc",
+          "url": "",
+          "score": 4.566713085174561,
+          "text_excerpt": "* `url` {string | URL} * `options` {Object URL} Accepts all `options` from [`http.request()`][], with some differences in default values: * `protocol` **Default:** `'https:'` * `port` **Default:** `443` * `agent` **Default:** `https.globalAgent` * `callback` {Function} * Returns: {http.ClientRequ..."
+        },
+        {
+          "chunk_id": "doc-api-http-md-http-class-http-clientrequest-request-host-063",
+          "title": "http",
+          "source_type": "doc",
+          "url": "",
+          "score": 3.1325933837890627,
+          "text_excerpt": "http HTTP > Class: `http.ClientRequest` > `request.host` * Type: {string} The request host."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-https-md-https-https-request-url-options-callback-024",
+        "doc-api-http-md-http-class-http-clientrequest-request-host-063"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.22187500000000002,
+      "faithfulness": 0.08,
+      "citation_coverage": false,
+      "groundedness_pass": false,
+      "answer_length": 389,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-010",
+      "question": "Where do the zlib docs show HTTP compression examples?",
+      "ideal_answer": "The zlib docs include HTTP server examples that inspect `Accept-Encoding` and then pipe the response through gzip, brotli, or zstd. They also note that compressing every request is expensive and that caching compressed output is usually better.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `zlib`. The `node:zlib` module can be used to implement support for the `gzip`, `deflate`, `br`, and `zstd` content-encoding mechanisms defined by [HTTP](https://tools.ietf.org/html/rfc7230#section-4.2). Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `zlib`. The `node:zlib` module can be used to implement support for the `gzip`, `deflate`, `br`, and `zstd` content-encoding mechanisms defined by [HTTP](https://tools.ietf.org/html/rfc7230#section-4.2). Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-008",
+          "title": "zlib",
+          "source_type": "doc",
+          "url": "",
+          "score": 4.8077356719970705,
+          "text_excerpt": "The `node:zlib` module can be used to implement support for the `gzip`, `deflate`, `br`, and `zstd` content-encoding mechanisms defined by [HTTP](https://tools.ietf.org/html/rfc7230#section-4.2). The HTTP [`Accept-Encoding`][] header is used within an HTTP request to identify the compression enco..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-zlib-md-zlib-compressing-http-requests-and-responses-008"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.18692307692307694,
+      "faithfulness": 0.8181818181818182,
+      "citation_coverage": false,
+      "groundedness_pass": true,
+      "answer_length": 323,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-011",
+      "question": "What does the Node.js Permission Model restrict?",
+      "ideal_answer": "The permissions docs say the model restricts native modules, network access, child processes, worker threads, the inspector protocol, file system access, WASI, and FFI. They also note that the model does not inherit to worker threads.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest retrieved docs and issue evidence are cited below. The most relevant retrieved evidence includes `permissions`. In `permissions`, the cited text notes: When starting Node.js with `--permission`, the ability to access the file system through the `fs` module, access the network, spawn processes, use `node:worker_threads`, use native addons, use WASI, use FFI, and enable the runtime inspector will be restrict... Use the citations as grounded starting points; they show related evidence, not a guaranteed answer for every case.",
+      "answer": "Based on the local Node.js knowledge base, the closest retrieved docs and issue evidence are cited below. The most relevant retrieved evidence includes `permissions`. In `permissions`, the cited text notes: When starting Node.js with `--permission`, the ability to access the file system through the `fs` module, access the network, spawn processes, use `node:worker_threads`, use native addons, use WASI, use FFI, and enable the runtime inspector will be restrict... Use the citations as grounded starting points; they show related evidence, not a guaranteed answer for every case.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-permissions-md-permissions-process-based-permissions-permission-model-003",
+          "title": "permissions",
+          "source_type": "doc",
+          "url": "",
+          "score": 8.099925994873047,
+          "text_excerpt": "> Stability: 2 - Stable The Node.js Permission Model is a mechanism for restricting access to specific resources during execution. The API exists behind a flag [`--permission`][] which when enabled, will restrict access to all available permissions. The available permissions are documented by the..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-permissions-md-permissions-process-based-permissions-permission-model-003"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.33222222222222225,
+      "faithfulness": 0.15151515151515152,
+      "citation_coverage": false,
+      "groundedness_pass": false,
+      "answer_length": 582,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-012",
+      "question": "How do the Node.js stream docs recommend handling backpressure when using `writable.write()`?",
+      "ideal_answer": "The stream docs say you should wait for the `'drain'` event when `write()` returns `false` so you can respect backpressure and avoid memory issues. They show a pattern that defers the next write until the callback runs after `'drain'` or the next tick.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `stream`. Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `stream`. Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "doc-api-stream-md-stream-additional-notes-streams-compatibility-with-async-generators-and-async-iterators-piping-to-writable-streams-from-async-iterators-226",
+          "title": "stream",
+          "source_type": "doc",
+          "url": "",
+          "score": 6.030867805480957,
+          "text_excerpt": "stream Stream > Additional notes > Streams compatibility with async generators and async iterators > Piping to writable streams from async iterators When writing to a writable stream from an async iterator, ensure correct handling of backpressure and errors. [`stream.pipeline()`][] abstracts away..."
+        },
+        {
+          "chunk_id": "doc-api-stream-iter-md-iterable-streams-concepts-backpressure-block-017",
+          "title": "stream iter",
+          "source_type": "doc",
+          "url": "",
+          "score": 3.897023906707764,
+          "text_excerpt": "stream iter Iterable Streams > Concepts > Backpressure > Block Block mode caps slots at `highWaterMark` but places no limit on the pending writes queue. Awaited writes block until the consumer makes room, just like strict mode. The difference is that unawaited writes silently queue forever instea..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "doc-api-stream-md-stream-additional-notes-streams-compatibility-with-async-generators-and-async-iterators-piping-to-writable-streams-from-async-iterators-226",
+        "doc-api-stream-iter-md-iterable-streams-concepts-backpressure-block-017"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.18472850678733033,
+      "faithfulness": 0.2,
+      "citation_coverage": false,
+      "groundedness_pass": false,
+      "answer_length": 129,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-013",
+      "question": "What resolved issue describes recurring `ECONNRESET` errors on Node 6 HTTP and HTTPS servers?",
+      "ideal_answer": "The issue reports `read ECONNRESET` errors on Node 6.x servers running on AWS and CentOS, affecting both HTTP and HTTPS traffic. The reporter says the errors may come from idle sockets and was looking for a safe recovery strategy.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `http.Agent: idle sockets throw unhandled ECONNRESET`. It describes this supported symptom: They can be trapped in http using .on('clientError'), or on https/tls using 'clientError' and 'tlsClientError' (comes through on both variants). ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `http.Agent: idle sockets throw unhandled ECONNRESET`. It describes this supported symptom: They can be trapped in http using .on('clientError'), or on https/tls using 'clientError' and 'tlsClientError' (comes through on both variants). ",
+      "citations": [
+        {
+          "chunk_id": "issue-3595-excluded-001",
+          "title": "http.Agent: idle sockets throw unhandled ECONNRESET",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/3595",
+          "score": 5.119080772399903,
+          "text_excerpt": "http.Agent: idle sockets throw unhandled ECONNRESET Please see this code: https://gist.github.com/thorn0/0812cdb7eb12b2348337 That's what it outputs for me (Node 4.2.1 and 5.0.0, Windows 7 x64): It's reproduced with most servers that run Microsoft IIS."
+        },
+        {
+          "chunk_id": "issue-7776-val-001",
+          "title": "ECONNRESET problem with http.Server and https.Server (node 6.3, 6.2.2 and poss earlier)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/7776",
+          "score": 4.788391342163086,
+          "text_excerpt": "They can be trapped in http using .on('clientError'), or on https/tls using 'clientError' and 'tlsClientError' (comes through on both variants)."
+        },
+        {
+          "chunk_id": "issue-5908-excluded-001",
+          "title": "5.9.1 Https/TLS consistent ECONNRESET error",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/5908",
+          "score": 4.563661804199219,
+          "text_excerpt": "5.9.1 Https/TLS consistent ECONNRESET error When trying to perform a https get on a website that uses TLS 1.0 I get a socket error. Bug can be produced with the following code: `require('https').get('https://www.7-eleven.com', res => res.pipe(process.stdout));` Tested on OSX and Win10-64 Node v 5..."
+        },
+        {
+          "chunk_id": "issue-8827-test-001",
+          "title": "Memory leak for https.request() on ECONNRESET",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8827",
+          "score": 3.2839324378967287,
+          "text_excerpt": "Memory leak for https.request() on ECONNRESET - **Version**: 6.8.0, 7.0.0 - **Platform**: Ubuntu 16.04 (Linux patrickd 4.4.0-38-generic #57-Ubuntu SMP Tue Sep 6 15:42:33 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux) - **Subsystem**: https I experience a memory leak when doing https requests to a host..."
+        },
+        {
+          "chunk_id": "issue-9085-excluded-001",
+          "title": "HTTP client strange behavior when server responds immediately without reading request body",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9085",
+          "score": 3.014559497833252,
+          "text_excerpt": "10,000,000 bytes) ECONNRESET error is emitted at client-side but on small data (e.g."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-3595-excluded-001",
+        "issue-7776-val-001",
+        "issue-5908-excluded-001",
+        "issue-8827-test-001",
+        "issue-9085-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.30000000000000004,
+      "faithfulness": 0.8,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 319,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-014",
+      "question": "What resolved Node.js issue reports a memory leak when `https.request()` hits `ECONNRESET`?",
+      "ideal_answer": "This issue reports that repeated `https.request()` calls against a host that resets the connection can drive process memory up to hundreds of megabytes and keep it there, even after manual garbage collection. The reporter included a small reproduction using two scripts and observed the leak on Node 6.8.0 and 7.0.0.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Memory leak for https.request() on ECONNRESET`. I experience a memory leak when doing https requests to a host that resets the connection. The report says the memory usage doesn't change even when GC runs every second. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Memory leak for https.request() on ECONNRESET`. I experience a memory leak when doing https requests to a host that resets the connection. The report says the memory usage doesn't change even when GC runs every second. ",
+      "citations": [
+        {
+          "chunk_id": "issue-8827-test-001",
+          "title": "Memory leak for https.request() on ECONNRESET",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8827",
+          "score": 6.169972648620606,
+          "text_excerpt": "I experience a memory leak when doing https requests to a host that resets the connection. The report says the memory usage doesn't change even when GC runs every second."
+        },
+        {
+          "chunk_id": "issue-9530-excluded-001",
+          "title": "Response strings and closures objects leak with http.Agent enabled (Memory Leak)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9530",
+          "score": 4.127482643127442,
+          "text_excerpt": "Response strings and closures objects leak with http.Agent enabled (Memory Leak) * **Version**: v6.9.1 * **Platform**: Linux ip-172-31-46-151 4.4.11-23.53.amzn1.x86_64 #1 SMP Wed Jun 1 22:22:50 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux * **Subsystem**: Http(s..."
+        },
+        {
+          "chunk_id": "issue-1522-excluded-001",
+          "title": "high tls memory usage (rss)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/1522",
+          "score": 4.112347993850708,
+          "text_excerpt": "high tls memory usage (rss) https.request leaks in this example: `rss` grows over time, `heapUsed` remains about constant (~30m)."
+        },
+        {
+          "chunk_id": "issue-6632-excluded-001",
+          "title": "Massive memory leak in HTTP 'upgrade' event",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/6632",
+          "score": 3.9878647232055666,
+          "text_excerpt": "Massive memory leak in HTTP 'upgrade' event - **Version**: 5.11.0 - **Platform**: Linux - **Subsystem**: HTTP I'm running this server: With my own benchmark that pretty much only sends a WebSocket upgrade request and then receives whatever the server sends back. Running this benchmark against thi..."
+        },
+        {
+          "chunk_id": "issue-9845-excluded-001",
+          "title": "socket hang up on https request",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9845",
+          "score": 2.4783494377136233,
+          "text_excerpt": "socket hang up on https request * **Version**:v6.9.1 * **Platform**:Linux 4.4.0-47-generic #68-Ubuntu SMP x86_64 GNU/Linux * **Subsystem**:tls This code is giving me socket hang up error:"
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-8827-test-001",
+        "issue-9530-excluded-001",
+        "issue-1522-excluded-001",
+        "issue-6632-excluded-001",
+        "issue-9845-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.306025641025641,
+      "faithfulness": 0.9130434782608695,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 302,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-015",
+      "question": "What resolved issue describes `CLOSE_WAIT` sockets and a suspected memory leak while reading HTTP responses?",
+      "ideal_answer": "The issue describes sockets stuck in `CLOSE_WAIT` while downloading S3 blobs through an HTTPS request. The reporter suspected a memory leak and thought `http.IncomingMessage` was stopping its read path partway through the response.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Stream stops reading from kernel halfway through in http.IncomingMessage`. It describes this supported symptom: The code is straightforward and essentially boils down to: I cannot reproduce this issue locally, but in production I'll have sockets stuck in this state even 10 minutes after a restart. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Stream stops reading from kernel halfway through in http.IncomingMessage`. It describes this supported symptom: The code is straightforward and essentially boils down to: I cannot reproduce this issue locally, but in production I'll have sockets stuck in this state even 10 minutes after a restart. ",
+      "citations": [
+        {
+          "chunk_id": "issue-6632-excluded-001",
+          "title": "Massive memory leak in HTTP 'upgrade' event",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/6632",
+          "score": 3.8549578094482424,
+          "text_excerpt": "Massive memory leak in HTTP 'upgrade' event - **Version**: 5.11.0 - **Platform**: Linux - **Subsystem**: HTTP I'm running this server: With my own benchmark that pretty much only sends a WebSocket upgrade request and then receives whatever the server sends..."
+        },
+        {
+          "chunk_id": "issue-7910-excluded-001",
+          "title": "Stream stops reading from kernel halfway through in http.IncomingMessage",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/7910",
+          "score": 3.353940238952637,
+          "text_excerpt": "The code is straightforward and essentially boils down to: I cannot reproduce this issue locally, but in production I'll have sockets stuck in this state even 10 minutes after a restart."
+        },
+        {
+          "chunk_id": "issue-9530-excluded-002",
+          "title": "Response strings and closures objects leak with http.Agent enabled (Memory Leak)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9530",
+          "score": 2.141640892028809,
+          "text_excerpt": "http.Agent based sockets pool is leading to memory leaks."
+        },
+        {
+          "chunk_id": "issue-2631-excluded-001",
+          "title": "[3.2.0] Potential memory leak",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/2631",
+          "score": 1.9269100761413573,
+          "text_excerpt": "[3.2.0] Potential memory leak Recently I was stress testing my API and discovered that even very simple net server has a memory leaks. Is it possible that there's something wrong with it? Server code: Testing client bash script: Starting iojs server(3.2.0):"
+        },
+        {
+          "chunk_id": "issue-7109-excluded-001",
+          "title": "RSS grows all the time, what is the cause?",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/7109",
+          "score": 1.8923338985443114,
+          "text_excerpt": "RSS grows all the time, what is the cause? Node v4.4.4 Ubuntu LTS 14.04 3.13.0-86-generic I have an issue with the service written in Node. It grows in memory and after it reaches the server memory limit process crashes with error: Memory logs shows: Stared with: `Total: 61mb, Used: 35mb, RSS: 10..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-6632-excluded-001",
+        "issue-7910-excluded-001",
+        "issue-9530-excluded-002",
+        "issue-2631-excluded-001",
+        "issue-7109-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.33275862068965517,
+      "faithfulness": 0.8387096774193549,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 382,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-016",
+      "question": "What resolved issue reports HTTP requests blocking file I/O under certain network conditions?",
+      "ideal_answer": "The issue says the `http` core module can block file I/O when the machine still has Wi-Fi connectivity but no actual internet access. The reporter says the problem was reproducible across several Node versions and operating systems.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Using the http module under certain network settings blocks fs`. It describes this supported symptom: _Code sample:_ If you run the code above under the setting I described, and tail `testfile`, then you should see 3 `aaa` before it stops writing to that file. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Using the http module under certain network settings blocks fs`. It describes this supported symptom: _Code sample:_ If you run the code above under the setting I described, and tail `testfile`, then you should see 3 `aaa` before it stops writing to that file. ",
+      "citations": [
+        {
+          "chunk_id": "issue-7301-excluded-001",
+          "title": "Using the http module under certain network settings blocks fs",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/7301",
+          "score": 2.357977619171143,
+          "text_excerpt": "_Code sample:_ If you run the code above under the setting I described, and tail `testfile`, then you should see 3 `aaa` before it stops writing to that file."
+        },
+        {
+          "chunk_id": "issue-1469-excluded-001",
+          "title": "Displaced HTTP meta data in http.ClientRequest",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/1469",
+          "score": 0.5918813848495483,
+          "text_excerpt": "Displaced HTTP meta data in http.ClientRequest When upgrading from node@0.12.2 to iojs@1.6 on my server I noticed that it couldn't handle HTTP meta data anymore. Looking into the issue I compared the `http.ClientRequest` objects I'm getting via the `https.createServer` request listener on my loca..."
+        },
+        {
+          "chunk_id": "issue-9085-excluded-001",
+          "title": "HTTP client strange behavior when server responds immediately without reading request body",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9085",
+          "score": 0.1503599190711975,
+          "text_excerpt": "HTTP client strange behavior when server responds immediately without reading request body - **Version**: 6.8.0 - **Platform**: Linux laptop1 3.16.0-4-amd64 #1 SMP Debian 3.16.7-ckt25-2+deb8u3 (2016-07-02) x86_64 GNU/Linux In the example below an HTTP serve..."
+        },
+        {
+          "chunk_id": "issue-3911-excluded-002",
+          "title": "https request using port 80 when not specified",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/3911",
+          "score": -0.22508920192718507,
+          "text_excerpt": "This is causing some problems for me behind a squid proxy. The a httpsOverHttp tunnel is setup up by the pngquant-bin package installation process and the 'https' library sends a request over port 80 confusing the proxy and somehow resulting in a request thats hangs and eventually times out."
+        },
+        {
+          "chunk_id": "issue-8368-excluded-001",
+          "title": "https.request failed for certain URL after first visting",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8368",
+          "score": -0.9102646207809448,
+          "text_excerpt": "https.request failed for certain URL after first visting - **Version**: v6.2.1 - **Platform**: `osx 15.3.0 Darwin Kernel Version 15.3.0: Thu Dec 10 18:40:58 PST 2015; root:xnu-3248.30.4~1/RELEASE_X86_64 x86_64` - **Subsystem**: `https.request` When visiting the specified URL with `https.request`,..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-7301-excluded-001",
+        "issue-1469-excluded-001",
+        "issue-9085-excluded-001",
+        "issue-3911-excluded-002",
+        "issue-8368-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.20405405405405408,
+      "faithfulness": 0.8387096774193549,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 344,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-017",
+      "question": "What resolved issue reports TLS hostname verification expecting trailing dots in certificate alt names?",
+      "ideal_answer": "The issue shows a hostname mismatch error from `tls.js` because the reported host included a trailing dot while the certificate SAN entries did not. The reporter encountered it while using the `http2` module with a self-signed certificate.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `tls.createServer secureOptions`. The issue says the reporter found `secureOptions` on `tls.createServer()` as a way to limit supported TLS versions and could not find it documented. It asks whether that option should be documented or was intended for deprecation/removal. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `tls.createServer secureOptions`. The issue says the reporter found `secureOptions` on `tls.createServer()` as a way to limit supported TLS versions and could not find it documented. It asks whether that option should be documented or was intended for deprecation/removal. ",
+      "citations": [
+        {
+          "chunk_id": "issue-8008-excluded-001",
+          "title": "tls support requires dots at the end of the Alternative Subject Names",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8008",
+          "score": 2.80942892074585,
+          "text_excerpt": "Using node-debug I can see it creating an array of DNS names (all without a dot at the end) and attempt to compare it with my hostname with a \".\" appended."
+        },
+        {
+          "chunk_id": "issue-105-excluded-001",
+          "title": "CERT_UNTRUSTED errors when using https",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/105",
+          "score": 1.544228467941284,
+          "text_excerpt": "CERT_UNTRUSTED errors when using https I noticed when trying to use `npm`."
+        },
+        {
+          "chunk_id": "doc-api-tls-md-tls-ssl-tls-checkserveridentity-hostname-cert-097",
+          "title": "tls",
+          "source_type": "doc",
+          "url": "",
+          "score": -0.45908461332321165,
+          "text_excerpt": "* `hostname` {string} The host name or IP address to verify the certificate against. * `cert` {Object} A [certificate object][] representing the peer's certificate. * Returns: {Error|undefined} Verifies the certificate `cert` is issued to `hostname`. Returns {Error} object, populating it with `re..."
+        },
+        {
+          "chunk_id": "issue-9025-test-001",
+          "title": "tls.createServer secureOptions",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9025",
+          "score": -0.4749997353553772,
+          "text_excerpt": "The issue says the reporter found `secureOptions` on `tls.createServer()` as a way to limit supported TLS versions and could not find it documented. It asks whether that option should be documented or was intended for deprecation/removal."
+        },
+        {
+          "chunk_id": "issue-5867-excluded-001",
+          "title": "https.request when requestCert=true and Subject Alternate Name with wildcard",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/5867",
+          "score": -0.5081520342826843,
+          "text_excerpt": "https.request when requestCert=true and Subject Alternate Name with wildcard When trying to https.request when requestCert=true and Subject Alternate Name in certificate is with wildcard then node throws error saying that host e.g. host.domain.pl \"is not in the cert's altnames: DNS: *.domain.pl\"..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-8008-excluded-001",
+        "issue-105-excluded-001",
+        "doc-api-tls-md-tls-ssl-tls-checkserveridentity-hostname-cert-097",
+        "issue-9025-test-001",
+        "issue-5867-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.2503676470588236,
+      "faithfulness": 0.92,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 355,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-018",
+      "question": "What resolved issue describes `dns.lookup()` blocking other filesystem or serial I/O?",
+      "ideal_answer": "This issue says slow or failing DNS lookups can make `dns.lookup()` saturate the `libuv` threadpool because it relies on blocking `getaddrinfo` calls. The reporter observed that this delayed other work such as serial port and filesystem I/O.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `dns.lookup blocks filesystem I/O`. On networks with slow DNS response, or where DNS requests time out and fail, blocking calls to `getaddrinfo` issued by `dns.lookup` saturate Node's `libuv` threadpool and delay serialport or filesystem IO. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `dns.lookup blocks filesystem I/O`. On networks with slow DNS response, or where DNS requests time out and fail, blocking calls to `getaddrinfo` issued by `dns.lookup` saturate Node's `libuv` threadpool and delay serialport or filesystem IO. ",
+      "citations": [
+        {
+          "chunk_id": "issue-8436-test-001",
+          "title": "dns.lookup blocks filesystem I/O",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8436",
+          "score": 6.339874897003174,
+          "text_excerpt": "On networks with slow DNS response, or where DNS requests time out and fail, blocking calls to `getaddrinfo` issued by `dns.lookup` saturate Node's `libuv` threadpool and delay serialport or filesystem IO."
+        },
+        {
+          "chunk_id": "issue-736-excluded-001",
+          "title": "Add version of dns.lookup that returns all results",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/736",
+          "score": 4.897590789794922,
+          "text_excerpt": "Blocking calls to `getaddrinfo` issued by `dns.lookup` saturate Node's `libuv` threadpool and delay serialport or filesystem IO."
+        },
+        {
+          "chunk_id": "issue-4545-excluded-001",
+          "title": "DNS lookup failure dns.js:82",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/4545",
+          "score": 3.966783199310303,
+          "text_excerpt": "DNS lookup failure dns.js:82 here's the relevant line in node.js lib (https://github.com/nodejs/node/blob/master/lib/dns.js#L82) I have a bot running that polls an sftp server for the existence of a file that is uploaded daily."
+        },
+        {
+          "chunk_id": "doc-api-dns-md-dns-implementation-considerations-dns-lookup-083",
+          "title": "dns",
+          "source_type": "doc",
+          "url": "",
+          "score": 3.398987054824829,
+          "text_excerpt": "dns DNS > Implementation considerations > `dns.lookup()` Under the hood, [`dns.lookup()`][] uses the same operating system facilities as most other programs. For instance, [`dns.lookup()`][] will almost always resolve a given name the same way as the `ping` command. On most POSIX-like operating s..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-8436-test-001",
+        "issue-736-excluded-001",
+        "issue-4545-excluded-001",
+        "doc-api-dns-md-dns-implementation-considerations-dns-lookup-083"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.34833333333333333,
+      "faithfulness": 0.9166666666666666,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 324,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-019",
+      "question": "What resolved issue reports a memory leak from `zlib.deflate()`?",
+      "ideal_answer": "This issue reports that repeated `zlib.deflate()` calls caused memory to spike to about 3 GB and, in the Docker case, never release enough memory afterward. The reporter said the leak was severe enough to crash logging containers from memory exhaustion.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `zlib deflate results in a memory leak`. It describes this supported symptom: zlib deflate results in a memory leak - **Version**:6.7.0 - **Platform**:Darwin ITs-MacBook-Pro.local 15.6.0 Darwin Kernel Version 15.6.0: Thu Jun 23 18:25:34 PDT 2016; root:xnu-3248.60.10~1/RELEASE_X86_64 x86_64 - **Subsystem**:zlib I'm using the graylog2... ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `zlib deflate results in a memory leak`. It describes this supported symptom: zlib deflate results in a memory leak - **Version**:6.7.0 - **Platform**:Darwin ITs-MacBook-Pro.local 15.6.0 Darwin Kernel Version 15.6.0: Thu Jun 23 18:25:34 PDT 2016; root:xnu-3248.60.10~1/RELEASE_X86_64 x86_64 - **Subsystem**:zlib I'm using the graylog2... ",
+      "citations": [
+        {
+          "chunk_id": "issue-8871-test-001",
+          "title": "zlib deflate results in a memory leak",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8871",
+          "score": 5.777738246917725,
+          "text_excerpt": "zlib deflate results in a memory leak - **Version**:6.7.0 - **Platform**:Darwin ITs-MacBook-Pro.local 15.6.0 Darwin Kernel Version 15.6.0: Thu Jun 23 18:25:34 PDT 2016; root:xnu-3248.60.10~1/RELEASE_X86_64 x86_64 - **Subsystem**:zlib I'm using the graylog2..."
+        },
+        {
+          "chunk_id": "issue-1479-excluded-001",
+          "title": "zlib: memory leak with gunzipSync",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/1479",
+          "score": 4.553253326416016,
+          "text_excerpt": "zlib: memory leak with gunzipSync I was running a script to read sequentially a lot of gzipped files, and print on stdout the result of a computation for each file."
+        },
+        {
+          "chunk_id": "issue-6139-excluded-001",
+          "title": "Memory leak in gzip",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/6139",
+          "score": 3.631385955810547,
+          "text_excerpt": "Memory leak in gzip - **Version**: v5.7.1 - **Platform**: Darwin 15.4.0 Darwin Kernel Version 15.4.0: Fri Feb 26 22:08:05 PST 2016; root:xnu-3248.40.184~3/RELEASE_X86_64 x86_64 - **Subsystem**: zlib Here's the code with a memory leak: Looks like the code is..."
+        },
+        {
+          "chunk_id": "doc-api-zlib-md-zlib-threadpool-usage-and-performance-considerations-006",
+          "title": "zlib",
+          "source_type": "doc",
+          "url": "",
+          "score": 1.1083695888519287,
+          "text_excerpt": "zlib Zlib > Threadpool usage and performance considerations All `zlib` APIs, except those that are explicitly synchronous, use the Node.js internal threadpool. This can lead to surprising effects and performance limitations in some applications. Creating and using a large number of zlib objects s..."
+        },
+        {
+          "chunk_id": "issue-2970-excluded-002",
+          "title": "Silly program or memory leak?",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/2970",
+          "score": 0.536185953617096,
+          "text_excerpt": "FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - process out of memory Aborted ```"
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-8871-test-001",
+        "issue-1479-excluded-001",
+        "issue-6139-excluded-001",
+        "doc-api-zlib-md-zlib-threadpool-usage-and-performance-considerations-006",
+        "issue-2970-excluded-002"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.1648148148148148,
+      "faithfulness": 0.8076923076923077,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 420,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-020",
+      "question": "What resolved issue says `readFileSync()` and `readFile()` returned different buffer sizes?",
+      "ideal_answer": "This issue reports that `readFileSync()` returned an 8 KB backing buffer while `readFile()` returned the expected 8-byte buffer for the same file. The mismatch broke code that reconstructed a `Uint32Array` from the saved data.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `readFileSync and readFile return different buffer lengths`. It describes this supported symptom: readFileSync and readFile return different buffer lengths Version: v6.2.0 Platform: macOS Sierra 10.12 - 64bit Subsystem: fs readFileSync returns a 8k byte buffer, while readFile returns the correct size. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `readFileSync and readFile return different buffer lengths`. It describes this supported symptom: readFileSync and readFile return different buffer lengths Version: v6.2.0 Platform: macOS Sierra 10.12 - 64bit Subsystem: fs readFileSync returns a 8k byte buffer, while readFile returns the correct size. ",
+      "citations": [
+        {
+          "chunk_id": "issue-9336-test-001",
+          "title": "readFileSync and readFile return different buffer lengths",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9336",
+          "score": 7.189521064758301,
+          "text_excerpt": "readFileSync and readFile return different buffer lengths Version: v6.2.0 Platform: macOS Sierra 10.12 - 64bit Subsystem: fs readFileSync returns a 8k byte buffer, while readFile returns the correct size."
+        },
+        {
+          "chunk_id": "issue-9671-test-002",
+          "title": "readFile(fd) does not read the whole file (at least on Windows, possibly other platforms)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9671",
+          "score": 4.802082214355469,
+          "text_excerpt": "Linux: Windows: The test shows that the problem does not appear to be with read() but only with readFileSync()."
+        },
+        {
+          "chunk_id": "issue-9489-excluded-001",
+          "title": "fs.readFileSync can't return a string for a big file",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9489",
+          "score": 3.8096115493774416,
+          "text_excerpt": "fs.readFileSync can't return a string for a big file * **Version**: '7.0.0', * **Platform**: Windows 7 x64 * **Subsystem**: fs, buffer If I try to read a big file (582,170,692 bytes, ~ 555 MB) into a buffer, it is OK."
+        },
+        {
+          "chunk_id": "issue-9046-excluded-001",
+          "title": "fs.ReadStrem.read(size) trigger 'readable' event twice or once",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9046",
+          "score": 3.256018390655518,
+          "text_excerpt": "fs.ReadStrem.read(size) trigger 'readable' event twice or once - **Version**: v4.5.0 - **Platform**: Linux **\\* 3.13.0-95-generic #142-Ubuntu SMP Fri Aug 12 17:00:09 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux - **Subsystem**: fs I'm using `read(2)` to read 2 byte data of a file, and I found that the..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-9336-test-001",
+        "issue-9671-test-002",
+        "issue-9489-excluded-001",
+        "issue-9046-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.29400000000000004,
+      "faithfulness": 0.75,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 385,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-021",
+      "question": "What resolved issue asks whether `tls.createServer()` should document `secureOptions` for limiting TLS versions?",
+      "ideal_answer": "This issue says the reporter found `secureOptions` on `tls.createServer()` and expected it to be the way to restrict supported TLS versions, but could not find it documented. The question was whether the option should be documented or was intended for deprecation.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `tls.createServer secureOptions`. The issue says the reporter found `secureOptions` on `tls.createServer()` as a way to limit supported TLS versions and could not find it documented. It asks whether that option should be documented or was intended for deprecation/removal. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `tls.createServer secureOptions`. The issue says the reporter found `secureOptions` on `tls.createServer()` as a way to limit supported TLS versions and could not find it documented. It asks whether that option should be documented or was intended for deprecation/removal. ",
+      "citations": [
+        {
+          "chunk_id": "issue-9025-test-001",
+          "title": "tls.createServer secureOptions",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9025",
+          "score": 7.2475478553771975,
+          "text_excerpt": "The issue says the reporter found `secureOptions` on `tls.createServer()` as a way to limit supported TLS versions and could not find it documented. It asks whether that option should be documented or was intended for deprecation/removal."
+        },
+        {
+          "chunk_id": "issue-8803-excluded-001",
+          "title": "tls.TLSSocket does not emit error event on handshake failure",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8803",
+          "score": 2.408576240539551,
+          "text_excerpt": "tls.TLSSocket does not emit error event on handshake failure - **Version**: v6.5.0 - **Platform**: Linux 4.4.0-38-generic - **Subsystem**: TLS/SSL When upgrading `net.Socket` to `tls.TLSSocket`, if there is a handshake failure, no (documented) event is emit..."
+        },
+        {
+          "chunk_id": "doc-api-tls-md-tls-ssl-tls-createsecurecontext-options-113",
+          "title": "tls",
+          "source_type": "doc",
+          "url": "",
+          "score": 1.5628174114227296,
+          "text_excerpt": "The possible values are listed as [SSL\\_METHODS][SSL_METHODS], use the function names as strings. For example, use `'TLSv1_1_method'` to force TLS version 1.1, or `'TLS_method'` to allow any TLS protocol version up to TLSv1.3. It is not recommended to use TLS versions less than 1.2, but it may be..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-9025-test-001",
+        "issue-8803-excluded-001",
+        "doc-api-tls-md-tls-ssl-tls-createsecurecontext-options-113"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.7096774193548387,
+      "faithfulness": 0.92,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 355,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-022",
+      "question": "What resolved issue reports an extra `readable` event from an HTTP response stream?",
+      "ideal_answer": "This issue reports that after all response chunks were consumed, an additional `readable` event still fired and `res.read()` returned `null`. The reporter observed the same behavior with `https` and suspected it was a streams-related issue.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `http request emits extra 'readable' event`. It describes this supported symptom: http request emits extra 'readable' event After all the chunks have been received, there's an extra 'readable' event where `res.read()` returns `null`: Output: `https` has the same problem. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `http request emits extra 'readable' event`. It describes this supported symptom: http request emits extra 'readable' event After all the chunks have been received, there's an extra 'readable' event where `res.read()` returns `null`: Output: `https` has the same problem. ",
+      "citations": [
+        {
+          "chunk_id": "issue-676-excluded-001",
+          "title": "http request emits extra 'readable' event",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/676",
+          "score": 6.922055473327637,
+          "text_excerpt": "http request emits extra 'readable' event After all the chunks have been received, there's an extra 'readable' event where `res.read()` returns `null`: Output: `https` has the same problem."
+        },
+        {
+          "chunk_id": "issue-65-excluded-001",
+          "title": "stream.read(0) should not trigger the `end` event if there is no underlying data",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/65",
+          "score": 4.283257713317871,
+          "text_excerpt": "stream.read(0) should not trigger the `end` event if there is no underlying data https://github.com/joyent/node/issues/6634 /cc @chrisdickinson"
+        },
+        {
+          "chunk_id": "issue-8685-excluded-001",
+          "title": "stream, test: add test for _readableState.readingMore",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8685",
+          "score": 3.258923044204712,
+          "text_excerpt": "stream, test: add test for _readableState.readingMore Part of https://github.com/nodejs/node/issues/8644. https://github.com/nodejs/node/blob/774146dc58be147f2d74c8b4a1b43f9d1af6bbb1/lib/_stream_readable.js#L91-L92 cc @Fishrock123 @nodejs/streams"
+        },
+        {
+          "chunk_id": "issue-8235-excluded-002",
+          "title": "error http request at headers is array",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8235",
+          "score": 2.968233814239502,
+          "text_excerpt": ""
+        },
+        {
+          "chunk_id": "issue-8683-excluded-001",
+          "title": "stream, test: add tests for 'readable' state machine",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8683",
+          "score": 2.0121662521362307,
+          "text_excerpt": "The state machine is definitely complex, feel free to ask questions, and look hard at the source code."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-676-excluded-001",
+        "issue-65-excluded-001",
+        "issue-8685-excluded-001",
+        "issue-8235-excluded-002",
+        "issue-8683-excluded-001"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.4161290322580645,
+      "faithfulness": 0.7857142857142857,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 354,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-023",
+      "question": "What resolved issue discusses FIPS test failures and API problems in Node.js crypto?",
+      "ideal_answer": "The issue says FIPS-compliant OpenSSL builds were blocked by many failing Node.js tests, making it unclear whether Node.js could operate correctly in that mode. It presents those failures as a barrier to real-world FIPS adoption.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `errors`. It points to this behavior: crypto: Resolve FIPS test failures and API issues # Issue Overview The issue of FIPS-compliant encryption in Node.js has been brought up [before](https://github.com/nodejs/node-v0.x-archive/issues/25463) and support for compiling with FIPS-compliant OpenSSL... Use the cited docs as the source of truth.",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `errors`. It points to this behavior: crypto: Resolve FIPS test failures and API issues # Issue Overview The issue of FIPS-compliant encryption in Node.js has been brought up [before](https://github.com/nodejs/node-v0.x-archive/issues/25463) and support for compiling with FIPS-compliant OpenSSL... Use the cited docs as the source of truth.",
+      "citations": [
+        {
+          "chunk_id": "issue-3760-excluded-001",
+          "title": "crypto: Resolve FIPS test failures and API issues",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/3760",
+          "score": 8.03927921295166,
+          "text_excerpt": "crypto: Resolve FIPS test failures and API issues # Issue Overview The issue of FIPS-compliant encryption in Node.js has been brought up [before](https://github.com/nodejs/node-v0.x-archive/issues/25463) and support for compiling with FIPS-compliant OpenSSL..."
+        },
+        {
+          "chunk_id": "issue-8455-excluded-001",
+          "title": "Investigate flaky parallel/test-crypto-binary-default on linux-fips",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/8455",
+          "score": 5.276829948425293,
+          "text_excerpt": "Investigate flaky parallel/test-crypto-binary-default on linux-fips - **Version**: v7.0.0-pre - **Platform**: ubuntu1404-64 - **Subsystem**: test crypto Example failure at https://ci.nodejs.org/job/node-test-commit-linux-fips/3569/nodes=ubuntu1404-64/console: @mhdawson"
+        },
+        {
+          "chunk_id": "issue-5465-excluded-001",
+          "title": "FIPS tests failing on v5.x",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/5465",
+          "score": 3.223011646270752,
+          "text_excerpt": "FIPS tests failing on v5.x See https://ci.nodejs.org/job/node-test-commit-linux-fips/1064/nodes=ubuntu1404-64/console & https://ci.nodejs.org/job/node-test-commit-linux-fips/1063/nodes=ubuntu1404-64/console A bunch of tests failing with: I don't see anything obvious in v5.x since v5.7.0 that woul..."
+        },
+        {
+          "chunk_id": "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-unavailable-078",
+          "title": "errors",
+          "source_type": "doc",
+          "url": "",
+          "score": 0.31325155675411226,
+          "text_excerpt": "errors Errors > Node.js error codes > `ERR_CRYPTO_FIPS_UNAVAILABLE` An attempt was made to enable or disable FIPS mode, but FIPS mode was not available."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-3760-excluded-001",
+        "issue-8455-excluded-001",
+        "issue-5465-excluded-001",
+        "doc-api-errors-md-errors-node-js-error-codes-err-crypto-fips-unavailable-078"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.284375,
+      "faithfulness": 0.8076923076923077,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 418,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-024",
+      "question": "Which resolved issue tracks adding version and deprecation history to API docs?",
+      "ideal_answer": "The issue tracks a checklist of documentation files where version-introduced or deprecation information should be added, including files such as `assert.md`, `buffer.md`, `crypto.md`, `dns.md`, and `fs.md`.",
+      "generated_answer": "Based on the local Node.js knowledge base, the relevant API documentation is `deprecations`. It points to this behavior: Node.js uses four kinds of deprecations: * Documentation-only * Application (non-`node_modules` code only) * Runtime (all code) * End-of-Life A Documentation-only deprecation is one that is expressed only within the Node.js API docs. In `doc: repl deprecation styling results in unreadable text`, the cited text notes: doc: repl deprecation styling results in unreadable text * **Version**: v7.x * **Platform**: n/a * **Subsystem**: doc The styling of backtick blocks in deprecation messages was changed at some point for v7.x docs, causing [this deprecation](https://nodejs.o...",
+      "answer": "Based on the local Node.js knowledge base, the relevant API documentation is `deprecations`. It points to this behavior: Node.js uses four kinds of deprecations: * Documentation-only * Application (non-`node_modules` code only) * Runtime (all code) * End-of-Life A Documentation-only deprecation is one that is expressed only within the Node.js API docs. In `doc: repl deprecation styling results in unreadable text`, the cited text notes: doc: repl deprecation styling results in unreadable text * **Version**: v7.x * **Platform**: n/a * **Subsystem**: doc The styling of backtick blocks in deprecation messages was changed at some point for v7.x docs, causing [this deprecation](https://nodejs.o...",
+      "citations": [
+        {
+          "chunk_id": "issue-9714-test-001",
+          "title": "doc: repl deprecation styling results in unreadable text",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9714",
+          "score": 5.321316394805908,
+          "text_excerpt": "doc: repl deprecation styling results in unreadable text * **Version**: v7.x * **Platform**: n/a * **Subsystem**: doc The styling of backtick blocks in deprecation messages was changed at some point for v7.x docs, causing [this deprecation](https://nodejs.o..."
+        },
+        {
+          "chunk_id": "issue-6578-excluded-001",
+          "title": "docs do not state at what version an API was introduced (or deprecated)",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/6578",
+          "score": 2.7508699035644533,
+          "text_excerpt": "docs do not state at what version an API was introduced (or deprecated) node documentation just documents the current node, but to write portable node.js, its important to know about when APIs were introduced (or changed incompatibly) I regularly find devel..."
+        },
+        {
+          "chunk_id": "issue-3818-excluded-001",
+          "title": "Add links to previous versions of individual docs",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/3818",
+          "score": 1.513755474090576,
+          "text_excerpt": "Add links to previous versions of individual docs I think it would be extremely useful if each page of the current docs had links to the previous versions of the documentation. I am upgrading from .10 to 4 and have found myself wanting to compare docs between the 2 versions. For example, if I'm l..."
+        },
+        {
+          "chunk_id": "doc-api-deprecations-md-deprecated-apis-002",
+          "title": "deprecations",
+          "source_type": "doc",
+          "url": "",
+          "score": -0.03270728886127472,
+          "text_excerpt": "Node.js APIs might be deprecated for any of the following reasons: * Use of the API is unsafe. * An improved alternative API is available. * Breaking changes to the API are expected in a future major release. Node.js uses four kinds of deprecations: * Documentation-only * Application (non-`node_m..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-9714-test-001",
+        "issue-6578-excluded-001",
+        "issue-3818-excluded-001",
+        "doc-api-deprecations-md-deprecated-apis-002"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.2,
+      "faithfulness": 0.7045454545454546,
+      "citation_coverage": false,
+      "groundedness_pass": true,
+      "answer_length": 700,
+      "refusal_or_empty": false
+    },
+    {
+      "golden_id": "rag-golden-025",
+      "question": "What resolved issue reports too many Ubuntu sockets stuck in `CLOSE_WAIT` after HTTP CONNECT traffic?",
+      "ideal_answer": "This issue reports many sockets remaining in `CLOSE_WAIT` on Ubuntu after a proxy server sent a FIN packet following an HTTP CONNECT response. The reporter believed the problem was somewhere in `_http_client.js`, `net.js`, or lower networking layers because the expected `end` event was not arriving.",
+      "generated_answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Stream stops reading from kernel halfway through in http.IncomingMessage`. It describes this supported symptom: The code is straightforward and essentially boils down to: I cannot reproduce this issue locally, but in production I'll have sockets stuck in this state even 10 minutes after a restart. ",
+      "answer": "Based on the local Node.js knowledge base, the closest resolved issue evidence is `Stream stops reading from kernel halfway through in http.IncomingMessage`. It describes this supported symptom: The code is straightforward and essentially boils down to: I cannot reproduce this issue locally, but in production I'll have sockets stuck in this state even 10 minutes after a restart. ",
+      "citations": [
+        {
+          "chunk_id": "issue-9513-test-001",
+          "title": "Too many sockets of Ubuntu with 'CLOSE_WAIT'",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/9513",
+          "score": 6.310979518890381,
+          "text_excerpt": "This is a problem found in`request`, in which I also post an [issue](https://github.com/request/request/issues/2440), but after a few days tracking, we found that it is not an issue with request module itself, but `_http_client.js` or `net.js`, even `tcp_wr..."
+        },
+        {
+          "chunk_id": "issue-7910-excluded-001",
+          "title": "Stream stops reading from kernel halfway through in http.IncomingMessage",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/7910",
+          "score": 2.866976013183594,
+          "text_excerpt": "The code is straightforward and essentially boils down to: I cannot reproduce this issue locally, but in production I'll have sockets stuck in this state even 10 minutes after a restart."
+        },
+        {
+          "chunk_id": "issue-2642-excluded-001",
+          "title": "Keep alive connection do not get closed with server.close()",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/2642",
+          "score": 1.7915946578979491,
+          "text_excerpt": "Keep alive connection do not get closed with server.close() The following will remain open as long as the client makes a request within one second intervals making it possible that a server will never gracefully close."
+        },
+        {
+          "chunk_id": "issue-1924-excluded-001",
+          "title": "Not closing all connections.",
+          "source_type": "resolved_issue",
+          "url": "https://github.com/nodejs/node/issues/1924",
+          "score": 1.728337321281433,
+          "text_excerpt": "Not closing all connections. Using: Ubuntu io.js v2.2.1 or node.js stable v0.12.4 I have noticed, that node is not closing all connections at once. It's closing some part of connections. Usually about 50-70% of them and the rest are closed after few mins or so. Sometimes it doesn't close them at..."
+        },
+        {
+          "chunk_id": "doc-api-http-md-http-class-http-server-server-closeallconnections-093",
+          "title": "http",
+          "source_type": "doc",
+          "url": "",
+          "score": 0.3415387737751007,
+          "text_excerpt": "http HTTP > Class: `http.Server` > `server.closeAllConnections()` Closes all established HTTP(S) connections connected to this server, including active connections connected to this server which are sending a request or waiting for a response. This does _not_ destroy sockets upgraded to a differe..."
+        }
+      ],
+      "citation_chunk_ids": [
+        "issue-9513-test-001",
+        "issue-7910-excluded-001",
+        "issue-2642-excluded-001",
+        "issue-1924-excluded-001",
+        "doc-api-http-md-http-class-http-server-server-closeallconnections-093"
+      ],
+      "retriever": "reranked",
+      "answer_relevancy": 0.31079622132253715,
+      "faithfulness": 0.8387096774193549,
+      "citation_coverage": true,
+      "groundedness_pass": true,
+      "answer_length": 382,
+      "refusal_or_empty": false
+    }
+  ]
+}

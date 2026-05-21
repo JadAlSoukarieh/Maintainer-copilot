@@ -14,15 +14,32 @@ Run:
 
 ```bash
 python evals/classification_eval.py
+python evals/classification_eval.py --model all --gate primary
 ```
 
 This script:
 
-- loads the committed RoBERTa classifier artifacts through the same in-process service path used by `services/model-server`
-- evaluates the classifier on the 25-example golden set
+- loads the committed classifier family under the selected mode
+- evaluates the 25-example golden set
 - computes accuracy, macro-F1, per-class F1, and the ordered confusion matrix
-- writes `reports/eval_report.json`
+- writes `reports/eval_report.json` for the default transformer-only mode
+- writes `reports/classification_golden_eval_all.json` for `--model all`
 - exits non-zero if any committed threshold is missed
+
+Supported modes:
+
+- `selected_transformer`: in-process RoBERTa path used by `services/model-server`
+- `classical`: frozen TF-IDF + logistic regression artifact
+- `llm_baseline_predictions`: existing committed `predictions.jsonl` only; no Claude calls
+- `all`: run every available family and report coverage/failures per model
+
+Gate policy:
+
+- `--gate primary`: only the deployed `selected_transformer` blocks. Classical and LLM baseline failures are reported as warnings.
+- `--gate all` or `--strict-baselines`: every requested model family blocks.
+- `--gate none`: report-only mode.
+
+CI uses `python evals/classification_eval.py --model all --gate primary`. The classical baseline is expected to be weaker on some golden examples; it remains a comparison artifact, not the deployed classifier gate.
 
 Thresholds live in `evals/eval_thresholds.yaml`.
 
@@ -34,7 +51,7 @@ The golden set is small, so it is not a replacement for the full held-out test m
 - catch artifact or inference-path drift after service changes
 - fail fast when the deployed classifier behavior meaningfully degrades
 
-Because the gate is small and hand-curated, the thresholds are intentionally meaningful but not overly tight.
+Because the gate is small and hand-curated, the thresholds are intentionally meaningful but not overly tight. It is still possible for a comparison model family to fail the gate on one class while remaining useful for broader artifact comparisons.
 
 ## RAG foundation
 
@@ -59,6 +76,8 @@ The current chunking strategy is:
 
 - markdown heading-aware chunking for docs, preserving section context
 - structured issue records for resolved issues with title, problem/body, and an explicit limitation note that comments are not fetched yet
+
+Current limitation: resolved issue chunks are still title/body-only. Maintainer comments and closing answers are not yet part of the corpus.
 
 The first retrieval baseline is sparse TF-IDF. Dense retrieval now uses the local `sentence-transformers/all-MiniLM-L6-v2` model, chosen because it is small, fast on CPU, and a common semantic retrieval baseline. Hybrid retrieval combines normalized sparse and dense scores:
 
@@ -91,9 +110,28 @@ Query rewrite is deterministic and explainable. It expands common Node.js suppor
 
 Reranking is implemented as a local cross-encoder pass over retrieved candidates. It uses `cross-encoder/ms-marco-MiniLM-L-6-v2` with `local_files_only=True`, and the current local install path is `artifacts/rag/reranker_model`. Its job is to improve ranking after retrieval, not to change the candidate set.
 
-Still missing:
+## RAG generation eval
 
-- generation evaluation
+Run:
+
+```bash
+python evals/rag_generation_eval.py
+```
+
+This is a deterministic offline regression gate for the extractive `/rag/answer` path. It does not call Claude and it does not judge fluent generative quality with an LLM. The frozen judge version is `frozen-rag-judge-v1`.
+
+For each of the 25 RAG golden questions, the eval asks the selected local RAG answer service and computes:
+
+- `answer_relevancy`: token-overlap similarity between the question/ideal answer and generated answer/citations
+- `faithfulness`: whether answer terms are supported by retrieved citation excerpts
+- `citation_coverage`: whether at least one retrieved citation is in `ground_truth_chunk_ids`
+- `groundedness_pass_rate`: whether the answer has citations and enough support
+- `average_answer_length`
+- `refusal_or_empty_rate`
+
+The report is written to `reports/rag_generation_eval_report.json`. Thresholds live under `rag_generation` in `evals/eval_thresholds.yaml`.
+
+`data/rag/golden/rag_generation_human_labels.jsonl` contains 5 initial labels marked `review_status="ai_assisted_initial"`. These are not counted as human spot-checks. Only rows changed to `review_status="human_spot_checked"` after manual review count toward judge/human agreement.
 
 ## RAG golden workflow
 

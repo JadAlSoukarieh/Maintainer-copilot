@@ -16,3 +16,8 @@ node_modules/
 .env.local
 minio-data/
 vault-data/
+AIE_Week7_Maintainers_Copilot_v4.pdf
+mlruns/
+CLAUDE.md
+CODEX_TASKS.md
+services/widget/test-results/

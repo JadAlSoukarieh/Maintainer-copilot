@@ -1,0 +1,24 @@
+{
+  "models": {
+    "a": {
+      "name": "sentence-transformers/all-MiniLM-L6-v2",
+      "hit_at_5": 0.6,
+      "hit_at_10": 0.68,
+      "mrr_at_10": 0.5584
+    },
+    "b": {
+      "name": "sentence-transformers/all-MiniLM-L12-v2",
+      "hit_at_5": 0.72,
+      "hit_at_10": 0.72,
+      "mrr_at_10": 0.6133
+    }
+  },
+  "delta": {
+    "hit_at_5": 0.12,
+    "hit_at_10": 0.04,
+    "mrr_at_10": 0.0549
+  },
+  "winner": "sentence-transformers/all-MiniLM-L12-v2",
+  "corpus_size": 13580,
+  "golden_size": 25
+}

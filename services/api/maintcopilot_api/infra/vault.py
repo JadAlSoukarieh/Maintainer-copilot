@@ -55,3 +55,17 @@ class VaultClient:
             raise VaultSecretError("Vault secret response was missing KV-v2 payload.")
 
         return inner_data
+
+    def write_kv_v2_secret(self, path: str, payload: dict[str, Any]) -> None:
+        secret_path = path.lstrip("/")
+        try:
+            response = httpx.post(
+                f"{self._addr}/v1/{secret_path}",
+                headers={"X-Vault-Token": self._token},
+                json={"data": payload},
+                timeout=2.0,
+            )
+        except Exception as exc:
+            raise VaultSecretError("Vault secret write failed.") from exc
+        if response.status_code not in {200, 204}:
+            raise VaultSecretError("Vault secret write failed.")

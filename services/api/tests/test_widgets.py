@@ -25,15 +25,19 @@ def test_public_widget_config_can_be_fetched(widget_service, seed_user) -> None:
         enabled_tools=["classify_issue", "summarize_thread"],
     )
     create_widget(payload, admin_user, widget_service)
-    response = widget_config("widget_123", widget_service)
+    request = SimpleNamespace(headers={"origin": "http://localhost:8090"})
+    response = widget_config("widget_123", widget_service, Settings(require_vault=False, chat_llm_enabled=False), request)
     assert response.public_widget_id == "widget_123"
     assert response.greeting == "Hello maintainer"
     assert response.theme.primaryColor == "#1f6feb"
     assert response.enabled_tools == ["classify_issue", "summarize_thread"]
+    assert response.default_use_llm is False
 
 
 def test_widget_loader_returns_iframe_injection_javascript() -> None:
-    response = widget_loader()
+    widget_service = _demo_widget_service()
+    request = SimpleNamespace(headers={"origin": "http://localhost:5173"})
+    response = widget_loader("demo-widget", widget_service, Settings(require_vault=False, enable_demo_widget_fallback=True), request)
     body = response.body.decode("utf-8")
 
     assert response.media_type == "application/javascript"
@@ -41,6 +45,10 @@ def test_widget_loader_returns_iframe_injection_javascript() -> None:
     assert "Maintainer's Copilot Widget" in body
     assert "document.createElement(\"iframe\")" in body
     assert "maintcopilot:resize" in body
+    assert (
+        "frame-ancestors http://localhost:8000 http://localhost:5173 http://localhost:8080 http://localhost:8090"
+        == response.headers["Content-Security-Policy"]
+    )
 
 
 @pytest.mark.anyio
@@ -132,6 +140,7 @@ def test_demo_widget_fallback_enabled_returns_config(widget_service) -> None:
     assert response.greeting == "Ask Maintainer's Copilot about this project."
     assert response.enabled_tools == ["classify_issue", "extract_entities", "summarize_thread", "rag_answer", "write_memory"]
     assert "http://localhost:5173" in response.allowed_origins
+    assert response.default_use_llm is False
 
 
 def test_demo_widget_fallback_does_not_apply_to_random_widget(widget_service) -> None:
@@ -140,6 +149,44 @@ def test_demo_widget_fallback_does_not_apply_to_random_widget(widget_service) ->
 
 
 def test_widget_config_route_uses_demo_fallback_flag(widget_service) -> None:
-    response = widget_config("demo-widget", widget_service, Settings(require_vault=False, enable_demo_widget_fallback=True))
+    request = SimpleNamespace(headers={"origin": "http://localhost:5173"})
+    response = widget_config(
+        "demo-widget",
+        widget_service,
+        Settings(require_vault=False, enable_demo_widget_fallback=True, chat_llm_enabled=True),
+        request,
+    )
 
     assert response.public_widget_id == "demo-widget"
+    assert response.default_use_llm is True
+
+
+def test_disallowed_widget_origin_fails(widget_service) -> None:
+    request = SimpleNamespace(headers={"origin": "http://evil.example"})
+
+    with pytest.raises(ForbiddenError):
+        widget_config("demo-widget", widget_service, Settings(require_vault=False, enable_demo_widget_fallback=True), request)
+
+
+def test_missing_origin_allowed_only_in_demo_mode(widget_service) -> None:
+    with pytest.raises(ForbiddenError):
+        widget_config(
+            "demo-widget",
+            _demo_widget_service(),
+            Settings(require_vault=False, enable_demo_widget_fallback=False),
+            SimpleNamespace(headers={}),
+        )
+
+    response = widget_config("demo-widget", widget_service, Settings(require_vault=False, enable_demo_widget_fallback=True), SimpleNamespace(headers={}))
+    assert response.public_widget_id == "demo-widget"
+
+
+def _demo_widget_service():
+    class _Service:
+        def get_public_config(self, public_widget_id: str, *, enable_demo_fallback: bool = False):
+            from maintcopilot_api.services.widget_service import demo_widget_config
+
+            assert public_widget_id == "demo-widget"
+            return demo_widget_config()
+
+    return _Service()

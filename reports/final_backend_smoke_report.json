@@ -1,0 +1,1012 @@
+{
+  "timestamp": "2026-05-21T17:03:54.369439+00:00",
+  "mode": "claude",
+  "api_base_url": "http://localhost:8000",
+  "model_server_base_url": "http://localhost:8001",
+  "checks": [
+    {
+      "name": "api_health",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "summary": "status=200",
+      "response": {
+        "status": "ok"
+      },
+      "error": null
+    },
+    {
+      "name": "model_server_health",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "summary": "status=200",
+      "response": {
+        "status": "ok",
+        "artifact_dir": "/app/artifacts/classifier/transformer",
+        "artifacts_present": true
+      },
+      "error": null
+    },
+    {
+      "name": "widget_config_allowed_origin",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "summary": "status=200 widget=demo-widget",
+      "response": {
+        "public_widget_id": "demo-widget",
+        "allowed_origins": [
+          "http://localhost:8000",
+          "http://localhost:5173",
+          "http://localhost:8080",
+          "http://localhost:8090"
+        ],
+        "theme": {
+          "primaryColor": "#1f6feb",
+          "position": "bottom-right"
+        },
+        "greeting": "Ask Maintainer's Copilot about this project.",
+        "enabled_tools": [
+          "classify_issue",
+          "extract_entities",
+          "summarize_thread",
+          "rag_answer",
+          "write_memory"
+        ],
+        "default_use_llm": true
+      }
+    },
+    {
+      "name": "widget_config_blocked_origin",
+      "passed": true,
+      "required": true,
+      "status_code": 403,
+      "summary": "status=403",
+      "response": {
+        "error": {
+          "code": "forbidden",
+          "message": "Widget origin is not allowed for this public endpoint.",
+          "request_id": "742c8ef0-fb9e-48d2-a653-43eede91c400"
+        }
+      }
+    },
+    {
+      "name": "widget_js_csp",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "summary": "status=200 csp=present",
+      "csp": "frame-ancestors http://localhost:8000 http://localhost:5173 http://localhost:8080 http://localhost:8090"
+    },
+    {
+      "name": "deterministic_rag_chat",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "selected_tool": "rag_answer",
+      "mode": "deterministic_fallback",
+      "fallback_reason": null,
+      "citations_count": 5,
+      "summary": "status=200 tool=rag_answer mode=deterministic_fallback citations=5",
+      "response": {
+        "conversation_id": "bfdc7dc8-d51e-4f53-a958-257b19b7fdf5",
+        "message": "Based on the local Node.js knowledge base, related issue evidence points to similar symptoms and request-lifecycle problems. The strongest cited issues include `Memory leak for https.request() on ECONNRESET`, `Massive memory leak in HTTP 'upgrade' event`, and `high tls memory usage (rss)`. The retrieved issues describe this related evidence: Memory leak for https.request() on ECONNRESET - **Version**: 6.8.0, 7.0.0 - **Platform**: Ubuntu 16.04 (Linux patrickd 4.4.0-38-generic #57-Ubuntu SMP Tue S",
+        "mode": "deterministic_fallback",
+        "selected_tool": "rag_answer",
+        "fallback_reason": null,
+        "request_id": "e11d0de9-d4b0-488b-aaeb-189fa57e87fb",
+        "trace_id": "4c91511a-db7b-431f-bd3e-26bf87c729d2",
+        "citations_count": 5
+      }
+    },
+    {
+      "name": "deterministic_classify_chat",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "selected_tool": "classify_issue",
+      "mode": "deterministic_fallback",
+      "summary": "status=200 tool=classify_issue mode=deterministic_fallback",
+      "response": {
+        "conversation_id": "303bf9a4-2e85-4710-88a5-a7ddf74ec201",
+        "message": "I classified this issue as bug.",
+        "mode": "deterministic_fallback",
+        "selected_tool": "classify_issue",
+        "fallback_reason": null,
+        "request_id": "d2c310a9-80cc-42ec-b6bc-d7b21ad6d0b4",
+        "trace_id": "96d2f993-d90c-4338-a82d-f8447c012997",
+        "citations_count": 0
+      }
+    },
+    {
+      "name": "explicit_memory_write",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "selected_tool": "write_memory",
+      "mode": "deterministic_fallback",
+      "memory_writes": 1,
+      "summary": "status=200 tool=write_memory writes=1",
+      "response": {
+        "conversation_id": "5e738583-36ef-4e02-8eb8-0a2c6d9f738f",
+        "message": "I saved that memory.",
+        "mode": "deterministic_fallback",
+        "selected_tool": "write_memory",
+        "fallback_reason": null,
+        "request_id": "c15dc588-db9b-4f8a-aa74-42da2dea2223",
+        "trace_id": "0bf6c5f3-4dcd-485b-85da-7326e5c78b33",
+        "citations_count": 0
+      }
+    },
+    {
+      "name": "memory_search",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "requested_mode": "hybrid",
+      "effective_mode": "hybrid",
+      "fallback_reason": null,
+      "summary": "status=200 effective_mode=hybrid",
+      "response": {
+        "items": [
+          {
+            "id": "3e634fc7-6161-4771-9384-d4370f483583",
+            "conversation_id": "5e738583-36ef-4e02-8eb8-0a2c6d9f738f",
+            "user_id": "anonymous",
+            "content": "Remember that missing JWT auth issues should be treated as bugs.",
+            "metadata": {
+              "source": "chat.write_memory",
+              "memory_type": "episodic"
+            },
+            "embedding": "[-0.1046725,-0.0352338,0.06661724,-0.0174223,0.02539465,-0.01764865,-0.04101598,-0.0745042,-0.04947001,-0.07549398,0.0014089,0.02647033,0.00825369,-0.01245053,0.04192217,0.02707506,-0.01131027,0.05780185,-0.01373296,-0.04152715,-0.05231559,0.00494696,-0.00381203,-0.02760028,0.05360052,-0.04813039,-0.02239035,-0.00236989,-0.02263839,0.05075034,0.00963805,0.01903497,-0.04250379,-0.00685166,-0.06146438,-0.01484375,0.01570412,0.01836933,0.02532486,-0.0811052,-0.03619177,-0.00192725,-0.0527605,0.04631623,-0.03696929,-0.06722064,0.02885002,-0.09621057,-0.04394599,0.02877981,0.02164634,-0.04540372,0.02810665,-0.03663895,-0.09470382,-0.02241261,-0.04378344,0.01022984,0.04944629,0.0853776,0.00403748,-0.0199031,0.01149276,0.01501975,0.05286612,-0.03354231,-0.01346042,-0.04075746,0.01246179,-0.0186122,-0.01766074,0.06151608,-0.1177,-0.02330688,0.00813509,0.05913226,-0.10910286,0.00796094,0.07364823,-0.00459868,-0.01163392,-0.04755624,0.04457835,0.04223887,0.10831214,0.01990696,-0.04957512,0.03241982,-0.08029438,0.1031912,0.0431119,0.02008906,0.03207594,0.0451736,0.00286947,0.01779195,-0.00851406,0.06317329,-0.0632397,0.05363992,-0.09199335,0.05348529,0.04135909,0.08538495,0.09595557,-0.01682193,0.02728864,0.04006752,0.05855577,-0.00660033,0.02036466,0.00257523,-0.03201075,-0.00055257,-0.05311619,0.01061602,-0.01687562,0.00889721,0.00313155,0.03791168,0.04494961,0.00708058,0.01468725,-0.03317824,0.01063752,0.03562559,-0.05687542,0,-0.04689727,0.11584839,0.07588513,-0.01992202,0.00168711,-0.07010028,-0.07477432,-0.03674076,0.01407485,-0.05809414,0.02812154,-0.02434902,0.03673858,-0.05397968,-0.01453727,-0.02894953,-0.01514105,0.00739364,0.07466927,0.02038214,0.05428095,-0.09249527,0.07154454,0.04219488,-0.03710143,0.04688558,0.06309829,0.05896287,-0.00900136,0.04109796,-0.02627902,-0.05775426,0.04586348,0.05511744,-0.03009044,0.02702828,0.10062265,-0.07122094,-0.00860271,-0.09062739,-0.12246446,-0.01609306,-0.05627237,0.00870831,-0.00656059,-0.07982346,0.07426292,0.00489417,0.11703604,0.10282575,-0.14573169,0.03316527,0.01311097,-0.08825254,0.05258781,-0.02095382,-0.0334336,0.05522354,-0.04995777,-0.02930923,-0.034787,-0.00997403,0.01214481,-0.04856653,-0.01372587,0.05302609,-0.03075369,-0.04886089,-0.07847495,-0.0198427,0.01158278,0.05684334,0.07086645,0.03778958,-0.07612228,-0.00965003,0.01954433,-0.00854249,0.01775466,-0.01852644,0.08619668,-0.05221464,-0.00316437,0.07364425,0.02576828,0.00061109,0.07424609,0.04097992,-0.03895475,0.03928912,0.14186609,0.06620897,0.03286343,0.06539905,-0.0463726,-0,-0.07528867,-0.06790231,-0.02770598,-0.01443831,0.00694483,0.02097579,-0.03222701,0.02025122,0.01596638,0.0164182,0.02938612,0.01551739,-0.05992837,0.01234197,-0.00695092,0.04031627,-0.00799439,-0.00859379,0.04841302,-0.00321652,0.06478961,0.11307534,0.00838419,0.06057442,-0.02064176,0.00651546,-0.02059447,0.00100334,-0.05366405,-0.05326862,0.18133943,0.01514049,-0.06455825,-0.07456125,0.017537,-0.11685354,0.00701418,0.12039209,-0.01878059,0.00922985,0.04799532,-0.05026968,-0.04462967,0.01827451,0.02481879,0.00177346,0.03172817,0.00574206,0.02459473,0.05491586,-0.03321658,-0.0125689,0.0519973,-0.04514797,-0.08031875,0.04958166,0.06921171,0.02081358,0.07070826,-0.02631401,-0.02515292,-0.02323372,0.03983467,0.05990333,0.0092657,-0.07233513,0.01107915,0.19328806,0.00052612,0.02108286,-0.01126549,-0.04266137,-0.02385541,-0.01214688,0.10064127,-0.00080145,0.0257992,-0.05249142,-0.02933323,0.00654552,0.00424268,0.03662267,-0.02613166,-0.03289129,0.03579934,-0.13669926,-0.03114203,0.04324678,0.02117477,0.0043303,-0.01521411,0.03087717,-0.0141456,0.02452725,-0.02170808,-2e-08,0.00351059,-0.00110934,-0.00528096,-0.03369338,0.03736157,-0.00829749,-0.07757168,-0.00159207,-0.00167402,0.00047595,-0.03733556,0.01325235,-0.02812393,-0.01140793,-0.03908831,-0.08437913,-0.06077788,0.05897258,-0.04499463,-0.04657931,-0.05648911,0.02935817,0.03111676,-0.04417688,-0.00267442,-0.01415818,0.01999689,0.03739502,-0.01341247,-0.03920572,-0.12589088,0.0764828,-0.00114088,-0.07810109,-0.15509193,0.04343918,0.00135252,-0.07942539,-0.02868421,-0.05951472,-0.00776681,-0.02521968,0.02787832,0.02050306,-0.020123,0.07953504,0.02152637,0.06453921,0.08957512,-0.07321658,0.00190168,-0.00930532,-0.02544054,0.00664195,0.02803078,0.0544161,0.02155823,0.02932909,0.14297242,-0.06124198,0.04998293,-0.06254105,-0.01685152,0.00057896]",
+            "created_at": "2026-05-21T17:03:45.999266Z",
+            "updated_at": "2026-05-21T17:03:45.999266Z",
+            "_hybrid_score": 1.0
+          },
+          {
+            "id": "76096a11-a5a4-453f-b5cb-84c175a3083d",
+            "conversation_id": "2e9212f9-fe31-45a1-9e22-97c6827b0306",
+            "user_id": "anonymous",
+            "content": "Remember that missing JWT auth issues should be treated as bugs.",
+            "metadata": {
+              "source": "chat.write_memory",
+              "memory_type": "episodic"
+            },
+            "embedding": "[-0.1046725,-0.0352338,0.06661724,-0.0174223,0.02539465,-0.01764865,-0.04101598,-0.0745042,-0.04947001,-0.07549398,0.0014089,0.02647033,0.00825369,-0.01245053,0.04192217,0.02707506,-0.01131027,0.05780185,-0.01373296,-0.04152715,-0.05231559,0.00494696,-0.00381203,-0.02760028,0.05360052,-0.04813039,-0.02239035,-0.00236989,-0.02263839,0.05075034,0.00963805,0.01903497,-0.04250379,-0.00685166,-0.06146438,-0.01484375,0.01570412,0.01836933,0.02532486,-0.0811052,-0.03619177,-0.00192725,-0.0527605,0.04631623,-0.03696929,-0.06722064,0.02885002,-0.09621057,-0.04394599,0.02877981,0.02164634,-0.04540372,0.02810665,-0.03663895,-0.09470382,-0.02241261,-0.04378344,0.01022984,0.04944629,0.0853776,0.00403748,-0.0199031,0.01149276,0.01501975,0.05286612,-0.03354231,-0.01346042,-0.04075746,0.01246179,-0.0186122,-0.01766074,0.06151608,-0.1177,-0.02330688,0.00813509,0.05913226,-0.10910286,0.00796094,0.07364823,-0.00459868,-0.01163392,-0.04755624,0.04457835,0.04223887,0.10831214,0.01990696,-0.04957512,0.03241982,-0.08029438,0.1031912,0.0431119,0.02008906,0.03207594,0.0451736,0.00286947,0.01779195,-0.00851406,0.06317329,-0.0632397,0.05363992,-0.09199335,0.05348529,0.04135909,0.08538495,0.09595557,-0.01682193,0.02728864,0.04006752,0.05855577,-0.00660033,0.02036466,0.00257523,-0.03201075,-0.00055257,-0.05311619,0.01061602,-0.01687562,0.00889721,0.00313155,0.03791168,0.04494961,0.00708058,0.01468725,-0.03317824,0.01063752,0.03562559,-0.05687542,0,-0.04689727,0.11584839,0.07588513,-0.01992202,0.00168711,-0.07010028,-0.07477432,-0.03674076,0.01407485,-0.05809414,0.02812154,-0.02434902,0.03673858,-0.05397968,-0.01453727,-0.02894953,-0.01514105,0.00739364,0.07466927,0.02038214,0.05428095,-0.09249527,0.07154454,0.04219488,-0.03710143,0.04688558,0.06309829,0.05896287,-0.00900136,0.04109796,-0.02627902,-0.05775426,0.04586348,0.05511744,-0.03009044,0.02702828,0.10062265,-0.07122094,-0.00860271,-0.09062739,-0.12246446,-0.01609306,-0.05627237,0.00870831,-0.00656059,-0.07982346,0.07426292,0.00489417,0.11703604,0.10282575,-0.14573169,0.03316527,0.01311097,-0.08825254,0.05258781,-0.02095382,-0.0334336,0.05522354,-0.04995777,-0.02930923,-0.034787,-0.00997403,0.01214481,-0.04856653,-0.01372587,0.05302609,-0.03075369,-0.04886089,-0.07847495,-0.0198427,0.01158278,0.05684334,0.07086645,0.03778958,-0.07612228,-0.00965003,0.01954433,-0.00854249,0.01775466,-0.01852644,0.08619668,-0.05221464,-0.00316437,0.07364425,0.02576828,0.00061109,0.07424609,0.04097992,-0.03895475,0.03928912,0.14186609,0.06620897,0.03286343,0.06539905,-0.0463726,-0,-0.07528867,-0.06790231,-0.02770598,-0.01443831,0.00694483,0.02097579,-0.03222701,0.02025122,0.01596638,0.0164182,0.02938612,0.01551739,-0.05992837,0.01234197,-0.00695092,0.04031627,-0.00799439,-0.00859379,0.04841302,-0.00321652,0.06478961,0.11307534,0.00838419,0.06057442,-0.02064176,0.00651546,-0.02059447,0.00100334,-0.05366405,-0.05326862,0.18133943,0.01514049,-0.06455825,-0.07456125,0.017537,-0.11685354,0.00701418,0.12039209,-0.01878059,0.00922985,0.04799532,-0.05026968,-0.04462967,0.01827451,0.02481879,0.00177346,0.03172817,0.00574206,0.02459473,0.05491586,-0.03321658,-0.0125689,0.0519973,-0.04514797,-0.08031875,0.04958166,0.06921171,0.02081358,0.07070826,-0.02631401,-0.02515292,-0.02323372,0.03983467,0.05990333,0.0092657,-0.07233513,0.01107915,0.19328806,0.00052612,0.02108286,-0.01126549,-0.04266137,-0.02385541,-0.01214688,0.10064127,-0.00080145,0.0257992,-0.05249142,-0.02933323,0.00654552,0.00424268,0.03662267,-0.02613166,-0.03289129,0.03579934,-0.13669926,-0.03114203,0.04324678,0.02117477,0.0043303,-0.01521411,0.03087717,-0.0141456,0.02452725,-0.02170808,-2e-08,0.00351059,-0.00110934,-0.00528096,-0.03369338,0.03736157,-0.00829749,-0.07757168,-0.00159207,-0.00167402,0.00047595,-0.03733556,0.01325235,-0.02812393,-0.01140793,-0.03908831,-0.08437913,-0.06077788,0.05897258,-0.04499463,-0.04657931,-0.05648911,0.02935817,0.03111676,-0.04417688,-0.00267442,-0.01415818,0.01999689,0.03739502,-0.01341247,-0.03920572,-0.12589088,0.0764828,-0.00114088,-0.07810109,-0.15509193,0.04343918,0.00135252,-0.07942539,-0.02868421,-0.05951472,-0.00776681,-0.02521968,0.02787832,0.02050306,-0.020123,0.07953504,0.02152637,0.06453921,0.08957512,-0.07321658,0.00190168,-0.00930532,-0.02544054,0.00664195,0.02803078,0.0544161,0.02155823,0.02932909,0.14297242,-0.06124198,0.04998293,-0.06254105,-0.01685152,0.00057896]",
+            "created_at": "2026-05-20T19:55:42.170421Z",
+            "updated_at": "2026-05-20T19:55:42.170421Z",
+            "distance": 0.11498299583741967,
+            "_hybrid_score": 1.0
+          },
+          {
+            "id": "b4aaa8bc-e0b9-485e-b057-815e5395a250",
+            "conversation_id": "be049f46-8262-4f64-9a6f-a19f59660d87",
+            "user_id": "anonymous",
+            "content": "Remember that missing JWT auth issues should be treated as bugs.",
+            "metadata": {
+              "source": "chat.write_memory",
+              "memory_type": "episodic"
+            },
+            "embedding": "[-0.1046725,-0.0352338,0.06661724,-0.0174223,0.02539465,-0.01764865,-0.04101598,-0.0745042,-0.04947001,-0.07549398,0.0014089,0.02647033,0.00825369,-0.01245053,0.04192217,0.02707506,-0.01131027,0.05780185,-0.01373296,-0.04152715,-0.05231559,0.00494696,-0.00381203,-0.02760028,0.05360052,-0.04813039,-0.02239035,-0.00236989,-0.02263839,0.05075034,0.00963805,0.01903497,-0.04250379,-0.00685166,-0.06146438,-0.01484375,0.01570412,0.01836933,0.02532486,-0.0811052,-0.03619177,-0.00192725,-0.0527605,0.04631623,-0.03696929,-0.06722064,0.02885002,-0.09621057,-0.04394599,0.02877981,0.02164634,-0.04540372,0.02810665,-0.03663895,-0.09470382,-0.02241261,-0.04378344,0.01022984,0.04944629,0.0853776,0.00403748,-0.0199031,0.01149276,0.01501975,0.05286612,-0.03354231,-0.01346042,-0.04075746,0.01246179,-0.0186122,-0.01766074,0.06151608,-0.1177,-0.02330688,0.00813509,0.05913226,-0.10910286,0.00796094,0.07364823,-0.00459868,-0.01163392,-0.04755624,0.04457835,0.04223887,0.10831214,0.01990696,-0.04957512,0.03241982,-0.08029438,0.1031912,0.0431119,0.02008906,0.03207594,0.0451736,0.00286947,0.01779195,-0.00851406,0.06317329,-0.0632397,0.05363992,-0.09199335,0.05348529,0.04135909,0.08538495,0.09595557,-0.01682193,0.02728864,0.04006752,0.05855577,-0.00660033,0.02036466,0.00257523,-0.03201075,-0.00055257,-0.05311619,0.01061602,-0.01687562,0.00889721,0.00313155,0.03791168,0.04494961,0.00708058,0.01468725,-0.03317824,0.01063752,0.03562559,-0.05687542,0,-0.04689727,0.11584839,0.07588513,-0.01992202,0.00168711,-0.07010028,-0.07477432,-0.03674076,0.01407485,-0.05809414,0.02812154,-0.02434902,0.03673858,-0.05397968,-0.01453727,-0.02894953,-0.01514105,0.00739364,0.07466927,0.02038214,0.05428095,-0.09249527,0.07154454,0.04219488,-0.03710143,0.04688558,0.06309829,0.05896287,-0.00900136,0.04109796,-0.02627902,-0.05775426,0.04586348,0.05511744,-0.03009044,0.02702828,0.10062265,-0.07122094,-0.00860271,-0.09062739,-0.12246446,-0.01609306,-0.05627237,0.00870831,-0.00656059,-0.07982346,0.07426292,0.00489417,0.11703604,0.10282575,-0.14573169,0.03316527,0.01311097,-0.08825254,0.05258781,-0.02095382,-0.0334336,0.05522354,-0.04995777,-0.02930923,-0.034787,-0.00997403,0.01214481,-0.04856653,-0.01372587,0.05302609,-0.03075369,-0.04886089,-0.07847495,-0.0198427,0.01158278,0.05684334,0.07086645,0.03778958,-0.07612228,-0.00965003,0.01954433,-0.00854249,0.01775466,-0.01852644,0.08619668,-0.05221464,-0.00316437,0.07364425,0.02576828,0.00061109,0.07424609,0.04097992,-0.03895475,0.03928912,0.14186609,0.06620897,0.03286343,0.06539905,-0.0463726,-0,-0.07528867,-0.06790231,-0.02770598,-0.01443831,0.00694483,0.02097579,-0.03222701,0.02025122,0.01596638,0.0164182,0.02938612,0.01551739,-0.05992837,0.01234197,-0.00695092,0.04031627,-0.00799439,-0.00859379,0.04841302,-0.00321652,0.06478961,0.11307534,0.00838419,0.06057442,-0.02064176,0.00651546,-0.02059447,0.00100334,-0.05366405,-0.05326862,0.18133943,0.01514049,-0.06455825,-0.07456125,0.017537,-0.11685354,0.00701418,0.12039209,-0.01878059,0.00922985,0.04799532,-0.05026968,-0.04462967,0.01827451,0.02481879,0.00177346,0.03172817,0.00574206,0.02459473,0.05491586,-0.03321658,-0.0125689,0.0519973,-0.04514797,-0.08031875,0.04958166,0.06921171,0.02081358,0.07070826,-0.02631401,-0.02515292,-0.02323372,0.03983467,0.05990333,0.0092657,-0.07233513,0.01107915,0.19328806,0.00052612,0.02108286,-0.01126549,-0.04266137,-0.02385541,-0.01214688,0.10064127,-0.00080145,0.0257992,-0.05249142,-0.02933323,0.00654552,0.00424268,0.03662267,-0.02613166,-0.03289129,0.03579934,-0.13669926,-0.03114203,0.04324678,0.02117477,0.0043303,-0.01521411,0.03087717,-0.0141456,0.02452725,-0.02170808,-2e-08,0.00351059,-0.00110934,-0.00528096,-0.03369338,0.03736157,-0.00829749,-0.07757168,-0.00159207,-0.00167402,0.00047595,-0.03733556,0.01325235,-0.02812393,-0.01140793,-0.03908831,-0.08437913,-0.06077788,0.05897258,-0.04499463,-0.04657931,-0.05648911,0.02935817,0.03111676,-0.04417688,-0.00267442,-0.01415818,0.01999689,0.03739502,-0.01341247,-0.03920572,-0.12589088,0.0764828,-0.00114088,-0.07810109,-0.15509193,0.04343918,0.00135252,-0.07942539,-0.02868421,-0.05951472,-0.00776681,-0.02521968,0.02787832,0.02050306,-0.020123,0.07953504,0.02152637,0.06453921,0.08957512,-0.07321658,0.00190168,-0.00930532,-0.02544054,0.00664195,0.02803078,0.0544161,0.02155823,0.02932909,0.14297242,-0.06124198,0.04998293,-0.06254105,-0.01685152,0.00057896]",
+            "created_at": "2026-05-21T17:02:32.168336Z",
+            "updated_at": "2026-05-21T17:02:32.168336Z",
+            "_hybrid_score": 0.5
+          }
+        ],
+        "requested_mode": "hybrid",
+        "effective_mode": "hybrid",
+        "vector_available": true,
+        "fallback_reason": null,
+        "storage": "text_metadata_pgvector",
+        "vector_status": {
+          "vector_available": true,
+          "fallback_allowed": true,
+          "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+          "embedding_dimension": 384
+        },
+        "items_count_returned": 5
+      }
+    },
+    {
+      "name": "reports_summary",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "summary": "status=200 classifier=present",
+      "response": {
+        "classifier": {
+          "selected": "transformer_roberta_base",
+          "classical_macro_f1": 0.6681268595902742,
+          "transformer_macro_f1": 0.7115728715728715,
+          "llm_macro_f1": 0.7112246856392234
+        },
+        "classification_golden": {
+          "accuracy": 0.96,
+          "macro_f1": 0.9615384615384615,
+          "passed": true,
+          "all_models": {
+            "selected_transformer": {
+              "metrics": {
+                "accuracy": 0.96,
+                "macro_f1": 0.9615384615384615,
+                "per_class_f1": {
+                  "bug": 1.0,
+                  "feature": 0.923076923076923,
+                  "docs": 1.0,
+                  "question": 0.923076923076923
+                },
+                "confusion_matrix": {
+                  "labels": [
+                    "bug",
+                    "feature",
+                    "docs",
+                    "question"
+                  ],
+                  "matrix": [
+                    [
+                      6,
+                      0,
+                      0,
+                      0
+                    ],
+                    [
+                      0,
+                      6,
+                      0,
+                      0
+                    ],
+                    [
+                      0,
+                      0,
+                      6,
+                      0
+                    ],
+                    [
+                      0,
+                      1,
+                      0,
+                      6
+                    ]
+                  ]
+                },
+                "weighted_f1": 0.96
+              },
+              "predictions": [
+                {
+                  "golden_id": "clf-golden-001",
+                  "issue_number": 8436,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": 0.526127278804779
+                },
+                {
+                  "golden_id": "clf-golden-002",
+                  "issue_number": 8498,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": 0.889378011226654
+                },
+                {
+                  "golden_id": "clf-golden-003",
+                  "issue_number": 8571,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": 0.929863452911377
+                },
+                {
+                  "golden_id": "clf-golden-004",
+                  "issue_number": 8827,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": 0.8107701539993286
+                },
+                {
+                  "golden_id": "clf-golden-005",
+                  "issue_number": 9084,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": 0.6170762181282043
+                },
+                {
+                  "golden_id": "clf-golden-006",
+                  "issue_number": 9170,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": 0.7310316562652588
+                },
+                {
+                  "golden_id": "clf-golden-007",
+                  "issue_number": 8509,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": 0.9423739910125732
+                },
+                {
+                  "golden_id": "clf-golden-008",
+                  "issue_number": 8653,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": 0.9298803806304932
+                },
+                {
+                  "golden_id": "clf-golden-009",
+                  "issue_number": 8715,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": 0.9585193991661072
+                },
+                {
+                  "golden_id": "clf-golden-010",
+                  "issue_number": 8731,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": 0.8541406989097595
+                },
+                {
+                  "golden_id": "clf-golden-011",
+                  "issue_number": 8732,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": 0.9271661639213562
+                },
+                {
+                  "golden_id": "clf-golden-012",
+                  "issue_number": 8792,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": 0.9535245299339294
+                },
+                {
+                  "golden_id": "clf-golden-013",
+                  "issue_number": 8508,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": 0.9621270895004272
+                },
+                {
+                  "golden_id": "clf-golden-014",
+                  "issue_number": 8638,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": 0.965418815612793
+                },
+                {
+                  "golden_id": "clf-golden-015",
+                  "issue_number": 8646,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": 0.9684965014457703
+                },
+                {
+                  "golden_id": "clf-golden-016",
+                  "issue_number": 8798,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": 0.9555636048316956
+                },
+                {
+                  "golden_id": "clf-golden-017",
+                  "issue_number": 8825,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": 0.9610103964805603
+                },
+                {
+                  "golden_id": "clf-golden-018",
+                  "issue_number": 8893,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": 0.9371532797813416
+                },
+                {
+                  "golden_id": "clf-golden-019",
+                  "issue_number": 8439,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": 0.5342829823493958
+                },
+                {
+                  "golden_id": "clf-golden-020",
+                  "issue_number": 8461,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": 0.9214079976081848
+                },
+                {
+                  "golden_id": "clf-golden-021",
+                  "issue_number": 8464,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": 0.8874660730361938
+                },
+                {
+                  "golden_id": "clf-golden-022",
+                  "issue_number": 8671,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": 0.9186133146286011
+                },
+                {
+                  "golden_id": "clf-golden-023",
+                  "issue_number": 8690,
+                  "expected_label": "question",
+                  "predicted_label": "feature",
+                  "confidence": 0.6973142623901367
+                },
+                {
+                  "golden_id": "clf-golden-024",
+                  "issue_number": 8728,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": 0.7719230055809021
+                },
+                {
+                  "golden_id": "clf-golden-025",
+                  "issue_number": 8743,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": 0.8066387176513672
+                }
+              ],
+              "missing_prediction_count": 0,
+              "coverage": 1.0,
+              "missing_issue_numbers": [],
+              "passed": true,
+              "threshold_passed": true,
+              "blocking": true,
+              "status": "PASS",
+              "failures": [],
+              "selected_model": true
+            },
+            "classical": {
+              "metrics": {
+                "accuracy": 0.8,
+                "macro_f1": 0.7466422466422467,
+                "per_class_f1": {
+                  "bug": 0.2857142857142857,
+                  "feature": 1.0,
+                  "docs": 0.923076923076923,
+                  "question": 0.7777777777777778
+                },
+                "confusion_matrix": {
+                  "labels": [
+                    "bug",
+                    "feature",
+                    "docs",
+                    "question"
+                  ],
+                  "matrix": [
+                    [
+                      1,
+                      0,
+                      1,
+                      4
+                    ],
+                    [
+                      0,
+                      6,
+                      0,
+                      0
+                    ],
+                    [
+                      0,
+                      0,
+                      6,
+                      0
+                    ],
+                    [
+                      0,
+                      0,
+                      0,
+                      7
+                    ]
+                  ]
+                },
+                "weighted_f1": 0.7478876678876679
+              },
+              "predictions": [
+                {
+                  "golden_id": "clf-golden-001",
+                  "issue_number": 8436,
+                  "expected_label": "bug",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-002",
+                  "issue_number": 8498,
+                  "expected_label": "bug",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-003",
+                  "issue_number": 8571,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-004",
+                  "issue_number": 8827,
+                  "expected_label": "bug",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-005",
+                  "issue_number": 9084,
+                  "expected_label": "bug",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-006",
+                  "issue_number": 9170,
+                  "expected_label": "bug",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-007",
+                  "issue_number": 8509,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-008",
+                  "issue_number": 8653,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-009",
+                  "issue_number": 8715,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-010",
+                  "issue_number": 8731,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-011",
+                  "issue_number": 8732,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-012",
+                  "issue_number": 8792,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-013",
+                  "issue_number": 8508,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-014",
+                  "issue_number": 8638,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-015",
+                  "issue_number": 8646,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-016",
+                  "issue_number": 8798,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-017",
+                  "issue_number": 8825,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-018",
+                  "issue_number": 8893,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-019",
+                  "issue_number": 8439,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-020",
+                  "issue_number": 8461,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-021",
+                  "issue_number": 8464,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-022",
+                  "issue_number": 8671,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-023",
+                  "issue_number": 8690,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-024",
+                  "issue_number": 8728,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-025",
+                  "issue_number": 8743,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                }
+              ],
+              "missing_prediction_count": 0,
+              "coverage": 1.0,
+              "missing_issue_numbers": [],
+              "passed": false,
+              "threshold_passed": false,
+              "blocking": false,
+              "status": "WARN",
+              "failures": [
+                "bug f1 0.2857 < 0.3000"
+              ],
+              "selected_model": false
+            },
+            "llm_baseline_predictions": {
+              "metrics": {
+                "accuracy": 0.92,
+                "macro_f1": 0.9195804195804196,
+                "per_class_f1": {
+                  "bug": 0.923076923076923,
+                  "feature": 0.923076923076923,
+                  "docs": 0.9090909090909091,
+                  "question": 0.923076923076923
+                },
+                "confusion_matrix": {
+                  "labels": [
+                    "bug",
+                    "feature",
+                    "docs",
+                    "question"
+                  ],
+                  "matrix": [
+                    [
+                      6,
+                      0,
+                      0,
+                      0
+                    ],
+                    [
+                      0,
+                      6,
+                      0,
+                      0
+                    ],
+                    [
+                      0,
+                      1,
+                      5,
+                      0
+                    ],
+                    [
+                      1,
+                      0,
+                      0,
+                      6
+                    ]
+                  ]
+                },
+                "weighted_f1": 0.9197202797202796
+              },
+              "predictions": [
+                {
+                  "golden_id": "clf-golden-001",
+                  "issue_number": 8436,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-002",
+                  "issue_number": 8498,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-003",
+                  "issue_number": 8571,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-004",
+                  "issue_number": 8827,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-005",
+                  "issue_number": 9084,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-006",
+                  "issue_number": 9170,
+                  "expected_label": "bug",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-007",
+                  "issue_number": 8509,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-008",
+                  "issue_number": 8653,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-009",
+                  "issue_number": 8715,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-010",
+                  "issue_number": 8731,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-011",
+                  "issue_number": 8732,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-012",
+                  "issue_number": 8792,
+                  "expected_label": "feature",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-013",
+                  "issue_number": 8508,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-014",
+                  "issue_number": 8638,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-015",
+                  "issue_number": 8646,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-016",
+                  "issue_number": 8798,
+                  "expected_label": "docs",
+                  "predicted_label": "feature",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-017",
+                  "issue_number": 8825,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-018",
+                  "issue_number": 8893,
+                  "expected_label": "docs",
+                  "predicted_label": "docs",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-019",
+                  "issue_number": 8439,
+                  "expected_label": "question",
+                  "predicted_label": "bug",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-020",
+                  "issue_number": 8461,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-021",
+                  "issue_number": 8464,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-022",
+                  "issue_number": 8671,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-023",
+                  "issue_number": 8690,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-024",
+                  "issue_number": 8728,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                },
+                {
+                  "golden_id": "clf-golden-025",
+                  "issue_number": 8743,
+                  "expected_label": "question",
+                  "predicted_label": "question",
+                  "confidence": null
+                }
+              ],
+              "missing_prediction_count": 0,
+              "coverage": 1.0,
+              "missing_issue_numbers": [],
+              "passed": true,
+              "threshold_passed": true,
+              "blocking": false,
+              "status": "PASS",
+              "failures": [],
+              "selected_model": false
+            }
+          }
+        },
+        "rag_retrieval": {
+          "selected": "reranked_hybrid_rewrite_boost",
+          "sparse": {
+            "hit_at_5": 0.56,
+            "hit_at_10": 0.6,
+            "mrr_at_10": 0.3463333333333333,
+            "passed": true
+          },
+          "dense": {
+            "hit_at_5": 0.6,
+            "hit_at_10": 0.68,
+            "mrr_at_10": 0.5584444444444444,
+            "passed": true
+          },
+          "hybrid_rewrite_boost": {
+            "hit_at_5": 0.76,
+            "hit_at_10": 0.8,
+            "mrr_at_10": 0.608,
+            "passed": true
+          },
+          "reranked": {
+            "hit_at_5": 0.8,
+            "hit_at_10": 0.8,
+            "mrr_at_10": 0.628,
+            "passed": true
+          }
+        },
+        "rag_generation": {
+          "judge_version": "frozen-rag-judge-v1",
+          "answer_relevancy_avg": 0.3104294684218752,
+          "faithfulness_avg": 0.6243582775445823,
+          "citation_coverage": 0.68,
+          "groundedness_pass_rate": 0.72,
+          "threshold_gate": "PASS"
+        },
+        "notes": {
+          "long_term_memory": "pgvector_episodic_with_text_fallback",
+          "observability": "recent_events_request_ids_not_full_tracing"
+        }
+      }
+    },
+    {
+      "name": "observability_recent",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "events_count": 0,
+      "summary": "status=200 events=0",
+      "response": {
+        "events": [],
+        "count": 0
+      }
+    },
+    {
+      "name": "claude_rag_chat",
+      "passed": true,
+      "required": true,
+      "status_code": 200,
+      "selected_tool": "rag_answer",
+      "mode": "llm_tool_calling",
+      "fallback_reason": null,
+      "citations_count": 5,
+      "summary": "status=200 tool=rag_answer mode=llm_tool_calling citations=5",
+      "response": {
+        "conversation_id": "45e300e2-1341-4b59-a909-d7eb0801a8f6",
+        "message": "Based on resolved Node.js issues, here are the key debugging approaches for HTTPS request memory leaks:\n\n## Common Causes\n\nThe most frequently reported memory leak patterns in HTTPS requests include:\n\n1. **Connection reset scenarios** – Memory leaks on `ECONNRESET` errors where sockets aren't properly cleaned up\n2. **TLS/SSL memory accumulation** – `rss` (resident set size) grows over time even when heap usage stays constant, indicating off-heap memory issues\n3. **Agent-related leaks** – Respons",
+        "mode": "llm_tool_calling",
+        "selected_tool": "rag_answer",
+        "fallback_reason": null,
+        "request_id": "07e6c3bb-b7aa-4e81-ad05-1ecefd26260a",
+        "trace_id": "9c1f9c18-11d0-4bea-a01e-021151ace329",
+        "citations_count": 5
+      }
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "total": 12
+  }
+}

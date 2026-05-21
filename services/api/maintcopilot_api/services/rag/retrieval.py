@@ -297,8 +297,8 @@ def load_corpus_rows(path: Path) -> list[dict]:
 def filter_corpus_rows(rows: list[dict], source_type: str | None = None) -> list[dict]:
     if source_type is None:
         return list(rows)
-    if source_type not in {"doc", "resolved_issue"}:
-        raise ValueError("source_type must be doc, resolved_issue, or None.")
+    if source_type not in {"doc", "resolved_issue", "issue_comment"}:
+        raise ValueError("source_type must be doc, resolved_issue, issue_comment, or None.")
     return [row for row in rows if row.get("source_type") == source_type]
 
 
@@ -349,7 +349,7 @@ def _metadata_boost_for_result(
         score_boost += boost_amount
     if rewrite_result.intent in DOC_INTENTS and source_type == "doc":
         score_boost += boost_amount
-    if rewrite_result.intent in ISSUE_INTENTS and source_type == "resolved_issue":
+    if rewrite_result.intent in ISSUE_INTENTS and source_type in {"resolved_issue", "issue_comment"}:
         score_boost += boost_amount
 
     haystack = _metadata_haystack(result)

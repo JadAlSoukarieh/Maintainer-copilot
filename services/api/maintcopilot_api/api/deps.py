@@ -11,6 +11,7 @@ from maintcopilot_api.domain.auth import UserRead
 from maintcopilot_api.domain.errors import AuthenticationError, DependencyUnavailableError, ForbiddenError
 from maintcopilot_api.infra.auth import JWTManager, PasswordHasher, TokenError
 from maintcopilot_api.infra.config import Settings
+from maintcopilot_api.infra.embeddings import LocalSentenceTransformerEmbedder
 from maintcopilot_api.infra.redis import RedisUnavailableError
 from maintcopilot_api.repositories.audit_repository import AuditRepository
 from maintcopilot_api.repositories.auth_repository import AuthRepository
@@ -57,7 +58,12 @@ def get_chat_service(
     settings: Settings = Depends(get_settings),
     rag_service: RagService = Depends(get_rag_service),
 ) -> ChatService:
-    memory_service = MemoryService(repository=MemoryRepository(session=session), session=session)
+    memory_service = MemoryService(
+        repository=MemoryRepository(session=session),
+        session=session,
+        settings=settings,
+        embedder=request.app.state.memory_embedder,
+    )
     audit_repository = AuditRepository(session=session)
     tool_executor = ToolExecutor(
         model_client=request.app.state.model_client,
@@ -99,8 +105,17 @@ def get_auth_service(
     )
 
 
-def get_memory_service(session: Session = Depends(get_db_session)) -> MemoryService:
-    return MemoryService(repository=MemoryRepository(session=session), session=session)
+def get_memory_service(
+    request: Request,
+    session: Session = Depends(get_db_session),
+    settings: Settings = Depends(get_settings),
+) -> MemoryService:
+    return MemoryService(
+        repository=MemoryRepository(session=session),
+        session=session,
+        settings=settings,
+        embedder=request.app.state.memory_embedder,
+    )
 
 
 def get_widget_service(session: Session = Depends(get_db_session)) -> WidgetService:
@@ -117,6 +132,10 @@ def get_health_service(request: Request) -> HealthService:
         vault_client=request.app.state.vault_client,
         require_vault=request.app.state.settings.require_vault,
     )
+
+
+def get_memory_embedder(settings: Settings) -> LocalSentenceTransformerEmbedder:
+    return LocalSentenceTransformerEmbedder(model_name=settings.memory_embedding_model, local_files_only=True)
 
 
 def get_current_user(

@@ -16,3 +16,8 @@ class MemoryWriteResponse(BaseModel):
     memory_id: str
     status: str
 
+
+class MemorySearchRequest(BaseModel):
+    query: str = ""
+    top_k: int = Field(default=10, ge=1, le=200)
+    mode: str = Field(default="hybrid", pattern="^(vector|text|hybrid)$")

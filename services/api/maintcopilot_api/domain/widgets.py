@@ -53,6 +53,7 @@ class WidgetConfigResponse(BaseModel):
     theme: WidgetTheme = Field(default_factory=WidgetTheme)
     greeting: str
     enabled_tools: list[str] = Field(default_factory=list)
+    default_use_llm: bool = False
 
     @field_validator("allowed_origins")
     @classmethod

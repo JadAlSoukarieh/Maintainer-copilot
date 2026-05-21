@@ -9,7 +9,12 @@ from typing import Any
 
 import pytest
 
-from maintcopilot_api.infra.anthropic_client import AnthropicClassificationResponse, AnthropicKeyResolutionError, resolve_anthropic_api_key
+from maintcopilot_api.infra.anthropic_client import (
+    AnthropicClassificationResponse,
+    AnthropicKeyResolutionError,
+    resolve_anthropic_api_key,
+    resolve_anthropic_api_key_details,
+)
 from maintcopilot_api.infra.config import Settings
 from maintcopilot_api.infra.logging import JsonFormatter, log_with_context
 from maintcopilot_api.services.llm_baseline.metrics import compute_metrics, estimate_cost_usd
@@ -202,11 +207,55 @@ def test_env_fallback_allowed_when_vault_not_required(monkeypatch: pytest.Monkey
     assert resolve_anthropic_api_key(settings, vault_client=None) == "sk-ant-fake-secret"
 
 
+def test_env_key_is_preferred_over_vault_placeholder_when_vault_not_required(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-env-secret")
+    settings = Settings(require_vault=False, anthropic_api_key_secret_path="secret/data/app/anthropic")
+
+    resolution = resolve_anthropic_api_key_details(
+        settings,
+        vault_client=FakeVaultClient(payload={"api_key": "placeholder-not-required"}),
+        allow_env_fallback=True,
+    )
+
+    assert resolution.key_source == "env"
+    assert resolution.key_present is True
+    assert resolution.key_length == len("sk-ant-env-secret")
+    assert resolution.prefix_ok is True
+    assert resolution.api_key == "sk-ant-env-secret"
+
+
 def test_env_fallback_rejected_for_deployed_path_when_vault_required(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-fake-secret")
     settings = Settings(require_vault=True, anthropic_api_key_secret_path="secret/data/app/anthropic")
     with pytest.raises(AnthropicKeyResolutionError):
         resolve_anthropic_api_key(settings, vault_client=FakeVaultClient(payload=None), for_cli=False)
+
+
+def test_vault_placeholder_is_skipped_when_env_fallback_is_allowed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-env-secret")
+    settings = Settings(require_vault=True, anthropic_api_key_secret_path="secret/data/app/anthropic")
+
+    resolution = resolve_anthropic_api_key_details(
+        settings,
+        vault_client=FakeVaultClient(payload={"api_key": "placeholder-not-required"}),
+        allow_env_fallback=True,
+    )
+
+    assert resolution.key_source == "env"
+    assert resolution.api_key == "sk-ant-env-secret"
+
+
+def test_vault_key_is_used_when_required_and_not_placeholder() -> None:
+    settings = Settings(require_vault=True, anthropic_api_key_secret_path="secret/data/app/anthropic")
+
+    resolution = resolve_anthropic_api_key_details(
+        settings,
+        vault_client=FakeVaultClient(payload={"api_key": "sk-ant-vault-secret"}),
+        allow_env_fallback=True,
+    )
+
+    assert resolution.key_source == "vault"
+    assert resolution.api_key == "sk-ant-vault-secret"
 
 
 def test_cli_env_fallback_allowed_only_with_flag(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:

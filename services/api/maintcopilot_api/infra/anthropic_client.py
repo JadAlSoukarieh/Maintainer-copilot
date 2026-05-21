@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import time
 from dataclasses import dataclass
+from typing import Any
 
 from maintcopilot_api.infra.config import Settings
 from maintcopilot_api.infra.vault import VaultClient, VaultSecretError
@@ -24,6 +25,58 @@ class AnthropicClassificationResponse:
     model_name: str
 
 
+@dataclass(slots=True)
+class AnthropicKeyResolution:
+    api_key: str | None
+    key_source: str
+    key_present: bool
+    key_length: int
+    prefix_ok: bool
+
+
+PLACEHOLDER_ANTHROPIC_KEY = "placeholder-not-required"
+
+
+def resolve_anthropic_api_key_details(
+    settings: Settings,
+    vault_client: VaultClient | None,
+    *,
+    allow_env_fallback: bool = False,
+    for_cli: bool = False,
+) -> AnthropicKeyResolution:
+    del for_cli
+    env_key = _normalize_key(os.getenv("ANTHROPIC_API_KEY"))
+    env_result = _resolution("env", env_key)
+
+    # Local/dev mode should prefer the shell/.env.local key over any demo Vault placeholder.
+    if not settings.require_vault and env_key:
+        return env_result
+
+    vault_key = ""
+    secret_path = settings.anthropic_api_key_secret_path
+    if secret_path and vault_client is not None:
+        try:
+            payload = vault_client.read_kv_v2_secret(secret_path)
+        except VaultSecretError as exc:
+            if settings.require_vault and not (allow_env_fallback and env_key):
+                raise AnthropicKeyResolutionError("Anthropic API key could not be resolved from Vault.") from exc
+            payload = None
+
+        if payload:
+            vault_key = _normalize_key(payload.get("api_key"))
+            if vault_key and not _is_placeholder_key(vault_key):
+                return _resolution("vault", vault_key)
+    elif settings.require_vault and not (allow_env_fallback and env_key):
+        raise AnthropicKeyResolutionError("Anthropic API key secret path is not configured.")
+
+    if env_key and (allow_env_fallback or not settings.require_vault):
+        return env_result
+
+    if _is_placeholder_key(vault_key):
+        return _resolution("placeholder", None)
+    return _resolution("missing", None)
+
+
 def resolve_anthropic_api_key(
     settings: Settings,
     vault_client: VaultClient | None,
@@ -31,36 +84,59 @@ def resolve_anthropic_api_key(
     allow_env_fallback: bool = False,
     for_cli: bool = False,
 ) -> str:
-    can_use_env = (not settings.require_vault) or (for_cli and allow_env_fallback)
+    resolution = resolve_anthropic_api_key_details(
+        settings,
+        vault_client,
+        allow_env_fallback=allow_env_fallback,
+        for_cli=for_cli,
+    )
+    if resolution.api_key:
+        return resolution.api_key
+    if resolution.key_source == "placeholder":
+        raise AnthropicKeyResolutionError(
+            "Anthropic API key is still using the local demo placeholder. Configure Vault or set ANTHROPIC_API_KEY."
+        )
+    raise AnthropicKeyResolutionError(
+        "Anthropic API key is not configured. Configure Vault or set ANTHROPIC_API_KEY for local development."
+    )
 
+
+def read_vault_anthropic_key_metadata(settings: Settings, vault_client: VaultClient | None) -> dict[str, Any]:
+    payload: dict[str, Any] | None = None
     secret_path = settings.anthropic_api_key_secret_path
     if secret_path and vault_client is not None:
         try:
             payload = vault_client.read_kv_v2_secret(secret_path)
-        except VaultSecretError as exc:
-            if settings.require_vault and not can_use_env:
-                raise AnthropicKeyResolutionError("Anthropic API key could not be resolved from Vault.") from exc
+        except VaultSecretError:
             payload = None
-        if payload:
-            api_key = payload.get("api_key")
-            if isinstance(api_key, str) and api_key.strip():
-                return api_key.strip()
-            if settings.require_vault and not can_use_env:
-                raise AnthropicKeyResolutionError("Anthropic API key could not be resolved from Vault.")
-    elif settings.require_vault and not can_use_env:
-        raise AnthropicKeyResolutionError("Anthropic API key secret path is not configured.")
 
-    if can_use_env:
-        env_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
-        if env_key:
-            return env_key
-        if settings.require_vault and for_cli and allow_env_fallback:
-            raise AnthropicKeyResolutionError(
-                "Anthropic API key could not be resolved from Vault and ANTHROPIC_API_KEY is not set."
-            )
+    vault_key = _normalize_key((payload or {}).get("api_key"))
+    return {
+        "vault_key_present": bool(vault_key),
+        "vault_key_length": len(vault_key),
+        "vault_prefix_ok": vault_key.startswith("sk-ant-"),
+        "vault_placeholder_detected": _is_placeholder_key(vault_key),
+    }
 
-    raise AnthropicKeyResolutionError(
-        "Anthropic API key is not configured. Configure Vault or set ANTHROPIC_API_KEY for local development."
+
+def _normalize_key(value: object) -> str:
+    if not isinstance(value, str):
+        return ""
+    return value.strip()
+
+
+def _is_placeholder_key(value: str) -> bool:
+    return value == PLACEHOLDER_ANTHROPIC_KEY
+
+
+def _resolution(key_source: str, api_key: str | None) -> AnthropicKeyResolution:
+    normalized_key = _normalize_key(api_key)
+    return AnthropicKeyResolution(
+        api_key=normalized_key or None,
+        key_source=key_source,
+        key_present=bool(normalized_key),
+        key_length=len(normalized_key),
+        prefix_ok=normalized_key.startswith("sk-ant-"),
     )
 
 
