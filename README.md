@@ -693,12 +693,30 @@ See `ARCH.md`, `DECISIONS.md`, `RUNBOOK.md`, `SECURITY.md`, and `EVALS.md` for t
 
 ## Submission
 
+```
+Project 7 - Jad Al Soukarieh
+Repo: https://github.com/JadAlSoukarieh/Maintainer-copilot
+Tag: v0.1.0-week7
+Dataset: nodejs/node issues, 914 train / 196 val / 196 test
+Classification — Classical: F1=0.6681 | Fine-tuned: F1=0.7116 | LLM: F1=0.7112
+Deployment choice: RoBERTa-base - because best macro-F1 (0.7116) at 36 ms local latency and zero API cost
+Embedding model: sentence-transformers/all-MiniLM-L6-v2 - chosen because hit@5=0.80 with hybrid+rerank, beating L12-v2 dense-only at 6x lower index build cost
+RAG — hit@5=0.80 | MRR@10=0.63 | Faithfulness=0.62 | Answer relevancy=0.31
+Long-term memory type: episodic
+Tracing backend: Jaeger (OpenTelemetry SDK + OTLP) - chosen because it runs locally with a full trace-tree UI and needs no external SaaS key
+Widget bundle size: 50 KB (gzipped)
+LLM: Anthropic Claude Haiku 4.5 (claude-haiku-4-5-20251001)
+README contains: ARCH.md, DECISIONS.md, RUNBOOK.md, EVALS.md, SECURITY.md
+```
+
+> Classification F1 values are macro-F1 on the 196-example chronological test set (`DECISIONS.md` §31). RAG metrics are from the 25-example golden set: retrieval (`reports/rag_eval_hybrid_rewrite_boost_ci.json`) and generation (`reports/rag_generation_eval_report.json`). Widget bundle gzipped size measured from `services/widget/dist/assets/index-*.js` (158,575 B raw → 50,854 B gzipped).
+
 | Field | Value |
 |---|---|
 | Student | soukariehjad@gmail.com |
 | Cohort | AIE Week 7 |
 | Submission date | 2026-05-21 |
-| Git tag | planned: `v0.1.0-week7` |
+| Git tag | `v0.1.0-week7` (created at commit `e5b34e9`) |
 | Docker stack | `docker compose --env-file .env.example up -d` |
 | Demo host | http://localhost:8080 |
 | Admin console | http://localhost:8501 |
