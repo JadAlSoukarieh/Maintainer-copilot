@@ -98,12 +98,18 @@ jobs:
         run: |
           git lfs pull
           test -s artifacts/classifier/transformer/model/model.safetensors || (echo "Missing classifier LFS artifact. Run git lfs pull." && exit 1)
+      - name: Snapshot previous green reports
+        run: |
+          mkdir -p baseline-reports
+          cp reports/*.json baseline-reports/ 2>/dev/null || true
       - name: Run eval gates
         run: |
           python scripts/verify_ml_artifacts.py
           python evals/classification_eval.py --model all --gate primary
           python evals/rag_retrieval_eval.py --retriever hybrid --alpha 0.5 --query-rewrite --metadata-boost --report-path reports/rag_eval_hybrid_rewrite_boost_ci.json
           python evals/rag_generation_eval.py
+      - name: Diff eval reports vs previous green build
+        run: python scripts/diff_eval_reports.py --baseline-dir baseline-reports --current-dir reports
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -121,6 +127,46 @@ jobs:
         run: docker compose --env-file .env.example config
       - name: Build core images
         run: docker compose --env-file .env.example build api model-server widget chatbot
+
+  stack-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Boot the backend stack (deterministic, no live Claude)
+        env:
+          API_REQUIRE_VAULT: "false"
+          API_AUTH_OPTIONAL_FOR_DEV: "true"
+          API_CHAT_LLM_ENABLED: "false"
+          API_ENABLE_DEMO_WIDGET_FALLBACK: "true"
+          API_ALLOW_IN_MEMORY_MEMORY: "true"
+        run: |
+          docker compose --env-file .env.example up -d --build --wait \
+            postgres redis minio vault vault-init migrate model-server api
+      - name: Smoke-test the running stack
+        run: |
+          set -e
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health >/dev/null; then echo "api /health ok"; break; fi
+            echo "waiting for api ($i/30)"; sleep 3
+            [ "$i" = "30" ] && { echo "api never became healthy"; exit 1; }
+          done
+          echo "== api /health =="; curl -fsS http://localhost:8000/health
+          echo "== api /ready =="; curl -fsS http://localhost:8000/ready
+          echo "== model-server /health =="; curl -fsS http://localhost:8001/health
+          echo "== model-server /classify (real inference) =="
+          code=$(curl -s -o /tmp/classify.json -w "%{http_code}" -X POST http://localhost:8001/classify \
+            -H "Content-Type: application/json" \
+            -d '{"title":"Memory leak in https.request","body":"Repeated requests grow RSS until the process crashes."}')
+          echo "classify http $code"; cat /tmp/classify.json; echo
+          test "$code" = "200"
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose --env-file .env.example logs --tail=150
+      - name: Tear down
+        if: always()
+        run: docker compose --env-file .env.example down -v
 
   redaction-security:
     runs-on: ubuntu-latest

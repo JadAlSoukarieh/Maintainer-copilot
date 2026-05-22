@@ -1,0 +1,28 @@
+services:
+  api:
+    ports:
+      - "8000:8000"
+    environment:
+      API_REQUIRE_VAULT: "false"
+      API_AUTH_OPTIONAL_FOR_DEV: "true"
+      API_ENABLE_DEMO_WIDGET_FALLBACK: "true"
+      API_ALLOW_IN_MEMORY_MEMORY: "true"
+      API_CHAT_LLM_ENABLED: "true"
+      API_CHAT_ALLOW_ENV_KEY_FALLBACK: "true"
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+
+  chatbot:
+    command:
+      - streamlit
+      - run
+      - app.py
+      - "--server.address=0.0.0.0"
+      - "--server.port=8501"
+      - "--theme.primaryColor=#1a5fd4"
+      - "--theme.backgroundColor=#edf3fc"
+      - "--theme.secondaryBackgroundColor=#f1f5fb"
+      - "--theme.textColor=#0b1c33"
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./services/chatbot:/app

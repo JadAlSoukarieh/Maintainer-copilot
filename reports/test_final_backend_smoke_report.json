@@ -1,0 +1,87 @@
+{
+  "timestamp": "2026-05-21T19:32:50.869266+00:00",
+  "mode": "claude",
+  "api_base_url": "http://localhost:8000",
+  "model_server_base_url": "http://localhost:8001",
+  "checks": [
+    {
+      "name": "api_health",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "api_health",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "widget_config_allowed_origin",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "widget_config_blocked_origin",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "widget_js_csp",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "deterministic_rag_chat",
+      "passed": true,
+      "required": true,
+      "summary": "ok",
+      "mode": "deterministic_fallback"
+    },
+    {
+      "name": "deterministic_classify_chat",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "explicit_memory_write",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "memory_search",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "reports_summary",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "observability_recent",
+      "passed": true,
+      "required": true,
+      "summary": "ok"
+    },
+    {
+      "name": "claude_rag_chat",
+      "passed": true,
+      "required": true,
+      "summary": "ok",
+      "mode": "deterministic_fallback"
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "total": 12
+  }
+}
